@@ -1,6 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
-import type { QRMode, QRVersion, ErrorCorrectionLevel, DataAnalysisResult } from './types';
-import { ALPHANUMERIC_CHARS, DATA_CAPACITY_TABLE } from './constants';
+import type { QRMode, QRVersion, ErrorCorrectionLevel, DataAnalysisResult } from '../../shared/types';
+import { ALPHANUMERIC_CHARS, CHARACTER_COUNT_BITS, DATA_CAPACITY_TABLE } from '../../shared/consts';
 
 // 문자 유형 감지
 /**
@@ -81,13 +81,14 @@ const calculateDataBits = (data: string, mode: QRMode): number => {
  * 모드와 버전에 따른 문자 카운트 지시자에 필요한 비트 수 반환
  */
 export const getCharacterCountBits = (mode: QRMode, version: QRVersion): number => {
-  if (version <= 9) {
-    return mode === 'numeric' ? 10 : mode === 'alphanumeric' ? 9 : 8;
+  const versionRange = version <= 9 ? '1-9' : version <= 26 ? '10-26' : '27-40';
+  const bits = CHARACTER_COUNT_BITS[mode]?.[versionRange];
+  
+  if (bits === undefined) {
+    throw new Error('지원되지 않는 모드');
   }
-  if (version <= 26) {
-    return mode === 'numeric' ? 12 : mode === 'alphanumeric' ? 11 : mode === 'byte' ? 16 : 10;
-  }
-  return mode === 'numeric' ? 14 : mode === 'alphanumeric' ? 13 : mode === 'byte' ? 16 : 12;
+  
+  return bits;
 };
 
 /**

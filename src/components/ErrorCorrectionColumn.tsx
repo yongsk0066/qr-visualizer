@@ -1,4 +1,4 @@
-import type { ErrorCorrectionData } from '../qr/types';
+import type { ErrorCorrectionData } from '../shared/types';
 
 interface ErrorCorrectionColumnProps {
   errorCorrection: ErrorCorrectionData | null;

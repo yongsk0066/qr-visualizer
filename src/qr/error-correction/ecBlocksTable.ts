@@ -1,4 +1,4 @@
-import type { QRVersion, ErrorCorrectionLevel } from './types';
+import type { QRVersion, ErrorCorrectionLevel } from '../../shared/types';
 import type { ECBlocks } from './errorCorrection';
 
 /**

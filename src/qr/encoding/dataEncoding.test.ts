@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { encodeData } from './dataEncoding';
-import type { QRMode } from './types';
+import type { QRMode } from '../../shared/types';
 
 describe('dataEncoding', () => {
   describe('숫자 모드 인코딩', () => {

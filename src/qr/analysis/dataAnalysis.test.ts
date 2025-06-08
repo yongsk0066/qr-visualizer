@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeData, getCharacterCountBits } from './dataAnalysis';
-import type { QRMode, QRVersion, ErrorCorrectionLevel } from './types';
+import type { QRVersion } from '../../shared/types';
 
 describe('dataAnalysis', () => {
   describe('모드 선택', () => {

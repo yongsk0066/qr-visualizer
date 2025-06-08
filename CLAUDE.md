@@ -63,6 +63,30 @@ yarn preview
 
 The main application entry point is `src/main.tsx`, which renders `src/App.tsx`.
 
+### QR Code Module Structure
+
+```
+src/
+├── qr/
+│   ├── analysis/            # 1단계: 데이터 분석
+│   │   ├── dataAnalysis.ts      # 모드 선택, 버전 계산
+│   │   └── dataAnalysis.test.ts # 39개 테스트
+│   ├── encoding/            # 2단계: 데이터 인코딩
+│   │   ├── dataEncoding.ts      # 모드별 인코딩, 비트 스트림 생성
+│   │   └── dataEncoding.test.ts # 20개 테스트
+│   ├── error-correction/    # 3단계: 에러 정정
+│   │   ├── errorCorrection.ts   # Reed-Solomon 알고리즘
+│   │   ├── ecBlocksTable.ts     # 전체 40버전 EC 블록 테이블
+│   │   └── errorCorrection.test.ts # 16개 테스트
+│   └── qrPipeline.ts       # 전체 파이프라인 통합
+└── shared/                 # 전역 공유 모듈
+    ├── types.ts           # QR 관련 타입 정의
+    ├── consts.ts          # QR 상수 (모드, 용량, 갈루아 필드)
+    ├── binaryUtils.ts     # 바이너리 유틸리티
+    ├── stringUtils.ts     # 문자열 유틸리티
+    └── index.ts           # 유틸리티 통합 export
+```
+
 ### Current Implementation Status
 
 #### ✅ Completed Features
@@ -107,11 +131,12 @@ The main application entry point is `src/main.tsx`, which renders `src/App.tsx`.
 
 #### 🏗 Application Structure:
 - **QR Pipeline**: `src/qr/qrPipeline.ts` - Centralized processing pipeline
-- **Components**: `src/components/` - Step-specific UI components (SettingsColumn, DataEncodingColumn, etc.)
-- **QR Logic**: `src/qr/` - Modular QR generation functions with comprehensive tests
-- **Shared Utils**: `src/shared/` - Reusable binary and string manipulation utilities
+- **Step Modules**: Each QR step organized in dedicated folders with tests
+- **Shared Resources**: Common types, constants, and utilities in `shared/`
+- **Components**: `src/components/` - Step-specific UI components
+- **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
 - **UI Layout**: 4-column grid with compact spacing and responsive design
-- **Styling**: Tailwind CSS with minimal reset CSS for consistent typography
+- **Testing**: 75 comprehensive tests across all modules
 
 ## QR Code Standard Documentation
 
@@ -133,11 +158,12 @@ This project follows specific coding practices to maintain consistency and reada
 3. **Declarative Code**: Write declarative, easy-to-understand code over imperative alternatives
 4. **Type Safety**: Avoid `any` types, use proper TypeScript typing throughout
 5. **Component Separation**: Extract reusable UI components with clear props interfaces
-6. **Shared Utilities**: Move reusable functions to `src/shared/` for cross-module use
-7. **Minimal Comments**: Code should be self-documenting; avoid excessive commenting unless documenting complex algorithms
-8. **Immutable Data**: Prefer immutable data structures and pure functions
-9. **Testing**: Write comprehensive tests for all QR logic functions
-10. **ISO Compliance**: Follow ISO/IEC 18004 standard with detailed comments referencing specific sections
+6. **Module Organization**: Step-based folder structure with clear separation of concerns
+7. **Shared Utilities**: Move reusable functions to appropriate shared directories
+8. **Minimal Comments**: Code should be self-documenting; avoid excessive commenting unless documenting complex algorithms
+9. **Immutable Data**: Prefer immutable data structures and pure functions
+10. **Testing**: Write comprehensive tests for all QR logic functions (75 tests total)
+11. **ISO Compliance**: Follow ISO/IEC 18004 standard with detailed comments referencing specific sections
 
 ## Development Workflow
 

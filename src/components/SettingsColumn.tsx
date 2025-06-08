@@ -1,4 +1,4 @@
-import type { ErrorCorrectionLevel, DataAnalysisResult } from '../qr/types';
+import type { ErrorCorrectionLevel, DataAnalysisResult } from '../shared/types';
 
 interface SettingsColumnProps {
   inputData: string;
