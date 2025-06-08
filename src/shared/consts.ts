@@ -1,14 +1,26 @@
 import type { QRMode, QRVersion, ErrorCorrectionLevel } from './types';
 
-export const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
-
+/**
+ * QR 코드 인코딩 모드 지시자
+ * ISO/IEC 18004 표 2 (line 497-509)
+ */
 export const MODE_INDICATORS = {
   numeric: '0001',
-  alphanumeric: '0010',
+  alphanumeric: '0010', 
   byte: '0100',
   kanji: '1000',
 } as const;
 
+/**
+ * 영숫자 모드에서 사용 가능한 문자들
+ * ISO/IEC 18004 표 5 (line 578-585)
+ */
+export const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+
+/**
+ * 버전별 문자 카운트 지시자 비트 수
+ * ISO/IEC 18004 표 3 (line 512-559)
+ */
 export const CHARACTER_COUNT_BITS: Record<QRMode, Record<string, number>> = {
   numeric: { '1-9': 10, '10-26': 12, '27-40': 14 },
   alphanumeric: { '1-9': 9, '10-26': 11, '27-40': 13 },
@@ -16,6 +28,10 @@ export const CHARACTER_COUNT_BITS: Record<QRMode, Record<string, number>> = {
   kanji: { '1-9': 8, '10-26': 10, '27-40': 12 },
 };
 
+/**
+ * 버전별 데이터 용량 테이블 (비트 단위)
+ * ISO/IEC 18004 표 7-11 (line 617-729)
+ */
 export const DATA_CAPACITY_TABLE: Record<QRVersion, Record<ErrorCorrectionLevel, number>> = {
   1: { L: 152, M: 128, Q: 104, H: 72 },
   2: { L: 272, M: 224, Q: 176, H: 128 },
@@ -58,3 +74,26 @@ export const DATA_CAPACITY_TABLE: Record<QRVersion, Record<ErrorCorrectionLevel,
   39: { L: 22706, M: 17728, Q: 12656, H: 9776 },
   40: { L: 23856, M: 18672, Q: 13328, H: 10208 },
 };
+
+/**
+ * 갈루아 필드 GF(256) 관련 상수
+ * ISO/IEC 18004 부속서 A
+ */
+export const GALOIS_FIELD = {
+  FIELD_SIZE: 256,
+  PRIMITIVE_POLYNOMIAL: 0x11d, // x^8 + x^4 + x^3 + x^2 + 1
+} as const;
+
+/**
+ * 패딩 패턴
+ * ISO/IEC 18004 8.4.9 (line 865-881)
+ */
+export const PADDING_PATTERNS = {
+  PAD_CODEWORD_1: 0xEC, // 11101100
+  PAD_CODEWORD_2: 0x11, // 00010001
+} as const;
+
+/**
+ * 종단자 최대 길이
+ */
+export const TERMINATOR_MAX_LENGTH = 4;

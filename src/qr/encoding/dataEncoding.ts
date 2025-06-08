@@ -1,8 +1,8 @@
 import { A, pipe } from '@mobily/ts-belt';
-import type { QRMode, QRVersion } from './types';
-import { MODE_INDICATORS, ALPHANUMERIC_CHARS } from './constants';
-import { getCharacterCountBits } from './dataAnalysis';
-import { toBinaryString, padToByteBoundary, addPaddingPattern } from '../shared';
+import type { QRMode, QRVersion, DataAnalysisResult, ErrorCorrectionLevel } from '../../shared/types';
+import { MODE_INDICATORS, ALPHANUMERIC_CHARS, DATA_CAPACITY_TABLE } from '../../shared/consts';
+import { getCharacterCountBits } from '../analysis/dataAnalysis';
+import { toBinaryString, padToByteBoundary, addPaddingPattern } from '../../shared';
 
 // 비트 스트림 타입
 export interface BitStream {
@@ -187,4 +187,20 @@ export const encodeData = (
     addFinalPadding,
     createResult
   );
+};
+
+/**
+ * 전체 데이터 인코딩 파이프라인 실행
+ * 데이터 분석 결과를 받아서 최종 인코딩까지 완료된 결과 반환
+ */
+export const runDataEncoding = (
+  inputData: string,
+  analysis: DataAnalysisResult,
+  version: QRVersion,
+  errorLevel: ErrorCorrectionLevel
+): EncodedData | null => {
+  if (!analysis.isValid) return null;
+  
+  const capacity = DATA_CAPACITY_TABLE[version][errorLevel];
+  return encodeData(inputData, analysis.recommendedMode, version, capacity);
 };

@@ -1,5 +1,5 @@
 import { BitStreamViewer } from './BitStreamViewer';
-import type { EncodedData } from '../qr/dataEncoding';
+import type { EncodedData } from '../qr/encoding/dataEncoding';
 
 interface DataEncodingColumnProps {
   encodedData: EncodedData | null;

@@ -1,13 +1,8 @@
-import { analyzeData } from './dataAnalysis';
-import { encodeData } from './dataEncoding';
-import { DATA_CAPACITY_TABLE } from './constants';
-import { 
-  bitStreamToCodewords, 
-  performErrorCorrection, 
-  interleaveCodewords 
-} from './errorCorrection';
-import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData } from './types';
-import type { EncodedData } from './dataEncoding';
+import { analyzeData } from './analysis/dataAnalysis';
+import { runDataEncoding } from './encoding/dataEncoding';
+import { runErrorCorrection } from './error-correction/errorCorrection';
+import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData } from '../shared/types';
+import type { EncodedData } from './encoding/dataEncoding';
 
 export interface QRPipelineParams {
   inputData: string;
@@ -30,31 +25,15 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
     data ? analyzeData(data, errorLevel) : null;
 
   // Step 2: 데이터 인코딩
-  const runDataEncoding = (data: string, analysis: DataAnalysisResult) => {
-    if (!analysis.isValid) return null;
-    
+  const executeDataEncoding = (data: string, analysis: DataAnalysisResult) => {
     const version = parseInt(qrVersion, 10) as QRVersion;
-    const capacity = DATA_CAPACITY_TABLE[version][errorLevel];
-    return encodeData(data, analysis.recommendedMode, version, capacity);
+    return runDataEncoding(data, analysis, version, errorLevel);
   };
 
   // Step 3: 에러 정정
-  const runErrorCorrection = (encodedData: EncodedData | null): ErrorCorrectionData | null => {
-    if (!encodedData) return null;
-    
+  const executeErrorCorrection = (encodedData: EncodedData | null): ErrorCorrectionData | null => {
     const version = parseInt(qrVersion, 10) as QRVersion;
-    const dataCodewords = bitStreamToCodewords(encodedData.bitStream);
-    const ecResult = performErrorCorrection(dataCodewords, version, errorLevel);
-    const interleavedCodewords = interleaveCodewords(ecResult.dataBlocks, ecResult.ecBlocks);
-    
-    return {
-      dataCodewords,
-      ecCodewords: ecResult.ecBlocks.flat(),
-      interleavedCodewords,
-      totalCodewords: interleavedCodewords.length,
-      dataBlocks: ecResult.dataBlocks,
-      ecBlocks: ecResult.ecBlocks,
-    };
+    return runErrorCorrection(encodedData, version, errorLevel);
   };
 
   // Step 4: QR 매트릭스 생성 (미구현)
@@ -65,8 +44,8 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
 
   // 파이프라인 실행
   const dataAnalysis = runDataAnalysis(inputData);
-  const dataEncoding = dataAnalysis ? runDataEncoding(inputData, dataAnalysis) : null;
-  const errorCorrection = runErrorCorrection(dataEncoding);
+  const dataEncoding = dataAnalysis ? executeDataEncoding(inputData, dataAnalysis) : null;
+  const errorCorrection = executeErrorCorrection(dataEncoding);
   const qrGeneration = runQRGeneration(errorCorrection);
 
   return {

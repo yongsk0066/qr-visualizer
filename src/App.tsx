@@ -5,7 +5,7 @@ import { DataEncodingColumn } from './components/DataEncodingColumn';
 import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
 import { QRCodeColumn } from './components/QRCodeColumn';
 import { runQRPipeline } from './qr/qrPipeline';
-import type { ErrorCorrectionLevel } from './qr/types';
+import type { ErrorCorrectionLevel } from './shared/types';
 
 function App() {
   const [inputData, setInputData] = useState('');
