@@ -104,12 +104,13 @@ const calculateTotalBits = (data: string, mode: QRMode, version: QRVersion): num
 // 버전 결정
 /**
  * 데이터를 수용할 수 있는 최소 QR 버전 찾기
+ * @returns 적합한 버전을 찾으면 해당 버전, 찾지 못하면 null
  */
 const findMinimumVersion = (
   data: string,
   mode: QRMode,
   errorLevel: ErrorCorrectionLevel
-): QRVersion => {
+): QRVersion | null => {
   for (let version = 1; version <= 40; version++) {
     const totalBits = calculateTotalBits(data, mode, version as QRVersion);
     const capacity = DATA_CAPACITY_TABLE[version as QRVersion][errorLevel];
@@ -119,7 +120,7 @@ const findMinimumVersion = (
     }
   }
 
-  return 40;
+  return null;
 };
 
 // 메인 분석 함수
@@ -144,11 +145,11 @@ export const analyzeData = (
 
   const recommendedMode = getOptimalMode(data);
   const minimumVersion = findMinimumVersion(data, recommendedMode, errorLevel);
-  const isValid = minimumVersion <= 40;
+  const isValid = minimumVersion !== null;
 
   return {
     recommendedMode,
-    minimumVersion,
+    minimumVersion: minimumVersion || 40,
     characterCount: data.length,
     isValid,
   };
