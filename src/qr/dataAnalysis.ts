@@ -80,7 +80,7 @@ const calculateDataBits = (data: string, mode: QRMode): number => {
 /**
  * 모드와 버전에 따른 문자 카운트 지시자에 필요한 비트 수 반환
  */
-const getCharacterCountBits = (mode: QRMode, version: QRVersion): number => {
+export const getCharacterCountBits = (mode: QRMode, version: QRVersion): number => {
   if (version <= 9) {
     return mode === 'numeric' ? 10 : mode === 'alphanumeric' ? 9 : 8;
   }
