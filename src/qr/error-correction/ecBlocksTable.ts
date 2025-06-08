@@ -1,5 +1,5 @@
 import type { QRVersion, ErrorCorrectionLevel } from '../../shared/types';
-import type { ECBlocks } from './errorCorrection';
+import type { ECBlocks } from './types';
 
 /**
  * 버전과 에러 정정 레벨에 따른 블록 구조
