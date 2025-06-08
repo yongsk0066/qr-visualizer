@@ -4,6 +4,7 @@ import type { EncodedData } from '../encoding/dataEncoding';
 import type { ECBlocks, ErrorCorrectionResult } from './types';
 import { generateErrorCorrectionCodewords } from './reed-solomon/reedSolomon';
 import { bitStreamToCodewords, interleaveCodewords } from './utils';
+import { REMAINDER_BITS } from '../../shared/consts';
 
 
 
@@ -81,6 +82,9 @@ export const runErrorCorrection = (
   // ISO/IEC 18004 8.6: 먼저 데이터 블록들 인터리빙, 그다음 EC 블록들 인터리빙
   const interleavedCodewords = interleaveCodewords(ecResult.dataBlocks, ecResult.ecBlocks);
   
+  // 4. 잔여 비트 정보 추가 (실제 비트는 Step 4에서 처리)
+  const remainderBits = REMAINDER_BITS[version - 1];
+  
   return {
     dataCodewords,
     ecCodewords: ecResult.ecBlocks.flat(),
@@ -88,5 +92,6 @@ export const runErrorCorrection = (
     totalCodewords: interleavedCodewords.length,
     dataBlocks: ecResult.dataBlocks,
     ecBlocks: ecResult.ecBlocks,
+    remainderBits,
   };
 };

@@ -95,6 +95,17 @@ export function ErrorCorrectionColumn({ errorCorrection }: ErrorCorrectionColumn
               </span>
               <span className="ml-1 text-gray-600">{errorCorrection.ecCodewords.length}개</span>
             </div>
+            {errorCorrection.remainderBits > 0 && (
+              <>
+                <span className="text-gray-400 font-medium">+</span>
+                <div className="flex items-center">
+                  <span className="bg-orange-200 px-2 py-0.5 rounded text-xs font-medium">
+                    잔여 비트
+                  </span>
+                  <span className="ml-1 text-gray-600">{errorCorrection.remainderBits}bit</span>
+                </div>
+              </>
+            )}
             <span className="text-gray-400 font-medium">=</span>
             <span className="bg-blue-100 px-2 py-0.5 rounded text-xs font-medium">
               최종 {errorCorrection.totalCodewords}개

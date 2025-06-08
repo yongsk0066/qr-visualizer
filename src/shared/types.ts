@@ -76,4 +76,5 @@ export interface ErrorCorrectionData {
   totalCodewords: number;
   dataBlocks: number[][];
   ecBlocks: number[][];
+  remainderBits: number;
 }

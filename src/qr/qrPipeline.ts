@@ -1,8 +1,10 @@
 import { analyzeData } from './analysis/dataAnalysis';
 import { runDataEncoding } from './encoding/dataEncoding';
 import { runErrorCorrection } from './error-correction/errorCorrection';
+import { constructMessage } from './message-construction/messageConstruction';
 import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData } from '../shared/types';
 import type { EncodedData } from './encoding/dataEncoding';
+import type { MessageConstructionResult } from './message-construction/messageConstruction';
 
 export interface QRPipelineParams {
   inputData: string;
@@ -14,6 +16,7 @@ export interface QRPipelineResult {
   dataAnalysis: DataAnalysisResult | null;
   dataEncoding: EncodedData | null;
   errorCorrection: ErrorCorrectionData | null;
+  messageConstruction: MessageConstructionResult | null;
   qrGeneration: number[][];
 }
 
@@ -34,7 +37,12 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
   // Step 3: 에러 정정
   const errorCorrection = runErrorCorrection(dataEncoding, version, errorLevel);
 
-  // Step 4: QR 매트릭스 생성 (미구현)
+  // Step 4: 최종 비트스트림 구성
+  const messageConstruction = errorCorrection
+    ? constructMessage(errorCorrection)
+    : null;
+
+  // Step 5: QR 매트릭스 생성 (미구현)
   const qrGeneration = (() => {
     // TODO: 모듈 배치, 마스킹, 포맷 정보 구현
     return [] as number[][];
@@ -44,6 +52,7 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
     dataAnalysis,
     dataEncoding,
     errorCorrection,
+    messageConstruction,
     qrGeneration,
   };
 };

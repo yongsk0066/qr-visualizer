@@ -74,10 +74,18 @@ src/
 │   ├── encoding/            # 2단계: 데이터 인코딩
 │   │   ├── dataEncoding.ts      # 모드별 인코딩, 비트 스트림 생성
 │   │   └── dataEncoding.test.ts # 20개 테스트
-│   ├── error-correction/    # 3단계: 에러 정정
-│   │   ├── errorCorrection.ts   # Reed-Solomon 알고리즘
+│   ├── error-correction/    # 3단계: 에러 정정 (잔여 비트 정보 포함)
+│   │   ├── errorCorrection.ts   # Reed-Solomon 알고리즘, 인터리빙
 │   │   ├── ecBlocksTable.ts     # 전체 40버전 EC 블록 테이블
-│   │   └── errorCorrection.test.ts # 16개 테스트
+│   │   ├── types.ts            # 에러 정정 관련 타입 정의
+│   │   ├── utils.ts            # 코드워드 변환, 인터리빙 유틸
+│   │   ├── reed-solomon/       # Reed-Solomon 구현
+│   │   │   ├── galoisField.ts  # GF(256) 갈루아 필드 연산
+│   │   │   └── reedSolomon.ts  # Reed-Solomon 다항식 연산
+│   │   └── errorCorrection.test.ts # 34개 테스트
+│   ├── message-construction/ # 4단계: 최종 비트스트림 구성
+│   │   ├── messageConstruction.ts   # 비트스트림 변환, 잔여 비트 추가
+│   │   └── messageConstruction.test.ts # 9개 테스트
 │   └── qrPipeline.ts       # 전체 파이프라인 통합
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
@@ -111,14 +119,23 @@ src/
 - **Reed-Solomon algorithm**: Complete GF(256) Galois field implementation with GaloisField256 class
 - **ISO/IEC 18004 compliant**: Follows standard error correction procedures precisely
 - **Block structure support**: Handles all 40 QR versions with multiple block groups
-- **Comprehensive testing**: 16 vitest tests covering Reed-Solomon and interleaving algorithms
+- **Comprehensive testing**: 34 vitest tests covering Reed-Solomon and interleaving algorithms
 - **Visual feedback**: Color-coded final codewords distinguishing data vs error correction
 - **Polynomial operations**: Generator polynomial creation and division algorithms
 - **Interleaving**: Proper data and EC block interleaving for transmission order
-- **Modular architecture**: Separated into types.ts, utils.ts, and core logic
+- **Modular architecture**: Separated into types.ts, utils.ts, and reed-solomon subfolder
+- **Remainder bits integration**: Calculates and includes remainder bit information
+
+**Step 4 - Message Construction**
+- **Final bit stream generation**: Converts interleaved codewords to complete bit stream
+- **Remainder bits addition**: Appends actual remainder bits (all zeros) to complete the message
+- **ISO/IEC 18004 compliant**: Follows standard message construction procedures
+- **Comprehensive testing**: 9 vitest tests covering bit stream scenarios
+- **Visual feedback**: Color-coded final bit stream distinguishing data/EC/remainder bits
+- **Bit stream formatting**: 8-bit grouping for clear visualization
 
 **Architecture & UI/UX**
-- **4-column responsive layout**: Uniform grid with 400px minimum width per column
+- **5-column responsive layout**: Uniform grid with 320px minimum width per column
 - **Performance optimization**: useDeferredValue for smooth typing experience and reduced render load
 - **Component-based UI**: Modular column layout for each processing step
 - **QR Pipeline**: Centralized pipeline for step-by-step QR generation
@@ -128,7 +145,6 @@ src/
 - **Type safety**: Comprehensive TypeScript types and interfaces
 
 #### 🔄 Next Steps (In Order):
-- **Step 4**: Message Construction - Final interleaving and remainder bits
 - **Step 5**: Module Placement - Matrix pattern layout
 - **Step 6**: Masking - Pattern application and selection
 - **Step 7**: Format Information - Final QR completion
@@ -139,8 +155,8 @@ src/
 - **Shared Resources**: Common types, constants, and utilities in `shared/`
 - **Components**: `src/components/` - Step-specific UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
-- **UI Layout**: 4-column grid with compact spacing and responsive design
-- **Testing**: 75 comprehensive tests across all modules (39 analysis + 20 encoding + 16 error correction)
+- **UI Layout**: 5-column grid with compact spacing and responsive design
+- **Testing**: 102 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction)
 
 ## QR Code Standard Documentation
 

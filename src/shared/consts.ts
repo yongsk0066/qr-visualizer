@@ -97,3 +97,14 @@ export const PADDING_PATTERNS = {
  * 종단자 최대 길이
  */
 export const TERMINATOR_MAX_LENGTH = 4;
+
+/**
+ * 버전별 잔여 비트 수
+ * ISO/IEC 18004 표 1 (line 480)
+ */
+export const REMAINDER_BITS: number[] = [
+  0, 7, 7, 7, 7, 7, 0, 0, 0, 0, // 1-10
+  0, 0, 0, 3, 3, 3, 3, 3, 3, 3, // 11-20
+  4, 4, 4, 4, 4, 4, 4, 3, 3, 3, // 21-30
+  3, 3, 3, 3, 0, 0, 0, 0, 0, 0  // 31-40
+];

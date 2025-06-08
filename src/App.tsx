@@ -3,6 +3,7 @@ import './App.css';
 import { SettingsColumn } from './components/SettingsColumn';
 import { DataEncodingColumn } from './components/DataEncodingColumn';
 import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
+import { MessageConstructionColumn } from './components/MessageConstructionColumn';
 import { QRCodeColumn } from './components/QRCodeColumn';
 import { runQRPipeline } from './qr/qrPipeline';
 import type { ErrorCorrectionLevel } from './shared/types';
@@ -22,7 +23,7 @@ function App() {
   );
 
   // 각 단계별 결과 추출
-  const { dataAnalysis, dataEncoding, errorCorrection, qrGeneration } = qrPipeline;
+  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, qrGeneration } = qrPipeline;
   const encodedData = dataEncoding;
   const sampleMatrix = qrGeneration;
 
@@ -73,6 +74,13 @@ function App() {
           transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
         }}>
           <ErrorCorrectionColumn errorCorrection={errorCorrection} />
+        </div>
+
+        <div style={{ 
+          opacity: isProcessing ? 0.6 : 1,
+          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
+        }}>
+          <MessageConstructionColumn result={messageConstruction} />
         </div>
 
         <div style={{ 
