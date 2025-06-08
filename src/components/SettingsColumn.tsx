@@ -8,6 +8,7 @@ interface SettingsColumnProps {
   errorLevel: ErrorCorrectionLevel;
   setErrorLevel: (level: ErrorCorrectionLevel) => void;
   dataAnalysis: DataAnalysisResult | null;
+  isProcessing?: boolean;
 }
 
 export function SettingsColumn({
@@ -18,6 +19,7 @@ export function SettingsColumn({
   errorLevel,
   setErrorLevel,
   dataAnalysis,
+  isProcessing = false,
 }: SettingsColumnProps) {
   return (
     <div className="step-column">
@@ -25,9 +27,14 @@ export function SettingsColumn({
 
       <div className="space-y-3">
         <div>
-          <label htmlFor="qr-input" className="block mb-1 text-sm">
-            데이터 입력
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label htmlFor="qr-input" className="block text-sm">
+              데이터 입력
+            </label>
+            {isProcessing && (
+              <span className="text-xs text-blue-600 animate-pulse">처리 중...</span>
+            )}
+          </div>
           <textarea
             id="qr-input"
             value={inputData}

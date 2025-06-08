@@ -95,6 +95,7 @@ src/
 - Character type detection (numeric/alphanumeric/byte/kanji)
 - Optimal mode selection with capacity-based recommendations
 - Version calculation for minimum QR requirements
+- **Auto-version update**: Automatically adjusts QR version when input requires higher version
 - Real-time analysis UI with live feedback
 - Data size validation and overflow detection
 
@@ -107,20 +108,23 @@ src/
 - **Visual feedback**: Color-coded bit stream viewer with segment highlighting
 
 **Step 3 - Error Correction**
-- **Reed-Solomon algorithm**: Galois field GF(256) arithmetic implementation
-- **EC blocks structure**: Complete table for all 40 versions and 4 error levels
-- **Block processing**: Data block division and EC codeword generation
-- **Interleaving**: Proper data and EC block interleaving for final message
-- **Visual representation**: Real-time display of blocks and EC codewords
+- **Reed-Solomon algorithm**: Complete GF(256) Galois field implementation with GaloisField256 class
+- **ISO/IEC 18004 compliant**: Follows standard error correction procedures precisely
+- **Block structure support**: Handles all 40 QR versions with multiple block groups
+- **Comprehensive testing**: 16 vitest tests covering Reed-Solomon and interleaving algorithms
+- **Visual feedback**: Color-coded final codewords distinguishing data vs error correction
+- **Polynomial operations**: Generator polynomial creation and division algorithms
+- **Interleaving**: Proper data and EC block interleaving for transmission order
+- **Modular architecture**: Separated into types.ts, utils.ts, and core logic
 
 **Architecture & UI/UX**
 - **4-column responsive layout**: Uniform grid with 400px minimum width per column
-- **Compact design**: Optimized spacing, padding, and typography for better space utilization
+- **Performance optimization**: useDeferredValue for smooth typing experience and reduced render load
 - **Component-based UI**: Modular column layout for each processing step
 - **QR Pipeline**: Centralized pipeline for step-by-step QR generation
 - **Shared utilities**: Reusable binary and string manipulation functions
 - **Sample data integration**: Quick-access buttons for testing different encoding modes
-- **Real-time analysis**: Always-visible data analysis even before input
+- **Real-time feedback**: Processing indicators and visual state transitions
 - **Type safety**: Comprehensive TypeScript types and interfaces
 
 #### 🔄 Next Steps (In Order):
@@ -136,7 +140,7 @@ src/
 - **Components**: `src/components/` - Step-specific UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
 - **UI Layout**: 4-column grid with compact spacing and responsive design
-- **Testing**: 75 comprehensive tests across all modules
+- **Testing**: 75 comprehensive tests across all modules (39 analysis + 20 encoding + 16 error correction)
 
 ## QR Code Standard Documentation
 
