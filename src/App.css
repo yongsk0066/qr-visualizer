@@ -1,22 +1,21 @@
-@import 'tailwindcss';
 
 .app {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   line-height: 1.6;
 }
 
 .steps-grid {
   display: grid;
-  grid-template-columns: 300px 1fr 1fr 1fr;
-  gap: 2rem;
-  min-height: calc(100vh - 8rem);
+  grid-template-columns: repeat(4, minmax(400px, 1fr));
+  gap: 1.5rem;
+  min-height: calc(100vh - 4rem);
 }
 
 .step-column {
   border-right: 1px solid #e5e5e5;
-  padding-right: 2rem;
+  padding-right: 1.5rem;
 }
 
 .step-column:last-child {
