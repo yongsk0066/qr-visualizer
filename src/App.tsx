@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import './App.css';
 import { SettingsColumn } from './components/SettingsColumn';
 import { DataEncodingColumn } from './components/DataEncodingColumn';
+import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
 import { QRCodeColumn } from './components/QRCodeColumn';
 import { runQRPipeline } from './qr/qrPipeline';
 import type { ErrorCorrectionLevel } from './qr/types';
@@ -18,7 +19,7 @@ function App() {
   );
 
   // 각 단계별 결과 추출
-  const { dataAnalysis, dataEncoding, qrGeneration } = qrPipeline;
+  const { dataAnalysis, dataEncoding, errorCorrection, qrGeneration } = qrPipeline;
   const encodedData = dataEncoding;
   const sampleMatrix = qrGeneration;
 
@@ -41,6 +42,8 @@ function App() {
         />
 
         <DataEncodingColumn encodedData={encodedData} />
+
+        <ErrorCorrectionColumn errorCorrection={errorCorrection} />
 
         <QRCodeColumn matrix={sampleMatrix} size={240} />
       </div>

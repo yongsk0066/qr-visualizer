@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import type { EncodedData } from '../qr/dataEncoding';
 
 interface BitStreamViewerProps {
@@ -13,7 +13,6 @@ interface BitSegment {
 }
 
 export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
-
   if (!encodedData) {
     return <div className="text-gray-500 text-sm">데이터를 입력하면 비트 스트림이 표시됩니다</div>;
   }
@@ -83,45 +82,41 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
   const renderColoredBitStream = () => {
     const bitStream = encodedData.bitStream;
     const formattedStream = formatBitGroups(bitStream);
-    
+
     // 각 세그먼트의 시작/끝 위치 계산 (원본 비트스트림 기준)
     let currentPos = 0;
-    const segmentPositions = segments.map(segment => {
+    const segmentPositions = segments.map((segment) => {
       const start = currentPos;
       const end = currentPos + segment.bits.length;
       currentPos = end;
       return { ...segment, start, end };
     });
-    
+
     // 포맷된 스트림에서 각 문자의 원본 위치 매핑
-    const result: JSX.Element[] = [];
+    const result: ReactNode[] = [];
     let originalIndex = 0;
-    
+
     for (let i = 0; i < formattedStream.length; i++) {
       const char = formattedStream[i];
-      
+
       if (char === ' ') {
         // 공백은 그대로 출력
         result.push(<span key={i}> </span>);
       } else {
         // 현재 비트가 어느 세그먼트에 속하는지 찾기
-        const segment = segmentPositions.find(seg => 
-          originalIndex >= seg.start && originalIndex < seg.end
+        const segment = segmentPositions.find(
+          (seg) => originalIndex >= seg.start && originalIndex < seg.end
         );
-        
+
         result.push(
-          <span 
-            key={i} 
-            className={segment ? segment.color : 'bg-gray-100'}
-            title={segment?.label}
-          >
+          <span key={i} className={segment ? segment.color : 'bg-gray-100'} title={segment?.label}>
             {char}
           </span>
         );
         originalIndex++;
       }
     }
-    
+
     return <>{result}</>;
   };
 

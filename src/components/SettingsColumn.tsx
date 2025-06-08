@@ -51,7 +51,9 @@ export function SettingsColumn({
             <span>최소 버전</span>
             <span>{dataAnalysis?.minimumVersion || '-'}</span>
           </div>
-          {dataAnalysis && !dataAnalysis.isValid && <div className="text-red-600 mt-1">용량 초과</div>}
+          {dataAnalysis && !dataAnalysis.isValid && (
+            <div className="text-red-600 mt-1">용량 초과</div>
+          )}
         </div>
 
         <div className="space-y-2">

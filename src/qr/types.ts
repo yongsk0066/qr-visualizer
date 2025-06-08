@@ -68,3 +68,12 @@ export interface ModeSegment {
   start: number;
   end: number;
 }
+
+export interface ErrorCorrectionData {
+  dataCodewords: number[];
+  ecCodewords: number[];
+  interleavedCodewords: number[];
+  totalCodewords: number;
+  dataBlocks: number[][];
+  ecBlocks: number[][];
+}
