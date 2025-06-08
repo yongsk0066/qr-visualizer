@@ -1,11 +1,15 @@
 import { describe, it, expect } from 'vitest';
+import type { QRVersion } from '../../shared/types';
 import {
   getECBlocks,
   performErrorCorrection,
 } from './errorCorrection';
 import {
-  generateRSPolynomial,
+  createGeneratorPolynomial,
   generateErrorCorrectionCodewords,
+} from './reed-solomon/reedSolomon';
+import { GaloisField256 } from './reed-solomon/galoisField';
+import {
   bitStreamToCodewords,
   interleaveCodewords,
 } from './utils';
@@ -13,14 +17,14 @@ import {
 describe('errorCorrection', () => {
   describe('Reed-Solomon 다항식 생성', () => {
     it('차수 2의 생성 다항식 생성', () => {
-      const poly = generateRSPolynomial(2);
+      const poly = createGeneratorPolynomial(2);
       // (x - α^0)(x - α^1) = x^2 - (α^0 + α^1)x + α^0 * α^1
       expect(poly).toHaveLength(3);
       expect(poly[0]).toBe(1); // x^2 계수
     });
 
     it('차수 7의 생성 다항식 생성 (버전 1-L)', () => {
-      const poly = generateRSPolynomial(7);
+      const poly = createGeneratorPolynomial(7);
       expect(poly).toHaveLength(8);
       expect(poly[0]).toBe(1); // 최고차항 계수는 항상 1
     });
@@ -140,10 +144,185 @@ describe('errorCorrection', () => {
 
   describe('갈루아 필드 연산', () => {
     it('생성 다항식이 올바른 구조를 가짐', () => {
-      const poly = generateRSPolynomial(4);
+      const poly = createGeneratorPolynomial(4);
       expect(poly).toHaveLength(5); // 차수 + 1
       expect(poly[0]).toBe(1); // 최고차항 계수
       expect(poly.every(coef => coef >= 0 && coef < 256)).toBe(true);
+    });
+  });
+
+  describe('갈루아 필드 연산 직접 테스트', () => {
+    it('GaloisField256 multiply 연산', () => {
+      // 기본 케이스
+      expect(GaloisField256.multiply(0, 5)).toBe(0);
+      expect(GaloisField256.multiply(5, 0)).toBe(0);
+      expect(GaloisField256.multiply(1, 7)).toBe(7);
+      
+      // 갈루아 필드 특성 테스트
+      expect(GaloisField256.multiply(2, 3)).toBe(6);
+      expect(GaloisField256.multiply(255, 255)).toBe(226); // α^254 * α^254 = α^253
+    });
+
+    it('GaloisField256 getExp 연산', () => {
+      expect(GaloisField256.getExp(0)).toBe(1); // α^0 = 1
+      expect(GaloisField256.getExp(1)).toBe(2); // α^1 = 2
+      expect(GaloisField256.getExp(8)).toBe(29); // 갈루아 필드 테이블 값
+      
+      // 주기성 테스트 (255로 나눈 나머지)
+      expect(GaloisField256.getExp(255)).toBe(GaloisField256.getExp(0));
+      expect(GaloisField256.getExp(256)).toBe(GaloisField256.getExp(1));
+    });
+
+    it('갈루아 필드 곱셈 교환법칙', () => {
+      for (let a = 1; a < 10; a++) {
+        for (let b = 1; b < 10; b++) {
+          expect(GaloisField256.multiply(a, b))
+            .toBe(GaloisField256.multiply(b, a));
+        }
+      }
+    });
+
+    it('갈루아 필드 곱셈 결과 범위', () => {
+      for (let i = 0; i < 256; i++) {
+        for (let j = 0; j < 256; j += 50) {
+          const result = GaloisField256.multiply(i, j);
+          expect(result).toBeGreaterThanOrEqual(0);
+          expect(result).toBeLessThan(256);
+        }
+      }
+    });
+  });
+
+  describe('에지 케이스 및 경계값 테스트', () => {
+    it('잘못된 버전에 대한 에러 처리', () => {
+      // 존재하지 않는 버전 (40 초과)
+      const ecBlocks = getECBlocks(50 as QRVersion, 'L');
+      expect(ecBlocks).toEqual(getECBlocks(1, 'L')); // 기본값으로 폴백
+    });
+
+    it('최대 데이터 크기 처리 (버전 40)', () => {
+      const maxDataCodewords = Array(2956).fill(255); // 버전 40-L 최대 데이터
+      expect(() => {
+        performErrorCorrection(maxDataCodewords, 40, 'L');
+      }).not.toThrow();
+    });
+
+    it('빈 데이터 배열 처리', () => {
+      const result = performErrorCorrection([], 1, 'L');
+      expect(result.dataBlocks).toHaveLength(1);
+      expect(result.dataBlocks[0]).toEqual([]);
+      expect(result.ecBlocks[0]).toHaveLength(7); // 에러 정정은 여전히 생성
+    });
+
+    it('255 값 (최대 바이트) 처리', () => {
+      const maxByteData = Array(16).fill(255);
+      const result = performErrorCorrection(maxByteData, 1, 'M');
+      
+      expect(result.dataBlocks[0]).toEqual(maxByteData);
+      expect(result.ecBlocks[0].every(cw => cw >= 0 && cw < 256)).toBe(true);
+    });
+
+    it('불규칙한 비트 스트림 패딩', () => {
+      const oddBitStream = '1010101'; // 7비트
+      const codewords = bitStreamToCodewords(oddBitStream);
+      expect(codewords).toEqual([170]); // 10101010 = 170
+    });
+
+    it('매우 긴 비트 스트림', () => {
+      const longBitStream = '1'.repeat(1000);
+      const codewords = bitStreamToCodewords(longBitStream);
+      expect(codewords).toHaveLength(125); // 1000/8 = 125
+      expect(codewords.every(cw => cw === 255)).toBe(true); // 모든 비트가 1
+    });
+  });
+
+  describe('ISO/IEC 18004 표준 준수 테스트', () => {
+    it('표준 예제 1: 버전 1-H 블록 구조', () => {
+      const ecBlocks = getECBlocks(1, 'H');
+      expect(ecBlocks.ecCodewordsPerBlock).toBe(17);
+      expect(ecBlocks.groups).toHaveLength(1);
+      expect(ecBlocks.groups[0].blocks).toBe(1);
+      expect(ecBlocks.groups[0].dataCount).toBe(9);
+    });
+
+    it('표준 예제 2: 버전 5-Q 다중 그룹', () => {
+      const ecBlocks = getECBlocks(5, 'Q');
+      expect(ecBlocks.groups).toHaveLength(2);
+      
+      // 첫 번째 그룹: 2블록, 각 15개 데이터
+      expect(ecBlocks.groups[0].blocks).toBe(2);
+      expect(ecBlocks.groups[0].dataCount).toBe(15);
+      
+      // 두 번째 그룹: 2블록, 각 16개 데이터
+      expect(ecBlocks.groups[1].blocks).toBe(2);
+      expect(ecBlocks.groups[1].dataCount).toBe(16);
+    });
+
+    it('Reed-Solomon 생성 다항식 표준 준수', () => {
+      // ISO/IEC 18004 부속서 A에 따른 생성 다항식
+      const poly7 = createGeneratorPolynomial(7);
+      const poly10 = createGeneratorPolynomial(10);
+      
+      // 차수 확인
+      expect(poly7).toHaveLength(8);
+      expect(poly10).toHaveLength(11);
+      
+      // 최고차항은 항상 1
+      expect(poly7[0]).toBe(1);
+      expect(poly10[0]).toBe(1);
+      
+      // 모든 계수는 GF(256) 범위 내
+      expect(poly7.every(c => c >= 0 && c < 256)).toBe(true);
+      expect(poly10.every(c => c >= 0 && c < 256)).toBe(true);
+    });
+
+    it('인터리빙 표준 준수 (ISO 8.6)', () => {
+      // 표준에 따른 인터리빙 순서 테스트
+      const dataBlocks = [[1, 4, 7], [2, 5, 8], [3, 6, 9]];
+      const ecBlocks = [[10, 13], [11, 14], [12, 15]];
+      
+      const result = interleaveCodewords(dataBlocks, ecBlocks);
+      
+      // 데이터 먼저, 그다음 EC
+      const expectedData = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      const expectedEC = [10, 11, 12, 13, 14, 15];
+      const expected = [...expectedData, ...expectedEC];
+      
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe('성능 및 안정성 테스트', () => {
+    it('대용량 데이터 처리 성능', () => {
+      // 버전 10-L의 실제 데이터 용량: (2×68) + (2×69) = 274
+      const maxDataForV10L = 274;
+      const largeData = Array(maxDataForV10L).fill(0).map((_, i) => i % 256);
+      
+      const startTime = performance.now();
+      const result = performErrorCorrection(largeData, 10, 'L');
+      const endTime = performance.now();
+      
+      expect(endTime - startTime).toBeLessThan(1000); // 1초 이내
+      expect(result.totalDataCodewords).toBe(maxDataForV10L);
+    });
+
+    it('반복 호출 일관성', () => {
+      const testData = [1, 2, 3, 4, 5];
+      
+      const result1 = performErrorCorrection(testData, 1, 'M');
+      const result2 = performErrorCorrection(testData, 1, 'M');
+      const result3 = performErrorCorrection(testData, 1, 'M');
+      
+      expect(result1.ecBlocks[0]).toEqual(result2.ecBlocks[0]);
+      expect(result2.ecBlocks[0]).toEqual(result3.ecBlocks[0]);
+    });
+
+    it('메모리 효율성 (큰 생성 다항식)', () => {
+      // 차수 30 생성 다항식도 정상 처리되어야 함
+      expect(() => {
+        const poly = createGeneratorPolynomial(30);
+        expect(poly).toHaveLength(31);
+      }).not.toThrow();
     });
   });
 
@@ -168,6 +347,27 @@ describe('errorCorrection', () => {
       // 인터리빙 테스트
       const interleaved = interleaveCodewords(result.dataBlocks, result.ecBlocks);
       expect(interleaved).toHaveLength(26); // 16 + 10
+    });
+
+    it('다양한 버전/레벨 조합 안정성', () => {
+      const testCases = [
+        { version: 1 as QRVersion, level: 'L' as const, dataSize: 15 },
+        { version: 2 as QRVersion, level: 'M' as const, dataSize: 28 },
+        { version: 5 as QRVersion, level: 'Q' as const, dataSize: 44 },
+        { version: 10 as QRVersion, level: 'H' as const, dataSize: 119 },
+      ];
+
+      testCases.forEach(({ version, level, dataSize }) => {
+        const testData = Array(dataSize).fill(0).map((_, i) => i % 256);
+        
+        expect(() => {
+          const result = performErrorCorrection(testData, version, level);
+          expect(result.totalDataCodewords).toBe(dataSize);
+          expect(result.ecBlocks.every(block => 
+            block.every(cw => cw >= 0 && cw < 256)
+          )).toBe(true);
+        }).not.toThrow();
+      });
     });
   });
 });

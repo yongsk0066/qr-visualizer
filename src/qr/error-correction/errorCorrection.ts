@@ -2,11 +2,8 @@ import type { QRVersion, ErrorCorrectionLevel, ErrorCorrectionData } from '../..
 import { EC_BLOCKS_TABLE } from './ecBlocksTable';
 import type { EncodedData } from '../encoding/dataEncoding';
 import type { ECBlocks, ErrorCorrectionResult } from './types';
-import {
-  generateErrorCorrectionCodewords,
-  bitStreamToCodewords,
-  interleaveCodewords
-} from './utils';
+import { generateErrorCorrectionCodewords } from './reed-solomon/reedSolomon';
+import { bitStreamToCodewords, interleaveCodewords } from './utils';
 
 
 
