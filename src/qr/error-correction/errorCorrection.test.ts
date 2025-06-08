@@ -1,12 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  generateRSPolynomial,
-  generateErrorCorrectionCodewords,
   getECBlocks,
   performErrorCorrection,
+} from './errorCorrection';
+import {
+  generateRSPolynomial,
+  generateErrorCorrectionCodewords,
   bitStreamToCodewords,
   interleaveCodewords,
-} from './errorCorrection';
+} from './utils';
 
 describe('errorCorrection', () => {
   describe('Reed-Solomon 다항식 생성', () => {

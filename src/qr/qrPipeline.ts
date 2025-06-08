@@ -19,34 +19,26 @@ export interface QRPipelineResult {
 
 export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
   const { inputData, qrVersion, errorLevel } = params;
+  const version = parseInt(qrVersion, 10) as QRVersion;
 
   // Step 1: 데이터 분석
-  const runDataAnalysis = (data: string) => 
-    data ? analyzeData(data, errorLevel) : null;
+  const dataAnalysis = inputData 
+    ? analyzeData(inputData, errorLevel) 
+    : null;
 
   // Step 2: 데이터 인코딩
-  const executeDataEncoding = (data: string, analysis: DataAnalysisResult) => {
-    const version = parseInt(qrVersion, 10) as QRVersion;
-    return runDataEncoding(data, analysis, version, errorLevel);
-  };
+  const dataEncoding = dataAnalysis 
+    ? runDataEncoding(inputData, dataAnalysis, version, errorLevel)
+    : null;
 
   // Step 3: 에러 정정
-  const executeErrorCorrection = (encodedData: EncodedData | null): ErrorCorrectionData | null => {
-    const version = parseInt(qrVersion, 10) as QRVersion;
-    return runErrorCorrection(encodedData, version, errorLevel);
-  };
+  const errorCorrection = runErrorCorrection(dataEncoding, version, errorLevel);
 
   // Step 4: QR 매트릭스 생성 (미구현)
-  const runQRGeneration = (_errorCorrection: ErrorCorrectionData | null) => {
+  const qrGeneration = (() => {
     // TODO: 모듈 배치, 마스킹, 포맷 정보 구현
     return [] as number[][];
-  };
-
-  // 파이프라인 실행
-  const dataAnalysis = runDataAnalysis(inputData);
-  const dataEncoding = dataAnalysis ? executeDataEncoding(inputData, dataAnalysis) : null;
-  const errorCorrection = executeErrorCorrection(dataEncoding);
-  const qrGeneration = runQRGeneration(errorCorrection);
+  })();
 
   return {
     dataAnalysis,
