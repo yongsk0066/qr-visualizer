@@ -1,7 +1,6 @@
 import type { QRVersion } from '../../../shared/types';
 import type { SubStepResult } from '../types';
 import { 
-  getMatrixSize, 
   cloneMatrix, 
   cloneModuleTypes, 
   placePattern,

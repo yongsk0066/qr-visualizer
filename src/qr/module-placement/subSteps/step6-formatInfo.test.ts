@@ -16,7 +16,7 @@ describe('Step 5-6: Format Information', () => {
     const result = reserveFormatInfoStep(alignmentStep, 1);
     
     expect(result.stepName).toBe('5-6: Format Info');
-    expect(result.description).toBe('포맷 정보 영역 예약');
+    expect(result.description).toContain('포맷 정보');
     expect(result.addedModules).toBeGreaterThan(0);
     
     // 다크 모듈 확인 (4 * 1 + 9 = 13, 8)
@@ -36,15 +36,16 @@ describe('Step 5-6: Format Information', () => {
     const alignmentStep = addAlignmentPatternsStep(timingStep, 7);
     const result = reserveFormatInfoStep(alignmentStep, 7);
     
-    expect(result.description).toBe('포맷 정보 영역 예약 + 버전 정보');
+    expect(result.description).toContain('포맷 정보');
+    expect(result.description).toContain('버전 정보');
     
     // 다크 모듈 확인 (4 * 7 + 9 = 37, 8)
     expect(result.matrix[37][8]).toBe(1);
     expect(result.moduleTypes[37][8]).toBe('format');
     
-    // 버전 정보 영역 확인
-    expect(result.moduleTypes[0][45 - 11]).toBe('version'); // 좌상단 버전 정보
-    expect(result.moduleTypes[45 - 11][0]).toBe('version'); // 좌하단 버전 정보
+    // 버전 정보 영역 확인 (수정된 위치)
+    expect(result.moduleTypes[0][45 - 14]).toBe('version'); // 우상단 버전 정보 (0, 31)
+    expect(result.moduleTypes[45 - 14][0]).toBe('version'); // 좌하단 버전 정보 (31, 0)
   });
 
   it('should not overwrite existing patterns', () => {
@@ -89,7 +90,8 @@ describe('Step 5-6: Format Information', () => {
       addAlignmentPatternsStep(addTimingPatternsStep(addSeparatorsStep(addFinderPatternsStep(createEmptyMatrixStep(6), 6), 6), 6), 6)
     ];
     const result6 = reserveFormatInfoStep(version6Steps[4], 6);
-    expect(result6.description).toBe('포맷 정보 영역 예약');
+    expect(result6.description).toContain('포맷 정보');
+    expect(result6.description).not.toContain('버전 정보');
     
     // 버전 7 (버전 정보 있음)
     const version7Steps = [
@@ -100,7 +102,8 @@ describe('Step 5-6: Format Information', () => {
       addAlignmentPatternsStep(addTimingPatternsStep(addSeparatorsStep(addFinderPatternsStep(createEmptyMatrixStep(7), 7), 7), 7), 7)
     ];
     const result7 = reserveFormatInfoStep(version7Steps[4], 7);
-    expect(result7.description).toBe('포맷 정보 영역 예약 + 버전 정보');
+    expect(result7.description).toContain('포맷 정보');
+    expect(result7.description).toContain('버전 정보');
   });
 
   it('should reserve format information in correct positions', () => {

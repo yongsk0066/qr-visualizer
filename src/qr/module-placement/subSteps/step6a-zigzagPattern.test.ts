@@ -18,17 +18,17 @@ describe('Step 5-6A: Zigzag Pattern', () => {
     const result = showZigzagPatternStep(formatStep, 1);
     
     expect(result.stepName).toBe('5-6A: Zigzag Pattern');
-    expect(result.description).toBe('지그재그 데이터 배치 패턴 표시');
+    expect(result.description).toContain('지그재그 패턴');
     expect(result.addedModules).toBeGreaterThan(0);
     
-    // 지그재그 모듈이 있는지 확인
-    const zigzagModules = result.matrix.flat().filter((_, idx) => {
+    // 바이트 블록 모듈이 있는지 확인
+    const byteModules = result.matrix.flat().filter((_, idx) => {
       const row = Math.floor(idx / result.matrix.length);
       const col = idx % result.matrix.length;
-      return result.moduleTypes[row][col] === 'zigzag';
+      return result.moduleTypes[row][col].startsWith('byte-');
     });
     
-    expect(zigzagModules.length).toBe(result.addedModules);
+    expect(byteModules.length).toBe(result.addedModules);
   });
 
   it('should start from bottom-right corner in zigzag pattern', () => {
@@ -40,21 +40,21 @@ describe('Step 5-6A: Zigzag Pattern', () => {
     const formatStep = reserveFormatInfoStep(alignmentStep, 1);
     const result = showZigzagPatternStep(formatStep, 1);
     
-    // 우하단 근처에서 지그재그 패턴이 시작되는지 확인
+    // 우하단 근처에서 바이트 블록 패턴이 시작되는지 확인
     const size = 21;
-    let foundZigzagNearBottomRight = false;
+    let foundByteBlockNearBottomRight = false;
     
     for (let row = size - 3; row < size; row++) {
       for (let col = size - 3; col < size; col++) {
-        if (result.moduleTypes[row] && result.moduleTypes[row][col] === 'zigzag') {
-          foundZigzagNearBottomRight = true;
+        if (result.moduleTypes[row] && result.moduleTypes[row][col].startsWith('byte-')) {
+          foundByteBlockNearBottomRight = true;
           break;
         }
       }
-      if (foundZigzagNearBottomRight) break;
+      if (foundByteBlockNearBottomRight) break;
     }
     
-    expect(foundZigzagNearBottomRight).toBe(true);
+    expect(foundByteBlockNearBottomRight).toBe(true);
   });
 
   it('should not overwrite existing patterns', () => {
@@ -82,10 +82,10 @@ describe('Step 5-6A: Zigzag Pattern', () => {
     const formatStep = reserveFormatInfoStep(alignmentStep, 2);
     const result = showZigzagPatternStep(formatStep, 2);
     
-    // 타이밍 패턴 열(6열)에는 지그재그 패턴이 배치되지 않아야 함
+    // 타이밍 패턴 열(6열)에는 바이트 블록 패턴이 배치되지 않아야 함
     for (let row = 0; row < result.matrix.length; row++) {
-      if (result.moduleTypes[row][6] === 'zigzag') {
-        expect(false).toBe(true); // 타이밍 패턴 열에 지그재그가 있으면 실패
+      if (result.moduleTypes[row][6].startsWith('byte-')) {
+        expect(false).toBe(true); // 타이밍 패턴 열에 바이트 블록이 있으면 실패
       }
     }
   });

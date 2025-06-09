@@ -22,6 +22,11 @@ export const showZigzagPatternStep = (
   const matrix = cloneMatrix(previousStep.matrix);
   const moduleTypes = cloneModuleTypes(previousStep.moduleTypes);
   
+  // 8비트 블록 번호를 저장할 배열 추가
+  const byteBlocks: number[][] = Array.from({ length: size }, () => Array(size).fill(-1));
+  // 지그재그 순서를 저장할 배열 추가
+  const zigzagOrder: number[][] = Array.from({ length: size }, () => Array(size).fill(-1));
+  
   let addedModules = 0;
   let moduleIndex = 0;
   
@@ -44,10 +49,15 @@ export const showZigzagPatternStep = (
       // 오른쪽 열 먼저, 그 다음 왼쪽 열
       for (const col of [rightCol, leftCol]) {
         if (isEmpty(matrix, row, col)) {
-          // 지그재그 패턴을 시각적으로 표시 (번호 순서)
-          const displayValue = moduleIndex < 50 ? 1 : 0; // 처음 50개만 강조 표시
+          // 8비트 블록 번호 계산 (0번 블록, 1번 블록, 2번 블록...)
+          const blockNumber = Math.floor(moduleIndex / 8);
+          byteBlocks[row][col] = blockNumber;
+          zigzagOrder[row][col] = moduleIndex; // 지그재그 순서 저장
+          
+          // 지그재그 패턴 시각화를 위한 임시 값 설정
+          const displayValue = (blockNumber % 2) as 0 | 1;
           setModule(matrix, row, col, displayValue);
-          setModuleType(moduleTypes, row, col, 'zigzag');
+          setModuleType(moduleTypes, row, col, `byte-${blockNumber % 8}`); // 8가지 색상 순환
           moduleIndex++;
           addedModules++;
         }
@@ -58,11 +68,15 @@ export const showZigzagPatternStep = (
     direction *= -1;
   }
 
+  const totalBlocks = Math.ceil(moduleIndex / 8);
+
   return {
     matrix,
     moduleTypes,
     stepName: '5-6A: Zigzag Pattern',
-    description: `지그재그 데이터 배치 패턴 표시`,
+    description: `8비트 블록별 지그재그 패턴 (${totalBlocks}개 블록)`,
     addedModules,
+    byteBlocks, // 8비트 블록 정보 추가
+    zigzagOrder, // 지그재그 순서 정보 추가
   };
 };

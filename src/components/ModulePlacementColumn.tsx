@@ -11,9 +11,15 @@ interface QRMatrixProps {
   moduleTypes: string[][];
   size: number;
   scale?: number;
+  zigzagOrder?: number[][];
 }
 
-const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: QRMatrixProps & { showColors?: boolean }) => {
+const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true, zigzagOrder }: QRMatrixProps & { showColors?: boolean }) => {
+  // 5-6A 단계인지 확인하는 함수
+  const isZigzagStep = () => {
+    return moduleTypes.some(row => row.some(type => type.startsWith('byte-')));
+  };
+
   const getModuleColor = (value: 0 | 1 | null, type: string) => {
     if (!showColors) {
       // 컬러 없는 버전 - 흑백만
@@ -25,7 +31,28 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: Q
       return type === 'empty' ? '#f8f9fa' : '#e2e8f0'; // 빈 공간은 연한 회색
     }
     
-    // 모듈 타입별 색상
+    // 5-6A 단계일 때의 특별한 색상 처리
+    if (isZigzagStep()) {
+      // 8비트 블록은 채도 낮은 무지개 색상
+      if (type.startsWith('byte-')) {
+        const byteColors = {
+          'byte-0': value === 1 ? '#b91c1c' : '#fecaca',    // 채도 낮은 빨강
+          'byte-1': value === 1 ? '#c2410c' : '#fed7aa',    // 채도 낮은 주황
+          'byte-2': value === 1 ? '#a16207' : '#fef3c7',    // 채도 낮은 노랑
+          'byte-3': value === 1 ? '#15803d' : '#bbf7d0',    // 채도 낮은 초록
+          'byte-4': value === 1 ? '#0369a1' : '#bae6fd',    // 채도 낮은 하늘
+          'byte-5': value === 1 ? '#1d4ed8' : '#bfdbfe',    // 채도 낮은 파랑
+          'byte-6': value === 1 ? '#6d28d9' : '#ddd6fe',    // 채도 낮은 보라
+          'byte-7': value === 1 ? '#be185d' : '#fbcfe8'     // 채도 낮은 분홍
+        };
+        return byteColors[type as keyof typeof byteColors] || (value === 1 ? '#000' : '#fff');
+      }
+      
+      // 기존 모듈들은 흑백으로 표시
+      return value === 1 ? '#000' : '#fff';
+    }
+    
+    // 일반 단계에서는 기존 컬러 사용
     const colors = {
       finder: value === 1 ? '#1f2937' : '#f3f4f6',      // 파인더: 진한 회색/연한 회색
       separator: '#fbbf24',                              // 분리자: 노란색
@@ -34,12 +61,13 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: Q
       format: '#ef4444',                                 // 포맷: 빨간색
       version: '#f97316',                                // 버전: 주황색
       zigzag: value === 1 ? '#ec4899' : '#fce7f3',      // 지그재그: 핑크/연한 핑크
-      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파란/연한 파란
+      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파랑/연한 파랑
       empty: '#f8f9fa'                                   // 빈 공간: 아주 연한 회색
     };
     
     return colors[type as keyof typeof colors] || (value === 1 ? '#000' : '#fff');
   };
+
 
   return (
     <div 
@@ -51,19 +79,35 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: Q
     >
       {matrix.map((row, rowIndex) => (
         <div key={rowIndex} style={{ fontSize: 0, lineHeight: 0 }}>
-          {row.map((cell, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              style={{
-                width: scale,
-                height: scale,
-                backgroundColor: getModuleColor(cell, moduleTypes[rowIndex][colIndex]),
-                display: 'inline-block',
-                border: size <= 25 ? '0.5px solid rgba(0,0,0,0.1)' : 'none'
-              }}
-              title={`${moduleTypes[rowIndex][colIndex]} (${rowIndex},${colIndex}): ${cell}`}
-            />
-          ))}
+          {row.map((cell, colIndex) => {
+            const moduleType = moduleTypes[rowIndex][colIndex];
+            const isZigzag = moduleType === 'zigzag';
+            const zigzagNum = zigzagOrder?.[rowIndex]?.[colIndex];
+            const shouldShowNumber = isZigzag && zigzagNum !== undefined && zigzagNum >= 0 && scale >= 6;
+            
+            return (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                style={{
+                  width: scale,
+                  height: scale,
+                  backgroundColor: getModuleColor(cell, moduleType),
+                  display: 'inline-block',
+                  border: size <= 25 ? '0.5px solid rgba(0,0,0,0.1)' : 'none',
+                  position: 'relative',
+                  fontSize: Math.max(6, scale * 0.3),
+                  color: cell === 1 ? '#fff' : '#000',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  lineHeight: `${scale}px`,
+                  fontFamily: 'monospace'
+                }}
+                title={`${moduleType} (${rowIndex},${colIndex}): ${cell}${isZigzag && zigzagNum !== undefined ? ` [순서: ${zigzagNum}]` : ''}`}
+              >
+                {shouldShowNumber && zigzagNum < 100 ? zigzagNum : ''}
+              </div>
+            );
+          })}
         </div>
       ))}
     </div>
@@ -143,6 +187,7 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
                   moduleTypes={step.moduleTypes}
                   size={modulePlacement.size}
                   scale={scale}
+                  zigzagOrder={'zigzagOrder' in step ? (step as any).zigzagOrder : undefined}
                 />
               </div>
             ))}
@@ -175,7 +220,7 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
         {/* 범례 */}
         <div className="mt-4 p-3 bg-gray-50 rounded-lg">
           <h5 className="text-sm font-medium mb-2">모듈 타입</h5>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-800"></div>
               <span>파인더</span>
@@ -211,6 +256,43 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-100 border border-gray-300"></div>
               <span>빈 공간</span>
+            </div>
+          </div>
+          
+          {/* 8비트 블록 범례 (채도 낮은 무지개) */}
+          <h6 className="text-xs font-medium mb-2 text-gray-600">8비트 블록 (무지개 색상)</h6>
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-1 text-xs">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-red-300 border border-gray-300"></div>
+              <span>0</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-orange-300 border border-gray-300"></div>
+              <span>1</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-yellow-300 border border-gray-300"></div>
+              <span>2</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-300 border border-gray-300"></div>
+              <span>3</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-sky-300 border border-gray-300"></div>
+              <span>4</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-blue-300 border border-gray-300"></div>
+              <span>5</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-purple-300 border border-gray-300"></div>
+              <span>6</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-pink-300 border border-gray-300"></div>
+              <span>7</span>
             </div>
           </div>
         </div>

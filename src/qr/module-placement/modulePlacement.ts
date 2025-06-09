@@ -59,6 +59,7 @@ export const runModulePlacement = (
   }).length;
 
   return {
+    version,
     subSteps,
     finalMatrix: step7.matrix,
     finalModuleTypes: step7.moduleTypes,
@@ -84,6 +85,7 @@ export const runModulePlacementUntilStep = (
   
   return {
     ...fullResult,
+    version,
     subSteps,
     finalMatrix: finalStep.matrix,
     finalModuleTypes: finalStep.moduleTypes,

@@ -80,6 +80,7 @@ export interface ErrorCorrectionData {
 }
 
 export interface ModulePlacementData {
+  version: QRVersion;
   subSteps: Array<{
     matrix: (0 | 1 | null)[][];
     moduleTypes: string[][];
