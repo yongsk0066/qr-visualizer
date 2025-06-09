@@ -3,7 +3,6 @@ import type { ModulePlacementData } from '../shared/types';
 
 interface ModulePlacementColumnProps {
   modulePlacement: ModulePlacementData | null;
-  isProcessing: boolean;
 }
 
 interface QRMatrixProps {
@@ -14,7 +13,7 @@ interface QRMatrixProps {
   zigzagOrder?: number[][];
 }
 
-const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true, zigzagOrder }: QRMatrixProps & { showColors?: boolean }) => {
+const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: QRMatrixProps & { showColors?: boolean }) => {
   // 5-6A 단계인지 확인하는 함수
   const isZigzagStep = () => {
     return moduleTypes.some(row => row.some(type => type.startsWith('byte-')));
@@ -70,51 +69,40 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true, zig
 
 
   return (
-    <div 
-      className="border border-gray-200 inline-block bg-white shadow-sm"
-      style={{ 
-        fontSize: 0, // Remove whitespace between elements
-        lineHeight: 0 
-      }}
-    >
-      {matrix.map((row, rowIndex) => (
-        <div key={rowIndex} style={{ fontSize: 0, lineHeight: 0 }}>
-          {row.map((cell, colIndex) => {
+    <div className="border border-gray-200 inline-block bg-white shadow-sm">
+      <svg 
+        width={size * scale} 
+        height={size * scale} 
+        viewBox={`0 0 ${size} ${size}`}
+        style={{ display: 'block' }}
+      >
+        {/* 배경 */}
+        <rect width={size} height={size} fill="white" />
+        
+        {/* 모듈별 rect */}
+        {matrix.map((row, rowIndex) =>
+          row.map((cell, colIndex) => {
             const moduleType = moduleTypes[rowIndex][colIndex];
-            const isZigzag = moduleType === 'zigzag';
-            const zigzagNum = zigzagOrder?.[rowIndex]?.[colIndex];
-            const shouldShowNumber = isZigzag && zigzagNum !== undefined && zigzagNum >= 0 && scale >= 6;
-            
             return (
-              <div
+              <rect
                 key={`${rowIndex}-${colIndex}`}
-                style={{
-                  width: scale,
-                  height: scale,
-                  backgroundColor: getModuleColor(cell, moduleType),
-                  display: 'inline-block',
-                  border: size <= 25 ? '0.5px solid rgba(0,0,0,0.1)' : 'none',
-                  position: 'relative',
-                  fontSize: Math.max(6, scale * 0.3),
-                  color: cell === 1 ? '#fff' : '#000',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  lineHeight: `${scale}px`,
-                  fontFamily: 'monospace'
-                }}
-                title={`${moduleType} (${rowIndex},${colIndex}): ${cell}${isZigzag && zigzagNum !== undefined ? ` [순서: ${zigzagNum}]` : ''}`}
-              >
-                {shouldShowNumber && zigzagNum < 100 ? zigzagNum : ''}
-              </div>
+                x={colIndex}
+                y={rowIndex}
+                width={1}
+                height={1}
+                fill={getModuleColor(cell, moduleType)}
+                stroke={size <= 25 ? 'rgba(0,0,0,0.1)' : 'none'}
+                strokeWidth={size <= 25 ? '0.02' : '0'}
+              />
             );
-          })}
-        </div>
-      ))}
+          })
+        )}
+      </svg>
     </div>
   );
 };
 
-export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModulePlacementColumnProps) => {
+export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumnProps) => {
   const scale = useMemo(() => {
     if (!modulePlacement) return 3;
     const size = modulePlacement.size;
@@ -123,50 +111,27 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
     if (size <= 41) return 5;      // 버전 4-6
     if (size <= 57) return 4;      // 버전 7-10
     return 3;                      // 버전 11+
-  }, [modulePlacement?.size]);
-
-  if (isProcessing) {
-    return (
-      <div className="step-column">
-        <div className="step-header">
-          <h3 className="step-title">Step 5: Module Placement</h3>
-        </div>
-        <div className="step-content">
-          <div className="loading-indicator">처리 중...</div>
-        </div>
-      </div>
-    );
-  }
+  }, [modulePlacement]);
 
   if (!modulePlacement) {
     return (
       <div className="step-column">
-        <div className="step-header">
-          <h3 className="step-title">Step 5: Module Placement</h3>
-          <p className="step-subtitle">7단계 모듈 배치 과정</p>
-        </div>
-        <div className="step-content">
-          <div className="empty-state">
-            <p className="text-gray-500">데이터를 입력하세요</p>
-          </div>
-        </div>
+        <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+        <div className="text-gray-500 text-sm">메시지 구성이 완료되면 모듈 배치가 표시됩니다</div>
       </div>
     );
   }
 
   return (
     <div className="step-column">
-      <div className="step-header">
-        <h3 className="step-title">Step 5: Module Placement</h3>
-        <p className="step-subtitle">
-          {modulePlacement.size}×{modulePlacement.size} 매트릭스 | 
-          데이터 모듈: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
-        </p>
-      </div>
+      <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        {modulePlacement.size}×{modulePlacement.size} 매트릭스 | 
+        데이터 모듈: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
+      </p>
       
-      <div className="step-content">
-        {/* 가로 스크롤 컨테이너 */}
-        <div className="overflow-x-auto pb-4">
+      {/* 가로 스크롤 컨테이너 */}
+      <div className="overflow-x-auto pb-4">
           <div className="flex gap-6 min-w-max">
             {modulePlacement.subSteps.map((step, index) => (
               <div key={index} className="flex-shrink-0">
@@ -187,16 +152,16 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
                   moduleTypes={step.moduleTypes}
                   size={modulePlacement.size}
                   scale={scale}
-                  zigzagOrder={'zigzagOrder' in step ? (step as any).zigzagOrder : undefined}
+                  zigzagOrder={'zigzagOrder' in step ? (step as { zigzagOrder?: number[][] }).zigzagOrder : undefined}
                 />
               </div>
             ))}
             
-            {/* Step 5 완성본 (컬러 없이) */}
+            {/* 5단계 완성본 (컬러 없이) */}
             <div className="flex-shrink-0">
               <div className="text-center mb-3">
                 <h4 className="text-sm font-medium text-gray-700 mb-1">
-                  Step 5 완성
+                  5단계 완성
                 </h4>
                 <p className="text-xs text-gray-500 mb-2">
                   최종 모듈 배치 완료
@@ -296,7 +261,6 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };

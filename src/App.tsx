@@ -10,9 +10,20 @@ import { runQRPipeline } from './qr/qrPipeline';
 import type { ErrorCorrectionLevel } from './shared/types';
 
 function App() {
-  const [inputData, setInputData] = useState('');
-  const [qrVersion, setQrVersion] = useState('1');
-  const [errorLevel, setErrorLevel] = useState<ErrorCorrectionLevel>('M');
+  // URL 쿼리 파라미터에서 초기값 가져오기
+  const getInitialValues = () => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      inputData: params.get('data') || '',
+      qrVersion: params.get('version') || '1',
+      errorLevel: (params.get('error') as ErrorCorrectionLevel) || 'M'
+    };
+  };
+
+  const initialValues = getInitialValues();
+  const [inputData, setInputData] = useState(initialValues.inputData);
+  const [qrVersion, setQrVersion] = useState(initialValues.qrVersion);
+  const [errorLevel, setErrorLevel] = useState<ErrorCorrectionLevel>(initialValues.errorLevel);
 
   const deferredInputData = useDeferredValue(inputData);
 
@@ -25,6 +36,18 @@ function App() {
   const encodedData = dataEncoding;
 
   const isProcessing = inputData !== deferredInputData;
+
+  // URL 쿼리 파라미터 업데이트
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (inputData) params.set('data', inputData);
+    if (qrVersion !== '1') params.set('version', qrVersion);
+    if (errorLevel !== 'M') params.set('error', errorLevel);
+    
+    const queryString = params.toString();
+    const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+  }, [inputData, qrVersion, errorLevel]);
 
   // 최소 버전 자동 업데이트
   useEffect(() => {
@@ -82,14 +105,14 @@ function App() {
           opacity: isProcessing ? 0.6 : 1,
           transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
         }}>
-          <ModulePlacementColumn modulePlacement={modulePlacement} isProcessing={isProcessing} />
+          <ModulePlacementColumn modulePlacement={modulePlacement} />
         </div>
 
         <div style={{ 
           opacity: isProcessing ? 0.6 : 1,
           transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
         }}>
-          <MaskingColumn modulePlacement={modulePlacement} isProcessing={isProcessing} />
+          <MaskingColumn modulePlacement={modulePlacement} />
         </div>
       </div>
     </div>

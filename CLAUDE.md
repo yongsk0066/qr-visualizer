@@ -86,6 +86,28 @@ src/
 │   ├── message-construction/ # 4단계: 최종 비트스트림 구성
 │   │   ├── messageConstruction.ts   # 비트스트림 변환, 잔여 비트 추가
 │   │   └── messageConstruction.test.ts # 9개 테스트
+│   ├── module-placement/    # 5단계: 모듈 배치 (8개 세부 단계)
+│   │   ├── modulePlacement.ts       # 모듈 배치 메인 함수
+│   │   ├── modulePlacement.test.ts  # 10개 테스트
+│   │   ├── types.ts                # 모듈 배치 관련 타입 정의
+│   │   ├── subSteps/               # 8개 세부 단계
+│   │   │   ├── step1-emptyMatrix.ts    # 빈 매트릭스 생성
+│   │   │   ├── step2-finderPatterns.ts # 파인더 패턴 배치
+│   │   │   ├── step3-separators.ts     # 분리자 패턴 배치
+│   │   │   ├── step4-timingPatterns.ts # 타이밍 패턴 배치
+│   │   │   ├── step5-alignmentPatterns.ts # 얼라인먼트 패턴 배치
+│   │   │   ├── step6-formatInfo.ts     # 포맷/버전 정보 영역 예약
+│   │   │   ├── step6a-zigzagPattern.ts # 지그재그 패턴 시각화
+│   │   │   ├── step7-dataPlacement.ts  # 데이터 비트 배치
+│   │   │   └── (각 파일별 테스트 코드)
+│   │   └── utils/                  # 유틸리티 함수
+│   │       ├── matrixUtils.ts      # 매트릭스 조작 함수
+│   │       ├── constants.ts        # 상수 정의
+│   │       ├── bchUtils.ts         # BCH 에러 정정 유틸
+│   │       └── bchUtils.test.ts    # 13개 BCH 테스트
+│   ├── masking/             # 6단계: 마스킹 패턴 적용
+│   │   ├── maskPatterns.ts         # 8가지 마스크 패턴 함수
+│   │   └── maskPatterns.test.ts    # 27개 마스크 패턴 테스트
 │   └── qrPipeline.ts       # 전체 파이프라인 통합
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
@@ -134,20 +156,38 @@ src/
 - **Visual feedback**: Color-coded final bit stream distinguishing data/EC/remainder bits
 - **Bit stream formatting**: 8-bit grouping for clear visualization
 
+**Step 5 - Module Placement**
+- **8-step visualization**: Empty matrix → Finder → Separators → Timing → Alignment → Format/Version → Zigzag → Data
+- **Horizontal scrolling UI**: Progressive step display with cumulative results
+- **Pattern-specific coloring**: Each module type has distinct color coding
+- **Dynamic scaling**: Responsive QR matrix size (3-8px per module based on version)
+- **Interactive tooltips**: Module position and type information
+- **8-bit block visualization**: Special rainbow coloring for zigzag pattern demonstration
+- **Comprehensive testing**: 77 vitest tests across all sub-steps and utilities
+- **ISO/IEC 18004 compliant**: Follows standard module placement procedures
+
+**Step 6 - Masking**
+- **8 mask pattern functions**: Complete ISO/IEC 18004 standard implementation
+- **Pattern visualization**: Vertical display of all 8 masking candidates
+- **Black/white display**: Simple binary pattern (black: masking applied, white: non-applied)
+- **Mathematical formulas**: Pattern descriptions with i/j notation
+- **Comprehensive testing**: 27 vitest tests covering all pattern scenarios
+- **SVG-based rendering**: Vector graphics for crisp display at all scales
+
 **Architecture & UI/UX**
-- **5-column responsive layout**: Uniform grid with 320px minimum width per column
-- **Performance optimization**: useDeferredValue for smooth typing experience and reduced render load
+- **6-column responsive layout**: Uniform grid with 320px minimum width per column
+- **Consistent styling**: All columns follow identical design patterns
+- **SVG-based QR matrices**: Vector graphics for optimal performance and clarity
+- **URL query parameters**: Shareable links with data/version/error settings
+- **Performance optimization**: useDeferredValue for smooth typing experience
 - **Component-based UI**: Modular column layout for each processing step
 - **QR Pipeline**: Centralized pipeline for step-by-step QR generation
 - **Shared utilities**: Reusable binary and string manipulation functions
 - **Sample data integration**: Quick-access buttons for testing different encoding modes
-- **Real-time feedback**: Processing indicators and visual state transitions
 - **Type safety**: Comprehensive TypeScript types and interfaces
 
 #### 🔄 Next Steps (In Order):
-- **Step 5**: Module Placement - Matrix pattern layout
-- **Step 6**: Masking - Pattern application and selection
-- **Step 7**: Format Information - Final QR completion
+- **Step 7**: Final QR Generation - Apply selected mask and generate complete QR code
 
 #### 🏗 Application Structure:
 - **QR Pipeline**: `src/qr/qrPipeline.ts` - Centralized processing pipeline
@@ -155,8 +195,8 @@ src/
 - **Shared Resources**: Common types, constants, and utilities in `shared/`
 - **Components**: `src/components/` - Step-specific UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
-- **UI Layout**: 5-column grid with compact spacing and responsive design
-- **Testing**: 102 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction)
+- **UI Layout**: 6-column grid with compact spacing and responsive design
+- **Testing**: 215 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction + 77 module placement + 13 BCH utils + 27 masking)
 
 ## QR Code Standard Documentation
 

@@ -26,10 +26,10 @@ describe('Mask Patterns', () => {
 
     it('should correctly apply pattern 1: i mod 2 = 0', () => {
       const pattern1 = MASK_PATTERNS[1];
-      expect(pattern1(0, 0)).toBe(true);  // 0 % 2 = 0
-      expect(pattern1(0, 5)).toBe(true);  // 0 % 2 = 0 (col doesn't matter)
-      expect(pattern1(1, 0)).toBe(false); // 1 % 2 = 1
-      expect(pattern1(1, 5)).toBe(false); // 1 % 2 = 1 (col doesn't matter)
+      expect(pattern1(0)).toBe(true);  // 0 % 2 = 0
+      expect(pattern1(0)).toBe(true);  // 0 % 2 = 0 (col doesn't matter)
+      expect(pattern1(1)).toBe(false); // 1 % 2 = 1
+      expect(pattern1(1)).toBe(false); // 1 % 2 = 1 (col doesn't matter)
     });
 
     it('should correctly apply pattern 2: j mod 3 = 0', () => {
