@@ -33,7 +33,8 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: Q
       alignment: value === 1 ? '#7c3aed' : '#ddd6fe',   // 얼라인먼트: 보라/연한 보라
       format: '#ef4444',                                 // 포맷: 빨간색
       version: '#f97316',                                // 버전: 주황색
-      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파란/연한 파간
+      zigzag: value === 1 ? '#ec4899' : '#fce7f3',      // 지그재그: 핑크/연한 핑크
+      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파란/연한 파란
       empty: '#f8f9fa'                                   // 빈 공간: 아주 연한 회색
     };
     
@@ -198,6 +199,10 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-orange-500"></div>
               <span>버전</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-pink-500"></div>
+              <span>지그재그</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-blue-600"></div>

@@ -6,11 +6,12 @@ import { addSeparatorsStep } from './subSteps/step3-separators';
 import { addTimingPatternsStep } from './subSteps/step4-timingPatterns';
 import { addAlignmentPatternsStep } from './subSteps/step5-alignmentPatterns';
 import { reserveFormatInfoStep } from './subSteps/step6-formatInfo';
+import { showZigzagPatternStep } from './subSteps/step6a-zigzagPattern';
 import { placeDataBitsStep } from './subSteps/step7-dataPlacement';
 
 /**
  * Step 5: Module Placement - 전체 파이프라인 실행
- * 7단계 세부 과정을 순차적으로 실행하여 완전한 QR 매트릭스 생성
+ * 8단계 세부 과정을 순차적으로 실행하여 완전한 QR 매트릭스 생성
  */
 export const runModulePlacement = (
   version: QRVersion,
@@ -34,11 +35,14 @@ export const runModulePlacement = (
   // Step 5-6: Format Information
   const step6 = reserveFormatInfoStep(step5, version);
   
+  // Step 5-6A: Zigzag Pattern Visualization
+  const step6a = showZigzagPatternStep(step6, version);
+  
   // Step 5-7: Data Placement
   const step7 = placeDataBitsStep(step6, version, bitStream);
 
   // 모든 세부 단계 결과 수집
-  const subSteps = [step1, step2, step3, step4, step5, step6, step7];
+  const subSteps = [step1, step2, step3, step4, step5, step6, step6a, step7];
   
   // 데이터 모듈 개수 계산
   const dataModuleCount = step7.matrix.flat().filter((_, idx) => {
