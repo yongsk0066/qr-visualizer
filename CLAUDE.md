@@ -157,28 +157,28 @@ src/
 - **Bit stream formatting**: 8-bit grouping for clear visualization
 
 **Step 5 - Module Placement**
-- **8-step visualization**: Empty matrix → Finder → Separators → Timing → Alignment → Format/Version → Zigzag → Data
-- **Horizontal scrolling UI**: Progressive step display with cumulative results
-- **Pattern-specific coloring**: Each module type has distinct color coding
-- **Dynamic scaling**: Responsive QR matrix size (3-8px per module based on version)
-- **Interactive tooltips**: Module position and type information
-- **8-bit block visualization**: Special rainbow coloring for zigzag pattern demonstration
-- **Comprehensive testing**: 77 vitest tests across all sub-steps and utilities
-- **ISO/IEC 18004 compliant**: Follows standard module placement procedures
+- **8-step visual breakdown**: Function patterns, separators, timing, alignment, format, zigzag, data
+- **SVG-based rendering**: Vector graphics for crisp visualization and improved performance
+- **Horizontal scrolling**: Progressive visualization showing cumulative module placement
+- **ISO/IEC 18004 compliant**: Precise bit positioning for format/version information
+- **Special visualization**: Rainbow-colored 8-bit blocks in zigzag step for clarity
+- **Comprehensive testing**: 77 vitest tests covering all placement algorithms
+- **BCH error correction**: Proper format and version information area calculation
+- **Dark module placement**: Automatic dark module at (4V+9, 8) position
 
 **Step 6 - Masking**
-- **8 mask pattern functions**: Complete ISO/IEC 18004 standard implementation
-- **Pattern visualization**: Vertical display of all 8 masking candidates
-- **Black/white display**: Simple binary pattern (black: masking applied, white: non-applied)
-- **Mathematical formulas**: Pattern descriptions with i/j notation
-- **Comprehensive testing**: 27 vitest tests covering all pattern scenarios
-- **SVG-based rendering**: Vector graphics for crisp display at all scales
+- **8 mask patterns**: All ISO/IEC 18004 standard masking formulas (patterns 0-7)
+- **Mathematical implementation**: Precise row/column conditional logic for each pattern
+- **Visual display**: Simple black/white pattern visualization for educational clarity
+- **SVG-based rendering**: Consistent vector graphics with other QR components
+- **Comprehensive testing**: 27 vitest tests covering all mask pattern algorithms
+- **Pattern descriptions**: Mathematical formulas displayed for each mask pattern
 
 **Architecture & UI/UX**
 - **6-column responsive layout**: Uniform grid with 320px minimum width per column
-- **Consistent styling**: All columns follow identical design patterns
+- **Consistent styling**: All columns follow identical design patterns and transitions
 - **SVG-based QR matrices**: Vector graphics for optimal performance and clarity
-- **URL query parameters**: Shareable links with data/version/error settings
+- **URL query parameters**: Shareable links with data/version/error settings (?data=X&version=Y&error=Z)
 - **Performance optimization**: useDeferredValue for smooth typing experience
 - **Component-based UI**: Modular column layout for each processing step
 - **QR Pipeline**: Centralized pipeline for step-by-step QR generation
@@ -196,7 +196,7 @@ src/
 - **Components**: `src/components/` - Step-specific UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
 - **UI Layout**: 6-column grid with compact spacing and responsive design
-- **Testing**: 215 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction + 77 module placement + 13 BCH utils + 27 masking)
+- **Testing**: 242 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction + 77 module placement + 13 BCH utils + 27 masking + 23 additional)
 
 ## QR Code Standard Documentation
 
@@ -222,7 +222,7 @@ This project follows specific coding practices to maintain consistency and reada
 7. **Shared Utilities**: Move reusable functions to appropriate shared directories
 8. **Minimal Comments**: Code should be self-documenting; avoid excessive commenting unless documenting complex algorithms
 9. **Immutable Data**: Prefer immutable data structures and pure functions
-10. **Testing**: Write comprehensive tests for all QR logic functions (75 tests total)
+10. **Testing**: Write comprehensive tests for all QR logic functions (242 tests total)
 11. **ISO Compliance**: Follow ISO/IEC 18004 standard with detailed comments referencing specific sections
 
 ## Development Workflow
