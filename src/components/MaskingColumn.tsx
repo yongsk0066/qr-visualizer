@@ -186,11 +186,9 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
           }
           
           return (
-            <div key={pattern} className={`space-y-3 p-3 rounded-lg border ${
-              evaluation.isSelected ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white'
-            }`}>
+            <div key={pattern} className="space-y-3 p-3 rounded-lg border border-gray-200 bg-white">
               <div className="text-center text-xs font-medium text-gray-700">
-                패턴 {pattern} {evaluation.isSelected && <span className="text-green-600 font-bold">⭐ 최적</span>}
+                패턴 {pattern}
               </div>
               
               <div className="flex justify-center gap-3">
