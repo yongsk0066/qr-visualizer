@@ -55,6 +55,59 @@ export const generateMaskMatrix = (version: QRVersion, pattern: MaskPattern): bo
 };
 
 /**
+ * 인코딩 영역 식별 (기능 패턴과 정보 영역 제외)
+ * 
+ * 마스킹이 적용되지 않는 영역:
+ * - 파인더 패턴 + 분리자 (각 모서리 8x8 영역)
+ * - 타이밍 패턴 (6번째 행/열)
+ * - 정렬 패턴
+ * - 포맷 정보 영역
+ * - 버전 정보 영역 (버전 7+)
+ * - 다크 모듈 (4*version + 9, 8)
+ */
+export const getEncodingRegionMask = (version: QRVersion, moduleTypes: string[][]): boolean[][] => {
+  const size = getMatrixSize(version);
+  const encodingMask: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+  
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const moduleType = moduleTypes[row][col];
+      
+      // 인코딩 영역은 'data' 타입 모듈만 포함
+      // (지그재그 패턴의 경우 'byte-X' 타입도 포함)
+      const isEncodingRegion = moduleType === 'data' || moduleType.startsWith('byte-');
+      encodingMask[row][col] = isEncodingRegion;
+    }
+  }
+  
+  return encodingMask;
+};
+
+/**
+ * 인코딩 영역에만 적용된 마스크 패턴 생성
+ */
+export const generateEncodingMaskMatrix = (
+  version: QRVersion, 
+  pattern: MaskPattern, 
+  moduleTypes: string[][]
+): boolean[][] => {
+  const fullMask = generateMaskMatrix(version, pattern);
+  const encodingMask = getEncodingRegionMask(version, moduleTypes);
+  const size = getMatrixSize(version);
+  
+  const result: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+  
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      // 인코딩 영역이면서 마스크 조건을 만족하는 경우만 true
+      result[row][col] = encodingMask[row][col] && fullMask[row][col];
+    }
+  }
+  
+  return result;
+};
+
+/**
  * 모든 마스크 패턴에 대한 매트릭스 생성
  */
 export const generateAllMaskMatrices = (version: QRVersion): Record<MaskPattern, boolean[][]> => {
@@ -62,6 +115,22 @@ export const generateAllMaskMatrices = (version: QRVersion): Record<MaskPattern,
   
   for (let pattern = 0; pattern < 8; pattern++) {
     result[pattern as MaskPattern] = generateMaskMatrix(version, pattern as MaskPattern);
+  }
+  
+  return result;
+};
+
+/**
+ * 모든 인코딩 영역 마스크 패턴 매트릭스 생성
+ */
+export const generateAllEncodingMaskMatrices = (
+  version: QRVersion, 
+  moduleTypes: string[][]
+): Record<MaskPattern, boolean[][]> => {
+  const result = {} as Record<MaskPattern, boolean[][]>;
+  
+  for (let pattern = 0; pattern < 8; pattern++) {
+    result[pattern as MaskPattern] = generateEncodingMaskMatrix(version, pattern as MaskPattern, moduleTypes);
   }
   
   return result;

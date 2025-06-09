@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../shared/types';
-import { generateAllMaskMatrices, MASK_DESCRIPTIONS, type MaskPattern } from '../qr/masking/maskPatterns';
+import { 
+  generateAllMaskMatrices, 
+  generateAllEncodingMaskMatrices,
+  MASK_DESCRIPTIONS, 
+  type MaskPattern 
+} from '../qr/masking/maskPatterns';
 
 interface MaskingColumnProps {
   modulePlacement: ModulePlacementData | null;
@@ -12,9 +17,10 @@ interface QRMatrixProps {
   size: number;
   scale?: number;
   pattern: MaskPattern;
+  title: string;
 }
 
-const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern }: QRMatrixProps) => {
+const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title }: QRMatrixProps) => {
   const getModuleColor = (shouldMask: boolean) => {
     // 단순한 흑백 마스크 패턴만 표시
     return shouldMask ? '#000' : '#fff';
@@ -32,7 +38,7 @@ const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern }: QRMatrixProp
   return (
     <div className="flex flex-col items-center">
       <div className="mb-1 text-center">
-        <div className="text-xs font-medium">패턴 {pattern}</div>
+        <div className="text-xs font-medium">{title}</div>
         <div className="text-xs text-gray-600 font-mono text-[10px]">{MASK_DESCRIPTIONS[pattern]}</div>
       </div>
       <div className="border border-gray-200 inline-block bg-white">
@@ -105,26 +111,30 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
     );
   }
   
-  const { matrix } = finalStep;
+  const { matrix, moduleTypes } = finalStep;
   const { size } = modulePlacement;
   
-  // 8가지 마스크 매트릭스 생성
+  // 8가지 마스크 매트릭스 생성 (전체 패턴)
   const maskMatrices = generateAllMaskMatrices(modulePlacement.version);
+  
+  // 8가지 인코딩 영역 마스크 매트릭스 생성 (필터링된 패턴)
+  const encodingMaskMatrices = generateAllEncodingMaskMatrices(modulePlacement.version, moduleTypes);
   
 
   return (
     <div className="step-column">
       <h2 className="font-medium mb-3">6단계: 마스킹</h2>
       <p className="text-sm text-gray-600 mb-4">
-        8가지 마스크 패턴 후보 (검정: 마스킹 적용)
+        8가지 마스크 패턴 (전체 패턴 | 인코딩 영역만)
       </p>
 
-      <div className="space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
+      <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
         {Object.entries(maskMatrices).map(([patternStr, maskMatrix]) => {
           const pattern = parseInt(patternStr) as MaskPattern;
+          const encodingMaskMatrix = encodingMaskMatrices[pattern];
           
           // 추가 안전성 체크
-          if (!maskMatrix || !Array.isArray(maskMatrix)) {
+          if (!maskMatrix || !Array.isArray(maskMatrix) || !encodingMaskMatrix) {
             return (
               <div key={pattern} className="text-red-500 text-sm p-2">
                 패턴 {pattern}: 마스크 데이터 오류
@@ -133,22 +143,43 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
           }
           
           return (
-            <QRMatrix
-              key={pattern}
-              matrix={matrix}
-              maskMatrix={maskMatrix}
-              size={size}
-              scale={scale}
-              pattern={pattern}
-            />
+            <div key={pattern} className="space-y-3">
+              <div className="text-center text-xs font-medium text-gray-700">
+                패턴 {pattern}
+              </div>
+              
+              <div className="flex justify-center gap-4">
+                <QRMatrix
+                  matrix={matrix}
+                  maskMatrix={maskMatrix}
+                  size={size}
+                  scale={scale}
+                  pattern={pattern}
+                  title="전체 패턴"
+                />
+                
+                <QRMatrix
+                  matrix={matrix}
+                  maskMatrix={encodingMaskMatrix}
+                  size={size}
+                  scale={scale}
+                  pattern={pattern}
+                  title="인코딩 영역만"
+                />
+              </div>
+            </div>
           );
         })}
       </div>
 
       {/* 범례 */}
       <div className="mt-4 p-2 bg-gray-50 rounded text-xs">
-        <div className="font-medium mb-1">마스크 패턴</div>
+        <div className="font-medium mb-1">마스크 패턴 비교</div>
         <div className="space-y-1">
+          <div><strong>전체 패턴:</strong> 전체 매트릭스에 패턴 적용</div>
+          <div><strong>인코딩 영역만:</strong> 데이터 영역에만 패턴 적용</div>
+        </div>
+        <div className="mt-2 space-y-1">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-black"></div>
             <span>마스킹 적용 위치</span>
@@ -160,6 +191,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
         </div>
         <div className="mt-1 text-gray-600">
           <div>i: 행 번호, j: 열 번호</div>
+          <div>ISO/IEC 18004: 기능 패턴에는 마스킹 미적용</div>
         </div>
       </div>
     </div>

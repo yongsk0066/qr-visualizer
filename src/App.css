@@ -1,6 +1,4 @@
-
 .app {
-  max-width: 1400px;
   margin: 0 auto;
   padding: 1rem;
   line-height: 1.6;
@@ -8,7 +6,7 @@
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(320px, 1fr));
+  grid-template-columns: repeat(8, minmax(320px, 1fr));
   gap: 1.5rem;
   min-height: calc(100vh - 4rem);
 }

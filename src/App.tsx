@@ -11,16 +11,17 @@ import { runQRPipeline } from './qr/qrPipeline';
 import { useQueryParams } from './shared';
 
 function App() {
-  const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] = useQueryParams();
+  const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] =
+    useQueryParams();
   const deferredInputData = useDeferredValue(inputData);
   const isProcessing = inputData !== deferredInputData;
 
-  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement } = useMemo(() => 
-    runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
-    [deferredInputData, qrVersion, errorLevel]
-  );
+  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement } =
+    useMemo(
+      () => runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
+      [deferredInputData, qrVersion, errorLevel]
+    );
 
-  // 최소 버전 자동 업데이트
   useEffect(() => {
     if (dataAnalysis?.isValid && dataAnalysis.minimumVersion) {
       const currentVersion = parseInt(qrVersion, 10);
@@ -35,7 +36,7 @@ function App() {
     <ErrorCorrectionColumn errorCorrection={errorCorrection} />,
     <MessageConstructionColumn result={messageConstruction} />,
     <ModulePlacementColumn modulePlacement={modulePlacement} />,
-    <MaskingColumn modulePlacement={modulePlacement} />
+    <MaskingColumn modulePlacement={modulePlacement} />,
   ];
 
   return (
