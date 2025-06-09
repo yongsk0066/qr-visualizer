@@ -11,32 +11,32 @@ import { runQRPipeline } from './qr/qrPipeline';
 import { useQueryParams } from './shared';
 
 function App() {
-  const [queryParams, updateQueryParams] = useQueryParams();
-  const { data: inputData, version: qrVersion, error: errorLevel } = queryParams;
-
+  const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] = useQueryParams();
   const deferredInputData = useDeferredValue(inputData);
+  const isProcessing = inputData !== deferredInputData;
 
-  const qrPipeline = useMemo(() => 
+  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement } = useMemo(() => 
     runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
     [deferredInputData, qrVersion, errorLevel]
   );
-
-  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement } = qrPipeline;
-  const encodedData = dataEncoding;
-
-  const isProcessing = inputData !== deferredInputData;
 
   // 최소 버전 자동 업데이트
   useEffect(() => {
     if (dataAnalysis?.isValid && dataAnalysis.minimumVersion) {
       const currentVersion = parseInt(qrVersion, 10);
-      const minimumVersion = dataAnalysis.minimumVersion;
-      
-      if (currentVersion < minimumVersion) {
-        updateQueryParams({ version: minimumVersion.toString() });
+      if (currentVersion < dataAnalysis.minimumVersion) {
+        updateQueryParams({ version: dataAnalysis.minimumVersion.toString() });
       }
     }
   }, [dataAnalysis, qrVersion, updateQueryParams]);
+
+  const stepColumns = [
+    <DataEncodingColumn encodedData={dataEncoding} />,
+    <ErrorCorrectionColumn errorCorrection={errorCorrection} />,
+    <MessageConstructionColumn result={messageConstruction} />,
+    <ModulePlacementColumn modulePlacement={modulePlacement} />,
+    <MaskingColumn modulePlacement={modulePlacement} />
+  ];
 
   return (
     <div className="app">
@@ -57,25 +57,11 @@ function App() {
           isProcessing={isProcessing}
         />
 
-        <ProcessingWrapper isProcessing={isProcessing}>
-          <DataEncodingColumn encodedData={encodedData} />
-        </ProcessingWrapper>
-
-        <ProcessingWrapper isProcessing={isProcessing}>
-          <ErrorCorrectionColumn errorCorrection={errorCorrection} />
-        </ProcessingWrapper>
-
-        <ProcessingWrapper isProcessing={isProcessing}>
-          <MessageConstructionColumn result={messageConstruction} />
-        </ProcessingWrapper>
-
-        <ProcessingWrapper isProcessing={isProcessing}>
-          <ModulePlacementColumn modulePlacement={modulePlacement} />
-        </ProcessingWrapper>
-
-        <ProcessingWrapper isProcessing={isProcessing}>
-          <MaskingColumn modulePlacement={modulePlacement} />
-        </ProcessingWrapper>
+        {stepColumns.map((column, index) => (
+          <ProcessingWrapper key={index} isProcessing={isProcessing}>
+            {column}
+          </ProcessingWrapper>
+        ))}
       </div>
     </div>
   );
