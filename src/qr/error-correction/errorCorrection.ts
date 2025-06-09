@@ -15,9 +15,7 @@ import { REMAINDER_BITS } from '../../shared/consts';
 export const getECBlocks = (
   version: QRVersion,
   errorLevel: ErrorCorrectionLevel
-): ECBlocks => {
-  return EC_BLOCKS_TABLE[version]?.[errorLevel] || EC_BLOCKS_TABLE[1][errorLevel];
-};
+): ECBlocks => EC_BLOCKS_TABLE[version]?.[errorLevel] || EC_BLOCKS_TABLE[1][errorLevel];
 
 
 
@@ -31,20 +29,21 @@ export const performErrorCorrection = (
 ): ErrorCorrectionResult => {
   const ecBlocks = getECBlocks(version, errorLevel);
   
-  // 모든 블록 정보를 평면화된 배열로 생성
   const allBlocks = ecBlocks.groups.flatMap(group => 
     Array.from({ length: group.blocks }, () => group)
   );
   
-  // 데이터 코드워드를 블록으로 분할
-  let offset = 0;
-  const dataBlocks = allBlocks.map(group => {
-    const blockData = dataCodewords.slice(offset, offset + group.dataCount);
-    offset += group.dataCount;
-    return blockData;
-  });
+  const dataBlocks = allBlocks.reduce<{ blocks: number[][], offset: number }>(
+    (acc, group) => {
+      const blockData = dataCodewords.slice(acc.offset, acc.offset + group.dataCount);
+      return {
+        blocks: [...acc.blocks, blockData],
+        offset: acc.offset + group.dataCount
+      };
+    },
+    { blocks: [], offset: 0 }
+  ).blocks;
   
-  // 각 데이터 블록에 대한 에러 정정 코드워드 생성
   const ecBlocksResult = dataBlocks.map(blockData =>
     generateErrorCorrectionCodewords(blockData, ecBlocks.ecCodewordsPerBlock)
   );

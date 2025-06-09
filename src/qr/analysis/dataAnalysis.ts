@@ -1,8 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 import type { QRMode, QRVersion, ErrorCorrectionLevel, DataAnalysisResult } from '../../shared/types';
 import { ALPHANUMERIC_CHARS, CHARACTER_COUNT_BITS, DATA_CAPACITY_TABLE } from '../../shared/consts';
-
-// 문자 유형 감지
 /**
  * 문자가 숫자(0-9)인지 확인
  */
@@ -31,7 +29,6 @@ const detectCharacterMode = (char: string): QRMode => {
   return 'byte';
 };
 
-// 모드 분석
 /**
  * 데이터의 각 문자를 분석하여 최적 모드 배열 반환
  */
@@ -56,7 +53,6 @@ const getOptimalMode = (data: string): QRMode => {
   return 'byte';
 };
 
-// 비트 계산
 /**
  * 특정 모드에서 인코딩에 필요한 데이터 비트 수 계산
  */
@@ -102,7 +98,6 @@ const calculateTotalBits = (data: string, mode: QRMode, version: QRVersion): num
   return modeIndicatorBits + characterCountBits + dataBits;
 };
 
-// 버전 결정
 /**
  * 데이터를 수용할 수 있는 최소 QR 버전 찾기
  * @returns 적합한 버전을 찾으면 해당 버전, 찾지 못하면 null
@@ -124,7 +119,6 @@ const findMinimumVersion = (
   return null;
 };
 
-// 메인 분석 함수
 /**
  * 입력 데이터를 분석하여 최적 인코딩 매개변수 결정
  * @param data 분석할 입력 문자열

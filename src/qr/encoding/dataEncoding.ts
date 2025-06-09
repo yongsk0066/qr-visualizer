@@ -4,11 +4,6 @@ import { MODE_INDICATORS, ALPHANUMERIC_CHARS, DATA_CAPACITY_TABLE } from '../../
 import { getCharacterCountBits } from '../analysis/dataAnalysis';
 import { toBinaryString, padToByteBoundary, addPaddingPattern } from '../../shared';
 
-// 비트 스트림 타입
-export interface BitStream {
-  bits: string;
-  length: number;
-}
 
 export interface EncodedData {
   modeIndicator: string;
@@ -33,49 +28,31 @@ const createCharacterCountIndicator = (count: number, mode: QRMode, version: QRV
  * 숫자 모드 인코딩 (3자리씩 10비트로, 나머지는 4비트 또는 7비트)
  */
 const encodeNumericMode = (data: string): string => {
-  const digits = data.split('');
-  let result = '';
-
-  // 3자리씩 그룹화하여 처리
-  for (let i = 0; i < digits.length; i += 3) {
-    const group = digits.slice(i, i + 3).join('');
-    const value = parseInt(group, 10);
-
-    if (group.length === 3) {
-      result += toBinaryString(value, 10);
-    } else if (group.length === 2) {
-      result += toBinaryString(value, 7);
-    } else {
-      result += toBinaryString(value, 4);
-    }
-  }
-
-  return result;
+  const chunks = data.match(/.{1,3}/g) || [];
+  return chunks
+    .map(chunk => {
+      const bitLength = chunk.length === 3 ? 10 : chunk.length === 2 ? 7 : 4;
+      return toBinaryString(parseInt(chunk, 10), bitLength);
+    })
+    .join('');
 };
 
 /**
  * 영숫자 모드 인코딩 (2문자씩 11비트로, 나머지는 6비트)
  */
 const encodeAlphanumericMode = (data: string): string => {
-  const chars = data.split('');
-  let result = '';
-
-  // 2문자씩 그룹화하여 처리
-  for (let i = 0; i < chars.length; i += 2) {
-    if (i + 1 < chars.length) {
-      // 2문자 쌍
-      const firstValue = ALPHANUMERIC_CHARS.indexOf(chars[i]);
-      const secondValue = ALPHANUMERIC_CHARS.indexOf(chars[i + 1]);
-      const combinedValue = firstValue * 45 + secondValue;
-      result += toBinaryString(combinedValue, 11);
-    } else {
-      // 마지막 1문자
-      const value = ALPHANUMERIC_CHARS.indexOf(chars[i]);
-      result += toBinaryString(value, 6);
-    }
-  }
-
-  return result;
+  const chunks = data.match(/.{1,2}/g) || [];
+  return chunks
+    .map(chunk => {
+      if (chunk.length === 2) {
+        const firstValue = ALPHANUMERIC_CHARS.indexOf(chunk[0]);
+        const secondValue = ALPHANUMERIC_CHARS.indexOf(chunk[1]);
+        return toBinaryString(firstValue * 45 + secondValue, 11);
+      } else {
+        return toBinaryString(ALPHANUMERIC_CHARS.indexOf(chunk[0]), 6);
+      }
+    })
+    .join('');
 };
 
 /**

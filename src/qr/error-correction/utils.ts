@@ -33,8 +33,6 @@ const interleaveBlocks = (blocks: number[][]): number[] => {
 /**
  * 데이터 블록과 에러 정정 블록을 최종 전송 순서로 인터리빙
  * ISO/IEC 18004 8.6 (line 1289-1334)
- * 
- * 순서: 모든 데이터 블록 인터리빙 → 모든 EC 블록 인터리빙
  */
 export const interleaveCodewords = (
   dataBlocks: number[][],

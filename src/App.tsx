@@ -13,21 +13,17 @@ function App() {
   const [qrVersion, setQrVersion] = useState('1');
   const [errorLevel, setErrorLevel] = useState<ErrorCorrectionLevel>('M');
 
-  // 입력 데이터에 대해 지연된 값 사용 (타이핑 시 렌더링 부하 감소)
   const deferredInputData = useDeferredValue(inputData);
 
-  // QR 생성 파이프라인 실행 (지연된 입력 데이터 사용)
   const qrPipeline = useMemo(() => 
     runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
     [deferredInputData, qrVersion, errorLevel]
   );
 
-  // 각 단계별 결과 추출
   const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, qrGeneration } = qrPipeline;
   const encodedData = dataEncoding;
   const sampleMatrix = qrGeneration;
 
-  // 입력이 처리 중인지 확인 (실제 입력과 지연된 입력이 다를 때)
   const isProcessing = inputData !== deferredInputData;
 
   // 최소 버전 자동 업데이트
@@ -36,7 +32,6 @@ function App() {
       const currentVersion = parseInt(qrVersion, 10);
       const minimumVersion = dataAnalysis.minimumVersion;
       
-      // 현재 버전이 최소 요구 버전보다 낮으면 자동 업데이트
       if (currentVersion < minimumVersion) {
         setQrVersion(minimumVersion.toString());
       }

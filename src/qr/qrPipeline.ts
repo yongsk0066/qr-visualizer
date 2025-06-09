@@ -24,29 +24,22 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
   const { inputData, qrVersion, errorLevel } = params;
   const version = parseInt(qrVersion, 10) as QRVersion;
 
-  // Step 1: 데이터 분석
   const dataAnalysis = inputData 
     ? analyzeData(inputData, errorLevel) 
     : null;
 
-  // Step 2: 데이터 인코딩
   const dataEncoding = dataAnalysis 
     ? runDataEncoding(inputData, dataAnalysis, version, errorLevel)
     : null;
 
-  // Step 3: 에러 정정
   const errorCorrection = runErrorCorrection(dataEncoding, version, errorLevel);
 
-  // Step 4: 최종 비트스트림 구성
   const messageConstruction = errorCorrection
     ? constructMessage(errorCorrection)
     : null;
 
-  // Step 5: QR 매트릭스 생성 (미구현)
-  const qrGeneration = (() => {
-    // TODO: 모듈 배치, 마스킹, 포맷 정보 구현
-    return [] as number[][];
-  })();
+  // TODO: Step 5-7 구현 (모듈 배치, 마스킹, 포맷 정보)
+  const qrGeneration = [] as number[][];
 
   return {
     dataAnalysis,
