@@ -4,7 +4,7 @@ import {
   CHARACTER_COUNT_BITS,
   DATA_CAPACITY_TABLE,
   QR_VERSIONS,
-} from '../../shared/consts';
+} from '../../shared';
 import type {
   DataAnalysisResult,
   ErrorCorrectionLevel,

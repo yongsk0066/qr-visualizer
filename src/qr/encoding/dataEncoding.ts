@@ -1,6 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 import type { QRMode, QRVersion, DataAnalysisResult, ErrorCorrectionLevel } from '../../shared/types';
-import { MODE_INDICATORS, ALPHANUMERIC_CHARS, DATA_CAPACITY_TABLE } from '../../shared/consts';
+import { MODE_INDICATORS, ALPHANUMERIC_CHARS, DATA_CAPACITY_TABLE } from '../../shared';
 import { getCharacterCountBits } from '../analysis/dataAnalysis';
 import { toBinaryString, padToByteBoundary, addPaddingPattern } from '../../shared';
 

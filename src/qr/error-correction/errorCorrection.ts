@@ -4,7 +4,7 @@ import type { EncodedData } from '../encoding/dataEncoding';
 import type { ECBlocks, ErrorCorrectionResult } from './types';
 import { generateErrorCorrectionCodewords } from './reed-solomon/reedSolomon';
 import { bitStreamToCodewords, interleaveCodewords } from './utils';
-import { REMAINDER_BITS } from '../../shared/consts';
+import { REMAINDER_BITS } from '../../shared';
 
 
 

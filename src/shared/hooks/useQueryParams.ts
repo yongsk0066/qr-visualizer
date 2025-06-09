@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import type { ErrorCorrectionLevel } from './types';
+import type { ErrorCorrectionLevel } from '../types';
 
 interface QueryParams {
   data: string;

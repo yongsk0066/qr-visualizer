@@ -116,10 +116,17 @@ src/
 │   └── qrPipeline.ts       # 전체 파이프라인 통합
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
-    ├── consts.ts          # QR 상수 (모드, 용량, 갈루아 필드)
-    ├── binaryUtils.ts     # 바이너리 유틸리티
-    ├── stringUtils.ts     # 문자열 유틸리티
-    └── index.ts           # 유틸리티 통합 export
+    ├── constants/         # 상수 모듈
+    │   ├── consts.ts      # QR 상수 (모드, 용량, 갈루아 필드)
+    │   └── index.ts       # 상수 export
+    ├── utils/             # 유틸리티 모듈
+    │   ├── binary.ts      # 바이너리 유틸리티
+    │   ├── string.ts      # 문자열 유틸리티
+    │   └── index.ts       # 유틸리티 export
+    ├── hooks/             # React 훅 모듈
+    │   ├── useQueryParams.ts # URL 쿼리 파라미터 훅
+    │   └── index.ts       # 훅 export
+    └── index.ts           # 전체 통합 export
 ```
 
 ### Current Implementation Status

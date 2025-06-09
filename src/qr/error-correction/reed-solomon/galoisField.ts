@@ -1,4 +1,4 @@
-import { GALOIS_FIELD } from '../../../shared/consts';
+import { GALOIS_FIELD } from '../../../shared';
 
 /**
  * GF(256) 갈루아 필드 정적 유틸리티

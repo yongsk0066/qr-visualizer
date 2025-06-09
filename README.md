@@ -38,7 +38,7 @@ src/
 │   ├── final-generation/  # 7단계: 최종 QR 생성
 │   └── qrPipeline.ts      # 전체 파이프라인 통합
 ├── components/            # UI 컴포넌트 (7개 컬럼)
-└── shared/               # 공통 타입과 유틸리티
+└── shared/               # 공통 모듈 (타입, 상수, 유틸리티, 훅)
 ```
 
 ## 🛠️ 개발 명령어

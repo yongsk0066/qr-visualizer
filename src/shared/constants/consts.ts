@@ -1,4 +1,4 @@
-import type { QRMode, QRVersion, ErrorCorrectionLevel } from './types';
+import type { QRMode, QRVersion, ErrorCorrectionLevel } from '../types';
 
 /**
  * QR 코드 인코딩 모드 지시자
