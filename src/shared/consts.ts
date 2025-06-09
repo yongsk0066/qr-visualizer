@@ -6,7 +6,7 @@ import type { QRMode, QRVersion, ErrorCorrectionLevel } from './types';
  */
 export const MODE_INDICATORS = {
   numeric: '0001',
-  alphanumeric: '0010', 
+  alphanumeric: '0010',
   byte: '0100',
   kanji: '1000',
 } as const;
@@ -16,6 +16,14 @@ export const MODE_INDICATORS = {
  * ISO/IEC 18004 표 5 (line 578-585)
  */
 export const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+
+/**
+ * QR 버전 상수 배열 (1부터 40까지)
+ */
+export const QR_VERSIONS = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+  28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+] as const satisfies readonly QRVersion[];
 
 /**
  * 버전별 문자 카운트 지시자 비트 수
@@ -89,7 +97,7 @@ export const GALOIS_FIELD = {
  * ISO/IEC 18004 8.4.9 (line 865-881)
  */
 export const PADDING_PATTERNS = {
-  PAD_CODEWORD_1: 0xEC, // 11101100
+  PAD_CODEWORD_1: 0xec, // 11101100
   PAD_CODEWORD_2: 0x11, // 00010001
 } as const;
 
@@ -103,8 +111,44 @@ export const TERMINATOR_MAX_LENGTH = 4;
  * ISO/IEC 18004 표 1 (line 480)
  */
 export const REMAINDER_BITS: number[] = [
-  0, 7, 7, 7, 7, 7, 0, 0, 0, 0, // 1-10
-  0, 0, 0, 3, 3, 3, 3, 3, 3, 3, // 11-20
-  4, 4, 4, 4, 4, 4, 4, 3, 3, 3, // 21-30
-  3, 3, 3, 3, 0, 0, 0, 0, 0, 0  // 31-40
+  0,
+  7,
+  7,
+  7,
+  7,
+  7,
+  0,
+  0,
+  0,
+  0, // 1-10
+  0,
+  0,
+  0,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3,
+  3, // 11-20
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  3,
+  3,
+  3, // 21-30
+  3,
+  3,
+  3,
+  3,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0, // 31-40
 ];

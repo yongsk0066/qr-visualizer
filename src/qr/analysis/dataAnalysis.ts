@@ -1,6 +1,17 @@
-import { A, pipe } from '@mobily/ts-belt';
-import type { QRMode, QRVersion, ErrorCorrectionLevel, DataAnalysisResult } from '../../shared/types';
-import { ALPHANUMERIC_CHARS, CHARACTER_COUNT_BITS, DATA_CAPACITY_TABLE } from '../../shared/consts';
+import { A } from '@mobily/ts-belt';
+import {
+  ALPHANUMERIC_CHARS,
+  CHARACTER_COUNT_BITS,
+  DATA_CAPACITY_TABLE,
+  QR_VERSIONS,
+} from '../../shared/consts';
+import type {
+  DataAnalysisResult,
+  ErrorCorrectionLevel,
+  QRMode,
+  QRVersion,
+} from '../../shared/types';
+
 /**
  * 문자가 숫자(0-9)인지 확인
  */
@@ -33,7 +44,7 @@ const detectCharacterMode = (char: string): QRMode => {
  * 데이터의 각 문자를 분석하여 최적 모드 배열 반환
  */
 const analyzeDataModes = (data: string): readonly QRMode[] =>
-  pipe(data.split(''), A.map(detectCharacterMode));
+  data.split('').map(detectCharacterMode);
 
 /**
  * 전체 데이터 문자열에 대한 가장 효율적인 단일 모드 결정
@@ -79,11 +90,11 @@ const calculateDataBits = (data: string, mode: QRMode): number => {
 export const getCharacterCountBits = (mode: QRMode, version: QRVersion): number => {
   const versionRange = version <= 9 ? '1-9' : version <= 26 ? '10-26' : '27-40';
   const bits = CHARACTER_COUNT_BITS[mode]?.[versionRange];
-  
+
   if (bits === undefined) {
     throw new Error('지원되지 않는 모드');
   }
-  
+
   return bits;
 };
 
@@ -106,18 +117,12 @@ const findMinimumVersion = (
   data: string,
   mode: QRMode,
   errorLevel: ErrorCorrectionLevel
-): QRVersion | null => {
-  for (let version = 1; version <= 40; version++) {
-    const totalBits = calculateTotalBits(data, mode, version as QRVersion);
-    const capacity = DATA_CAPACITY_TABLE[version as QRVersion][errorLevel];
-
-    if (totalBits <= capacity) {
-      return version as QRVersion;
-    }
-  }
-
-  return null;
-};
+): QRVersion | null =>
+  QR_VERSIONS.find((version) => {
+    const totalBits = calculateTotalBits(data, mode, version);
+    const capacity = DATA_CAPACITY_TABLE[version][errorLevel];
+    return totalBits <= capacity;
+  }) ?? null;
 
 /**
  * 입력 데이터를 분석하여 최적 인코딩 매개변수 결정

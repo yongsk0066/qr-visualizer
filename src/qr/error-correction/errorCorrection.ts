@@ -27,23 +27,27 @@ export const performErrorCorrection = (
   version: QRVersion,
   errorLevel: ErrorCorrectionLevel
 ): ErrorCorrectionResult => {
+  // 1. 버전과 에러 정정 레벨에 따른 블록 구조 정보 가져오기
   const ecBlocks = getECBlocks(version, errorLevel);
   
-  const allBlocks = ecBlocks.groups.flatMap(group => 
+  // 2. 그룹 정보를 실제 블록 배열로 확장
+  // 예: [{blocks: 2, dataCount: 16}, {blocks: 2, dataCount: 17}] 
+  //  → [group1, group1, group2, group2]
+  const blockGroups = ecBlocks.groups.flatMap(group => 
     Array.from({ length: group.blocks }, () => group)
   );
   
-  const dataBlocks = allBlocks.reduce<{ blocks: number[][], offset: number }>(
-    (acc, group) => {
-      const blockData = dataCodewords.slice(acc.offset, acc.offset + group.dataCount);
-      return {
-        blocks: [...acc.blocks, blockData],
-        offset: acc.offset + group.dataCount
-      };
-    },
-    { blocks: [], offset: 0 }
-  ).blocks;
+  // 3. 데이터 코드워드를 블록별로 순차 분할
+  const dataBlocks: number[][] = [];
+  let offset = 0;
   
+  for (const group of blockGroups) {
+    const blockData = dataCodewords.slice(offset, offset + group.dataCount);
+    dataBlocks.push(blockData);
+    offset += group.dataCount;
+  }
+  
+  // 4. 각 데이터 블록에 대해 Reed-Solomon 에러 정정 코드워드 생성
   const ecBlocksResult = dataBlocks.map(blockData =>
     generateErrorCorrectionCodewords(blockData, ecBlocks.ecCodewordsPerBlock)
   );

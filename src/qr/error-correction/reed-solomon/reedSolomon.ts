@@ -5,13 +5,13 @@ import { GaloisField256 as GF } from './galoisField';
  */
 const multiplyPolynomials = (a: number[], b: number[]): number[] => {
   const result = new Array(a.length + b.length - 1).fill(0);
-  
+
   for (let i = 0; i < a.length; i++) {
     for (let j = 0; j < b.length; j++) {
       result[i + j] ^= GF.multiply(a[i], b[j]);
     }
   }
-  
+
   return result;
 };
 
@@ -20,7 +20,7 @@ const multiplyPolynomials = (a: number[], b: number[]): number[] => {
  */
 const dividePolynomial = (dividend: number[], generator: number[]): number[] => {
   const result = [...dividend];
-  
+
   for (let i = 0; i < dividend.length - generator.length + 1; i++) {
     const coefficient = result[i];
     if (coefficient !== 0) {
@@ -29,7 +29,7 @@ const dividePolynomial = (dividend: number[], generator: number[]): number[] => 
       }
     }
   }
-  
+
   return result;
 };
 
@@ -40,11 +40,11 @@ const dividePolynomial = (dividend: number[], generator: number[]): number[] => 
  */
 export const createGeneratorPolynomial = (degree: number): number[] => {
   let result = [1];
-  
+
   for (let i = 0; i < degree; i++) {
     result = multiplyPolynomials(result, [1, GF.getExp(i)]);
   }
-  
+
   return result;
 };
 
@@ -59,6 +59,6 @@ export const generateErrorCorrectionCodewords = (
   const generator = createGeneratorPolynomial(ecCodewordCount);
   const paddedData = [...dataCodewords, ...new Array(ecCodewordCount).fill(0)];
   const remainder = dividePolynomial(paddedData, generator);
-  
+
   return remainder.slice(dataCodewords.length);
 };
