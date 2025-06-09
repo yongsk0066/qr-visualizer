@@ -85,13 +85,6 @@ function App() {
         }}>
           <ModulePlacementColumn modulePlacement={modulePlacement} isProcessing={isProcessing} />
         </div>
-
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
-          <QRCodeColumn matrix={sampleMatrix} size={240} />
-        </div>
       </div>
     </div>
   );

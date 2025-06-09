@@ -13,8 +13,14 @@ interface QRMatrixProps {
   scale?: number;
 }
 
-const QRMatrix = ({ matrix, moduleTypes, size, scale = 3 }: QRMatrixProps) => {
+const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: QRMatrixProps & { showColors?: boolean }) => {
   const getModuleColor = (value: 0 | 1 | null, type: string) => {
+    if (!showColors) {
+      // 컬러 없는 버전 - 흑백만
+      if (value === null) return '#f8f9fa'; // 빈 공간
+      return value === 1 ? '#000' : '#fff';
+    }
+    
     if (value === null) {
       return type === 'empty' ? '#f8f9fa' : '#e2e8f0'; // 빈 공간은 연한 회색
     }
@@ -27,7 +33,7 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3 }: QRMatrixProps) => {
       alignment: value === 1 ? '#7c3aed' : '#ddd6fe',   // 얼라인먼트: 보라/연한 보라
       format: '#ef4444',                                 // 포맷: 빨간색
       version: '#f97316',                                // 버전: 주황색
-      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파란/연한 파란
+      data: value === 1 ? '#1e40af' : '#bfdbfe',        // 데이터: 파란/연한 파간
       empty: '#f8f9fa'                                   // 빈 공간: 아주 연한 회색
     };
     
@@ -139,6 +145,29 @@ export const ModulePlacementColumn = ({ modulePlacement, isProcessing }: ModuleP
                 />
               </div>
             ))}
+            
+            {/* Step 5 완성본 (컬러 없이) */}
+            <div className="flex-shrink-0">
+              <div className="text-center mb-3">
+                <h4 className="text-sm font-medium text-gray-700 mb-1">
+                  Step 5 완성
+                </h4>
+                <p className="text-xs text-gray-500 mb-2">
+                  최종 모듈 배치 완료
+                </p>
+                <p className="text-xs text-gray-600">
+                  흑백 버전
+                </p>
+              </div>
+              
+              <QRMatrix 
+                matrix={modulePlacement.finalMatrix}
+                moduleTypes={modulePlacement.finalModuleTypes}
+                size={modulePlacement.size}
+                scale={scale}
+                showColors={false}
+              />
+            </div>
           </div>
         </div>
 
