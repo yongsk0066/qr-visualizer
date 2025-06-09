@@ -18,12 +18,28 @@ interface QRMatrixProps {
   scale?: number;
   pattern: MaskPattern;
   title: string;
+  isXorResult?: boolean;
 }
 
-const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title }: QRMatrixProps) => {
-  const getModuleColor = (shouldMask: boolean) => {
-    // 단순한 흑백 마스크 패턴만 표시
-    return shouldMask ? '#000' : '#fff';
+const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title, isXorResult = false }: QRMatrixProps) => {
+  const getModuleColor = (row: number, col: number) => {
+    if (isXorResult) {
+      // XOR 결과: 원본 매트릭스와 마스크를 XOR한 결과
+      const originalValue = matrix[row][col];
+      const shouldMask = maskMatrix[row][col];
+      
+      if (originalValue === null) {
+        return '#f8f9fa'; // 빈 공간
+      }
+      
+      // XOR 연산: 마스킹이 적용되면 비트를 뒤집음
+      const resultValue = shouldMask ? (1 - originalValue) : originalValue;
+      return resultValue === 1 ? '#000' : '#fff';
+    } else {
+      // 마스크 패턴만 표시 (기존 로직)
+      const shouldMask = maskMatrix[row][col];
+      return shouldMask ? '#000' : '#fff';
+    }
   };
 
   // 매트릭스 크기 안전성 체크
@@ -54,11 +70,6 @@ const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title }: QRMat
           {/* 모듈별 rect */}
           {matrix.map((row, rowIndex) =>
             row.map((_, colIndex) => {
-              // 안전성 체크: maskMatrix 범위 확인
-              const shouldMask = maskMatrix[rowIndex] && maskMatrix[rowIndex][colIndex] !== undefined 
-                ? maskMatrix[rowIndex][colIndex] 
-                : false;
-              
               return (
                 <rect
                   key={`${rowIndex}-${colIndex}`}
@@ -66,7 +77,7 @@ const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title }: QRMat
                   y={rowIndex}
                   width={1}
                   height={1}
-                  fill={getModuleColor(shouldMask)}
+                  fill={getModuleColor(rowIndex, colIndex)}
                   stroke={size <= 25 ? 'rgba(0,0,0,0.1)' : 'none'}
                   strokeWidth={size <= 25 ? '0.02' : '0'}
                 />
@@ -125,7 +136,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
     <div className="step-column">
       <h2 className="font-medium mb-3">6단계: 마스킹</h2>
       <p className="text-sm text-gray-600 mb-4">
-        8가지 마스크 패턴 (전체 패턴 | 인코딩 영역만)
+        8가지 마스크 패턴 (전체 패턴 | 인코딩 영역만 | XOR 결과)
       </p>
 
       <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
@@ -148,7 +159,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                 패턴 {pattern}
               </div>
               
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-3">
                 <QRMatrix
                   matrix={matrix}
                   maskMatrix={maskMatrix}
@@ -166,6 +177,16 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                   pattern={pattern}
                   title="인코딩 영역만"
                 />
+                
+                <QRMatrix
+                  matrix={matrix}
+                  maskMatrix={encodingMaskMatrix}
+                  size={size}
+                  scale={scale}
+                  pattern={pattern}
+                  title="XOR 결과"
+                  isXorResult={true}
+                />
               </div>
             </div>
           );
@@ -174,23 +195,24 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
 
       {/* 범례 */}
       <div className="mt-4 p-2 bg-gray-50 rounded text-xs">
-        <div className="font-medium mb-1">마스크 패턴 비교</div>
+        <div className="font-medium mb-1">마스크 패턴 3단계 비교</div>
         <div className="space-y-1">
-          <div><strong>전체 패턴:</strong> 전체 매트릭스에 패턴 적용</div>
-          <div><strong>인코딩 영역만:</strong> 데이터 영역에만 패턴 적용</div>
+          <div><strong>전체 패턴:</strong> 전체 매트릭스에 수학적 패턴 적용</div>
+          <div><strong>인코딩 영역만:</strong> 데이터 영역에만 패턴 필터링</div>
+          <div><strong>XOR 결과:</strong> 원본 QR과 마스크를 XOR한 최종 결과</div>
         </div>
         <div className="mt-2 space-y-1">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-black"></div>
-            <span>마스킹 적용 위치</span>
+            <span>검정 모듈 (비트 1)</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-white border border-gray-300"></div>
-            <span>마스킹 비적용 위치</span>
+            <span>흰색 모듈 (비트 0)</span>
           </div>
         </div>
         <div className="mt-1 text-gray-600">
-          <div>i: 행 번호, j: 열 번호</div>
+          <div>XOR 연산: 마스킹 위치에서 비트 반전</div>
           <div>ISO/IEC 18004: 기능 패턴에는 마스킹 미적용</div>
         </div>
       </div>
