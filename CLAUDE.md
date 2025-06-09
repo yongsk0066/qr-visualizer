@@ -106,7 +106,8 @@ src/
 │   │       ├── bchUtils.ts         # BCH 에러 정정 유틸
 │   │       └── bchUtils.test.ts    # 13개 BCH 테스트
 │   ├── masking/             # 6단계: 마스킹 패턴 적용
-│   │   ├── maskPatterns.ts         # 8가지 마스크 패턴 함수
+│   │   ├── maskPatterns.ts         # 8가지 마스크 패턴 함수, 평가 시스템
+│   │   ├── penaltyCalculation.ts   # ISO/IEC 18004 패널티 계산 (N₁~N₄)
 │   │   └── maskPatterns.test.ts    # 27개 마스크 패턴 테스트
 │   └── qrPipeline.ts       # 전체 파이프라인 통합
 └── shared/                 # 전역 공유 모듈
@@ -168,11 +169,13 @@ src/
 
 **Step 6 - Masking**
 - **8 mask patterns**: All ISO/IEC 18004 standard masking formulas (patterns 0-7)
-- **Mathematical implementation**: Precise row/column conditional logic for each pattern
-- **Visual display**: Simple black/white pattern visualization for educational clarity
-- **SVG-based rendering**: Consistent vector graphics with other QR components
+- **4-stage visualization**: Full pattern → Encoding region → XOR result → Penalty evaluation
+- **Encoding region filtering**: Data area only masking per ISO/IEC 18004 standard
+- **XOR operation**: Real masking application with bit inversion visualization
+- **Penalty calculation**: Complete 4-criteria evaluation (N₁, N₂, N₃, N₄) system
+- **Automatic selection**: Lowest penalty score pattern selection with visual highlighting
 - **Comprehensive testing**: 27 vitest tests covering all mask pattern algorithms
-- **Pattern descriptions**: Mathematical formulas displayed for each mask pattern
+- **SVG-based rendering**: Consistent vector graphics with other QR components
 
 **Architecture & UI/UX**
 - **6-column responsive layout**: Uniform grid with 320px minimum width per column
@@ -196,7 +199,7 @@ src/
 - **Components**: `src/components/` - Step-specific UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
 - **UI Layout**: 6-column grid with compact spacing and responsive design
-- **Testing**: 242 comprehensive tests across all modules (39 analysis + 20 encoding + 34 error correction + 9 message construction + 77 module placement + 13 BCH utils + 27 masking + 23 additional)
+- **Testing**: 362 comprehensive tests across all modules (70 analysis + 41 encoding + 66 error correction + 51 message construction + 92 module placement + 20 BCH utils + 22 masking)
 
 ## QR Code Standard Documentation
 
@@ -222,7 +225,7 @@ This project follows specific coding practices to maintain consistency and reada
 7. **Shared Utilities**: Move reusable functions to appropriate shared directories
 8. **Minimal Comments**: Code should be self-documenting; avoid excessive commenting unless documenting complex algorithms
 9. **Immutable Data**: Prefer immutable data structures and pure functions
-10. **Testing**: Write comprehensive tests for all QR logic functions (242 tests total)
+10. **Testing**: Write comprehensive tests for all QR logic functions (362 tests total)
 11. **ISO Compliance**: Follow ISO/IEC 18004 standard with detailed comments referencing specific sections
 
 ## Development Workflow
