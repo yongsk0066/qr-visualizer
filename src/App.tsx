@@ -6,6 +6,7 @@ import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
 import { MessageConstructionColumn } from './components/MessageConstructionColumn';
 import { ModulePlacementColumn } from './components/ModulePlacementColumn';
 import { MaskingColumn } from './components/MaskingColumn';
+import { ProcessingWrapper } from './components/ProcessingWrapper';
 import { runQRPipeline } from './qr/qrPipeline';
 import { useQueryParams } from './shared';
 
@@ -56,40 +57,25 @@ function App() {
           isProcessing={isProcessing}
         />
 
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
           <DataEncodingColumn encodedData={encodedData} />
-        </div>
+        </ProcessingWrapper>
 
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
           <ErrorCorrectionColumn errorCorrection={errorCorrection} />
-        </div>
+        </ProcessingWrapper>
 
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
           <MessageConstructionColumn result={messageConstruction} />
-        </div>
+        </ProcessingWrapper>
 
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
           <ModulePlacementColumn modulePlacement={modulePlacement} />
-        </div>
+        </ProcessingWrapper>
 
-        <div style={{ 
-          opacity: isProcessing ? 0.6 : 1,
-          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
-        }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
           <MaskingColumn modulePlacement={modulePlacement} />
-        </div>
+        </ProcessingWrapper>
       </div>
     </div>
   );
