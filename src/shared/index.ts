@@ -13,3 +13,10 @@ export {
   getCharCode,
   toCharArray,
 } from './stringUtils';
+
+// Query params hook
+export {
+  useQueryParams,
+  useQueryParam,
+  destroyQueryParamsStore,
+} from './useQueryParams';
