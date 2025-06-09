@@ -15,22 +15,24 @@ function App() {
   const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] =
     useQueryParams();
   const deferredInputData = useDeferredValue(inputData);
-  const isProcessing = inputData !== deferredInputData;
+  const deferredQrVersion = useDeferredValue(qrVersion);
+  const deferredErrorLevel = useDeferredValue(errorLevel);
+  const isProcessing = inputData !== deferredInputData || qrVersion !== deferredQrVersion || errorLevel !== deferredErrorLevel;
 
   const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement, finalGeneration } =
     useMemo(
-      () => runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
-      [deferredInputData, qrVersion, errorLevel]
+      () => runQRPipeline({ inputData: deferredInputData, qrVersion: deferredQrVersion, errorLevel: deferredErrorLevel }),
+      [deferredInputData, deferredQrVersion, deferredErrorLevel]
     );
 
   useEffect(() => {
     if (dataAnalysis?.isValid && dataAnalysis.minimumVersion) {
-      const currentVersion = parseInt(qrVersion, 10);
+      const currentVersion = parseInt(deferredQrVersion, 10);
       if (currentVersion < dataAnalysis.minimumVersion) {
         updateQueryParams({ version: dataAnalysis.minimumVersion.toString() });
       }
     }
-  }, [dataAnalysis, qrVersion, updateQueryParams]);
+  }, [dataAnalysis, deferredQrVersion, updateQueryParams]);
 
   const stepColumns = [
     <DataEncodingColumn encodedData={dataEncoding} />,
