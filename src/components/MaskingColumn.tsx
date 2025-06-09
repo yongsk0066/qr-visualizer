@@ -170,7 +170,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
         8가지 마스크 패턴 평가 및 최적 패턴 선택
       </p>
 
-      <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
+      <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-auto">
         {evaluationResults.map((evaluation) => {
           const pattern = evaluation.pattern;
           const maskMatrix = maskMatrices[pattern];
@@ -191,7 +191,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                 패턴 {pattern}
               </div>
               
-              <div className="flex justify-center gap-3">
+              <div className="flex justify-center gap-3 min-w-max">
                 <QRMatrix
                   matrix={matrix}
                   maskMatrix={maskMatrix}
