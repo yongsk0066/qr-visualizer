@@ -78,3 +78,18 @@ export interface ErrorCorrectionData {
   ecBlocks: number[][];
   remainderBits: number;
 }
+
+export interface ModulePlacementData {
+  subSteps: Array<{
+    matrix: (0 | 1 | null)[][];
+    moduleTypes: string[][];
+    stepName: string;
+    description: string;
+    addedModules: number;
+  }>;
+  finalMatrix: (0 | 1 | null)[][];
+  finalModuleTypes: string[][];
+  size: number;
+  totalDataModules: number;
+  usedDataModules: number;
+}

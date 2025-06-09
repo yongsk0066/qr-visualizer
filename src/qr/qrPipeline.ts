@@ -2,7 +2,8 @@ import { analyzeData } from './analysis/dataAnalysis';
 import { runDataEncoding } from './encoding/dataEncoding';
 import { runErrorCorrection } from './error-correction/errorCorrection';
 import { constructMessage } from './message-construction/messageConstruction';
-import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData } from '../shared/types';
+import { runModulePlacement } from './module-placement/modulePlacement';
+import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData, ModulePlacementData } from '../shared/types';
 import type { EncodedData } from './encoding/dataEncoding';
 import type { MessageConstructionResult } from './message-construction/messageConstruction';
 
@@ -17,7 +18,8 @@ export interface QRPipelineResult {
   dataEncoding: EncodedData | null;
   errorCorrection: ErrorCorrectionData | null;
   messageConstruction: MessageConstructionResult | null;
-  qrGeneration: number[][];
+  modulePlacement: ModulePlacementData | null;
+  qrGeneration: (0 | 1 | null)[][];
 }
 
 export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
@@ -38,14 +40,18 @@ export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
     ? constructMessage(errorCorrection)
     : null;
 
-  // TODO: Step 5-7 구현 (모듈 배치, 마스킹, 포맷 정보)
-  const qrGeneration = [] as number[][];
+  const modulePlacement = messageConstruction
+    ? runModulePlacement(version, messageConstruction.finalBitStream)
+    : null;
+
+  const qrGeneration = modulePlacement?.finalMatrix || [];
 
   return {
     dataAnalysis,
     dataEncoding,
     errorCorrection,
     messageConstruction,
+    modulePlacement,
     qrGeneration,
   };
 };

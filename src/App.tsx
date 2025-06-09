@@ -4,6 +4,7 @@ import { SettingsColumn } from './components/SettingsColumn';
 import { DataEncodingColumn } from './components/DataEncodingColumn';
 import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
 import { MessageConstructionColumn } from './components/MessageConstructionColumn';
+import { ModulePlacementColumn } from './components/ModulePlacementColumn';
 import { QRCodeColumn } from './components/QRCodeColumn';
 import { runQRPipeline } from './qr/qrPipeline';
 import type { ErrorCorrectionLevel } from './shared/types';
@@ -20,7 +21,7 @@ function App() {
     [deferredInputData, qrVersion, errorLevel]
   );
 
-  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, qrGeneration } = qrPipeline;
+  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement, qrGeneration } = qrPipeline;
   const encodedData = dataEncoding;
   const sampleMatrix = qrGeneration;
 
@@ -76,6 +77,13 @@ function App() {
           transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
         }}>
           <MessageConstructionColumn result={messageConstruction} />
+        </div>
+
+        <div style={{ 
+          opacity: isProcessing ? 0.6 : 1,
+          transition: isProcessing ? 'opacity 0.2s 0.1s ease-out' : 'opacity 0s 0s ease-out'
+        }}>
+          <ModulePlacementColumn modulePlacement={modulePlacement} isProcessing={isProcessing} />
         </div>
 
         <div style={{ 
