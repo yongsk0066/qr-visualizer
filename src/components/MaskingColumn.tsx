@@ -96,21 +96,21 @@ const PenaltyScoreDisplay = ({ evaluation }: { evaluation: MaskEvaluationResult 
   const { penaltyScore, isSelected } = evaluation;
   
   return (
-    <div className={`p-2 rounded border ${isSelected ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-200'}`}>
+    <div className={`p-2 rounded border min-w-[100px] ${isSelected ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-200'}`}>
       {isSelected && (
         <div className="text-xs font-bold text-green-700 mb-1 text-center">
           ✓ 선택됨
         </div>
       )}
       <div className="text-xs space-y-0.5">
-        <div className="font-medium">패널티 점수</div>
+        <div className="font-medium text-center">패널티 점수</div>
         <div className="grid grid-cols-2 gap-1 text-[10px]">
           <div>N₁: {penaltyScore.penalty1}</div>
           <div>N₂: {penaltyScore.penalty2}</div>
           <div>N₃: {penaltyScore.penalty3}</div>
           <div>N₄: {penaltyScore.penalty4}</div>
         </div>
-        <div className={`text-xs font-medium pt-0.5 border-t ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
+        <div className={`text-xs font-medium pt-0.5 border-t text-center ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
           총합: {penaltyScore.total}
         </div>
       </div>
