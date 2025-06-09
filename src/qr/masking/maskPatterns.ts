@@ -1,5 +1,6 @@
 import type { QRVersion } from '../../shared/types';
 import { getMatrixSize } from '../module-placement/utils/matrixUtils';
+import { calculateTotalPenalty, applyMaskToMatrix, type PenaltyScore } from './penaltyCalculation';
 
 /**
  * 마스크 패턴 타입 (0-7)
@@ -134,4 +135,51 @@ export const generateAllEncodingMaskMatrices = (
   }
   
   return result;
+};
+
+/**
+ * 마스크 패턴 평가 결과
+ */
+export interface MaskEvaluationResult {
+  pattern: MaskPattern;
+  penaltyScore: PenaltyScore;
+  isSelected: boolean;
+}
+
+/**
+ * 모든 마스크 패턴 평가 및 최적 패턴 선택
+ */
+export const evaluateAllMaskPatterns = (
+  originalMatrix: (0 | 1 | null)[][],
+  encodingMaskMatrices: Record<MaskPattern, boolean[][]>
+): MaskEvaluationResult[] => {
+  const evaluations: MaskEvaluationResult[] = [];
+  
+  // 각 마스크 패턴에 대해 패널티 점수 계산
+  for (let pattern = 0; pattern < 8; pattern++) {
+    const maskPattern = pattern as MaskPattern;
+    const maskMatrix = encodingMaskMatrices[maskPattern];
+    
+    // XOR 적용된 매트릭스 생성
+    const maskedMatrix = applyMaskToMatrix(originalMatrix, maskMatrix);
+    
+    // 패널티 점수 계산
+    const penaltyScore = calculateTotalPenalty(maskedMatrix);
+    
+    evaluations.push({
+      pattern: maskPattern,
+      penaltyScore,
+      isSelected: false // 나중에 설정
+    });
+  }
+  
+  // 가장 낮은 패널티 점수를 가진 패턴 선택
+  const lowestScore = Math.min(...evaluations.map(e => e.penaltyScore.total));
+  const selectedIndex = evaluations.findIndex(e => e.penaltyScore.total === lowestScore);
+  
+  if (selectedIndex !== -1) {
+    evaluations[selectedIndex].isSelected = true;
+  }
+  
+  return evaluations;
 };

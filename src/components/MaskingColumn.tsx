@@ -3,8 +3,10 @@ import type { ModulePlacementData } from '../shared/types';
 import { 
   generateAllMaskMatrices, 
   generateAllEncodingMaskMatrices,
+  evaluateAllMaskPatterns,
   MASK_DESCRIPTIONS, 
-  type MaskPattern 
+  type MaskPattern,
+  type MaskEvaluationResult
 } from '../qr/masking/maskPatterns';
 
 interface MaskingColumnProps {
@@ -90,6 +92,32 @@ const QRMatrix = ({ matrix, maskMatrix, size, scale = 2, pattern, title, isXorRe
   );
 };
 
+const PenaltyScoreDisplay = ({ evaluation }: { evaluation: MaskEvaluationResult }) => {
+  const { penaltyScore, isSelected } = evaluation;
+  
+  return (
+    <div className={`p-2 rounded border ${isSelected ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-200'}`}>
+      {isSelected && (
+        <div className="text-xs font-bold text-green-700 mb-1 text-center">
+          ✓ 선택됨
+        </div>
+      )}
+      <div className="text-xs space-y-0.5">
+        <div className="font-medium">패널티 점수</div>
+        <div className="grid grid-cols-2 gap-1 text-[10px]">
+          <div>N₁: {penaltyScore.penalty1}</div>
+          <div>N₂: {penaltyScore.penalty2}</div>
+          <div>N₃: {penaltyScore.penalty3}</div>
+          <div>N₄: {penaltyScore.penalty4}</div>
+        </div>
+        <div className={`text-xs font-medium pt-0.5 border-t ${isSelected ? 'text-green-700' : 'text-gray-700'}`}>
+          총합: {penaltyScore.total}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   // useMemo를 컴포넌트 상단으로 이동 (조건부 호출 방지)
   const scale = useMemo(() => {
@@ -131,17 +159,21 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   // 8가지 인코딩 영역 마스크 매트릭스 생성 (필터링된 패턴)
   const encodingMaskMatrices = generateAllEncodingMaskMatrices(modulePlacement.version, moduleTypes);
   
+  // 모든 마스크 패턴 평가 및 최적 패턴 선택
+  const evaluationResults = evaluateAllMaskPatterns(matrix, encodingMaskMatrices);
+  
 
   return (
     <div className="step-column">
       <h2 className="font-medium mb-3">6단계: 마스킹</h2>
       <p className="text-sm text-gray-600 mb-4">
-        8가지 마스크 패턴 (전체 패턴 | 인코딩 영역만 | XOR 결과)
+        8가지 마스크 패턴 평가 및 최적 패턴 선택
       </p>
 
       <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
-        {Object.entries(maskMatrices).map(([patternStr, maskMatrix]) => {
-          const pattern = parseInt(patternStr) as MaskPattern;
+        {evaluationResults.map((evaluation) => {
+          const pattern = evaluation.pattern;
+          const maskMatrix = maskMatrices[pattern];
           const encodingMaskMatrix = encodingMaskMatrices[pattern];
           
           // 추가 안전성 체크
@@ -154,9 +186,11 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
           }
           
           return (
-            <div key={pattern} className="space-y-3">
+            <div key={pattern} className={`space-y-3 p-3 rounded-lg border ${
+              evaluation.isSelected ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white'
+            }`}>
               <div className="text-center text-xs font-medium text-gray-700">
-                패턴 {pattern}
+                패턴 {pattern} {evaluation.isSelected && <span className="text-green-600 font-bold">⭐ 최적</span>}
               </div>
               
               <div className="flex justify-center gap-3">
@@ -187,6 +221,8 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                   title="XOR 결과"
                   isXorResult={true}
                 />
+                
+                <PenaltyScoreDisplay evaluation={evaluation} />
               </div>
             </div>
           );
@@ -195,25 +231,23 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
 
       {/* 범례 */}
       <div className="mt-4 p-2 bg-gray-50 rounded text-xs">
-        <div className="font-medium mb-1">마스크 패턴 3단계 비교</div>
+        <div className="font-medium mb-1">마스크 패턴 평가 과정</div>
         <div className="space-y-1">
           <div><strong>전체 패턴:</strong> 전체 매트릭스에 수학적 패턴 적용</div>
           <div><strong>인코딩 영역만:</strong> 데이터 영역에만 패턴 필터링</div>
           <div><strong>XOR 결과:</strong> 원본 QR과 마스크를 XOR한 최종 결과</div>
+          <div><strong>패널티 점수:</strong> ISO/IEC 18004 기준 4가지 평가 항목</div>
         </div>
         <div className="mt-2 space-y-1">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-black"></div>
-            <span>검정 모듈 (비트 1)</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-white border border-gray-300"></div>
-            <span>흰색 모듈 (비트 0)</span>
+          <div className="text-gray-700">
+            <div><strong>N₁:</strong> 연속된 같은 색 모듈 (5개 이상)</div>
+            <div><strong>N₂:</strong> 2×2 같은 색 블록</div>
+            <div><strong>N₃:</strong> 1:1:3:1:1 파인더 패턴 유사성</div>
+            <div><strong>N₄:</strong> 검정 모듈 비율 (50%에서 편차)</div>
           </div>
         </div>
-        <div className="mt-1 text-gray-600">
-          <div>XOR 연산: 마스킹 위치에서 비트 반전</div>
-          <div>ISO/IEC 18004: 기능 패턴에는 마스킹 미적용</div>
+        <div className="mt-2 p-1 bg-green-100 rounded">
+          <div className="text-green-700 font-medium">⭐ 가장 낮은 총 패널티 점수를 가진 패턴이 선택됩니다</div>
         </div>
       </div>
     </div>
