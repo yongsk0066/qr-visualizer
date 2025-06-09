@@ -219,14 +219,17 @@ All 7 steps of QR code generation are now fully implemented with comprehensive t
 
 ## QR Code Standard Documentation
 
-The Korean QR code standard documentation has been converted to Markdown format for easier access:
+The Korean QR code standard documentation is available for local reference:
+- Check the `.docs/` directory for ISO/IEC 18004 standard documents
+- Contains original PDF, converted Markdown, and navigation index
+- Use these files for implementation reference and compliance verification
 
-Use the index file to quickly locate specific implementation topics. Key sections include:
-- Section 8: Complete encoding process (line 417+)
-- Data analysis and mode selection (line 497+)
-- Error correction algorithms (line 865+)
-- Module placement and masking (line 1335+)
-- Format and version information (line 1517+)
+Key sections for implementation:
+- Section 8: Complete encoding process
+- Data analysis and mode selection
+- Error correction algorithms 
+- Module placement and masking
+- Format and version information
 
 ## Code Style Guidelines
 
