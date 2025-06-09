@@ -6,6 +6,7 @@ import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
 import { MessageConstructionColumn } from './components/MessageConstructionColumn';
 import { ModulePlacementColumn } from './components/ModulePlacementColumn';
 import { MaskingColumn } from './components/MaskingColumn';
+import { FinalGenerationColumn } from './components/FinalGenerationColumn';
 import { ProcessingWrapper } from './components/ProcessingWrapper';
 import { runQRPipeline } from './qr/qrPipeline';
 import { useQueryParams } from './shared';
@@ -16,7 +17,7 @@ function App() {
   const deferredInputData = useDeferredValue(inputData);
   const isProcessing = inputData !== deferredInputData;
 
-  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement } =
+  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement, finalGeneration } =
     useMemo(
       () => runQRPipeline({ inputData: deferredInputData, qrVersion, errorLevel }),
       [deferredInputData, qrVersion, errorLevel]
@@ -37,6 +38,7 @@ function App() {
     <MessageConstructionColumn result={messageConstruction} />,
     <ModulePlacementColumn modulePlacement={modulePlacement} />,
     <MaskingColumn modulePlacement={modulePlacement} />,
+    <FinalGenerationColumn finalGeneration={finalGeneration} />,
   ];
 
   return (

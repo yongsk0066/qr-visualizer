@@ -43,9 +43,9 @@ describe('Step 5-6: Format Information', () => {
     expect(result.matrix[37][8]).toBe(1);
     expect(result.moduleTypes[37][8]).toBe('format');
     
-    // 버전 정보 영역 확인 (수정된 위치)
-    expect(result.moduleTypes[0][45 - 14]).toBe('version'); // 우상단 버전 정보 (0, 31)
-    expect(result.moduleTypes[45 - 14][0]).toBe('version'); // 좌하단 버전 정보 (31, 0)
+    // 버전 정보 영역 확인 (올바른 위치)
+    expect(result.moduleTypes[0][45 - 11]).toBe('version'); // 우상단 버전 정보 (0, 34)
+    expect(result.moduleTypes[45 - 11][0]).toBe('version'); // 좌하단 버전 정보 (34, 0)
   });
 
   it('should not overwrite existing patterns', () => {
