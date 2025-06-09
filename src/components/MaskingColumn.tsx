@@ -186,7 +186,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
           }
           
           return (
-            <div key={pattern} className="space-y-3 p-3 rounded-lg border border-gray-200 bg-white">
+            <div key={pattern} className="space-y-3">
               <div className="text-center text-xs font-medium text-gray-700">
                 패턴 {pattern}
               </div>
