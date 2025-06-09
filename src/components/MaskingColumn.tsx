@@ -104,7 +104,7 @@ const PenaltyScoreDisplay = ({ evaluation }: { evaluation: MaskEvaluationResult 
       )}
       <div className="text-xs space-y-0.5">
         <div className="font-medium text-center">패널티 점수</div>
-        <div className="grid grid-cols-2 gap-1 text-[10px]">
+        <div className="space-y-0.5 text-[10px]">
           <div>N₁: {penaltyScore.penalty1}</div>
           <div>N₂: {penaltyScore.penalty2}</div>
           <div>N₃: {penaltyScore.penalty3}</div>
