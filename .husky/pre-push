@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+
+# Check if docs/standards directory exists in any commits being pushed
+remote="$1"
+url="$2"
+
+# Get the commits being pushed
+commits=$(git rev-list HEAD --not --remotes="$remote")
+
+for commit in $commits; do
+  if git show --name-only --format="" "$commit" | grep -q "^docs/standards/"; then
+    echo "❌ Error: Attempting to push commits containing docs/standards/ directory"
+    echo "   Commit: $commit"
+    echo "   This directory contains copyrighted standard documents"
+    echo "   and should never be pushed to remote repository"
+    echo ""
+    echo "   Please remove these files from your commit history before pushing"
+    exit 1
+  fi
+done
+
+echo "✅ Push validation passed - no copyrighted documents found"

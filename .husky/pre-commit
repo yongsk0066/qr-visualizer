@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# Automatically exclude docs/standards directory from commit if staged
+if git diff --cached --name-only | grep -q "^docs/standards/"; then
+  echo "⚠️  Warning: Automatically excluding docs/standards/ from commit"
+  echo "   (contains copyrighted standard documents)"
+  git reset HEAD docs/standards/ > /dev/null 2>&1
+fi
+
+# Run linting and type checking
+yarn lint
+yarn tsc --build
