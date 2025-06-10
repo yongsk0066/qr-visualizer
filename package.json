@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "tsc": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
@@ -28,6 +29,7 @@
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "husky": "^9.1.7",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.1",
     "vite": "npm:rolldown-vite@latest",

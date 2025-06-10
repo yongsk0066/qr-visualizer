@@ -1,13 +1,19 @@
+import { pipe } from '@mobily/ts-belt';
+import type {
+  DataAnalysisResult,
+  ErrorCorrectionData,
+  ErrorCorrectionLevel,
+  ModulePlacementData,
+  QRVersion,
+} from '../shared/types';
 import { analyzeData } from './analysis/dataAnalysis';
+import type { EncodedData } from './encoding/dataEncoding';
 import { runDataEncoding } from './encoding/dataEncoding';
 import { runErrorCorrection } from './error-correction/errorCorrection';
+import { runFinalGeneration, type FinalQRResult } from './final-generation/finalGeneration';
+import type { MessageConstructionResult } from './message-construction/messageConstruction';
 import { constructMessage } from './message-construction/messageConstruction';
 import { runModulePlacement } from './module-placement/modulePlacement';
-import { generateAllEncodingMaskMatrices, evaluateAllMaskPatterns } from './masking/maskPatterns';
-import { generateFinalQR, type FinalQRResult } from './final-generation/finalGeneration';
-import type { ErrorCorrectionLevel, QRVersion, DataAnalysisResult, ErrorCorrectionData, ModulePlacementData } from '../shared/types';
-import type { EncodedData } from './encoding/dataEncoding';
-import type { MessageConstructionResult } from './message-construction/messageConstruction';
 
 export interface QRPipelineParams {
   inputData: string;
@@ -24,59 +30,52 @@ export interface QRPipelineResult {
   finalGeneration: FinalQRResult | null;
 }
 
-export const runQRPipeline = (params: QRPipelineParams): QRPipelineResult => {
-  const { inputData, qrVersion, errorLevel } = params;
+export const runQRPipeline = ({ inputData, qrVersion, errorLevel }: QRPipelineParams) => {
   const version = parseInt(qrVersion, 10) as QRVersion;
 
-  const dataAnalysis = inputData 
-    ? analyzeData(inputData, errorLevel) 
-    : null;
+  return pipe(
+    { inputData, version, errorLevel },
 
-  const dataEncoding = dataAnalysis 
-    ? runDataEncoding(inputData, dataAnalysis, version, errorLevel)
-    : null;
+    // Step 1: Data Analysis
+    (state) => ({
+      ...state,
+      dataAnalysis: state.inputData ? analyzeData(state.inputData, state.errorLevel) : null,
+    }),
 
-  const errorCorrection = runErrorCorrection(dataEncoding, version, errorLevel);
+    // Step 2: Data Encoding
+    (state) => ({
+      ...state,
+      dataEncoding: state.dataAnalysis
+        ? runDataEncoding(state.inputData, state.dataAnalysis, state.version, state.errorLevel)
+        : null,
+    }),
 
-  const messageConstruction = errorCorrection
-    ? constructMessage(errorCorrection)
-    : null;
+    // Step 3: Error Correction
+    (state) => ({
+      ...state,
+      errorCorrection: runErrorCorrection(state.dataEncoding, state.version, state.errorLevel),
+    }),
 
-  const modulePlacement = messageConstruction
-    ? runModulePlacement(version, messageConstruction.finalBitStream)
-    : null;
+    // Step 4: Message Construction
+    (state) => ({
+      ...state,
+      messageConstruction: state.errorCorrection ? constructMessage(state.errorCorrection) : null,
+    }),
 
-  // Step 7: Final QR Generation
-  const finalGeneration = modulePlacement ? (() => {
-    const { matrix, moduleTypes } = modulePlacement.subSteps[modulePlacement.subSteps.length - 1];
-    
-    // 마스킹 평가 및 최적 패턴 선택
-    const encodingMaskMatrices = generateAllEncodingMaskMatrices(version, moduleTypes);
-    const evaluationResults = evaluateAllMaskPatterns(matrix, encodingMaskMatrices);
-    const selectedEvaluation = evaluationResults.find(e => e.isSelected);
-    
-    if (!selectedEvaluation) {
-      return null;
-    }
-    
-    const selectedMaskMatrix = encodingMaskMatrices[selectedEvaluation.pattern];
-    
-    // 최종 QR 코드 생성
-    return generateFinalQR(
-      matrix,
-      selectedMaskMatrix,
-      selectedEvaluation.pattern,
-      version,
-      errorLevel
-    );
-  })() : null;
+    // Step 5: Module Placement
+    (state) => ({
+      ...state,
+      modulePlacement: state.messageConstruction
+        ? runModulePlacement(state.version, state.messageConstruction.finalBitStream)
+        : null,
+    }),
 
-  return {
-    dataAnalysis,
-    dataEncoding,
-    errorCorrection,
-    messageConstruction,
-    modulePlacement,
-    finalGeneration,
-  };
+    // Step 6-7: Final Generation
+    (state) => ({
+      ...state,
+      finalGeneration: state.modulePlacement
+        ? runFinalGeneration(state.modulePlacement, state.version, state.errorLevel)
+        : null,
+    })
+  );
 };

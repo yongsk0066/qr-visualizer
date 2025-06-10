@@ -1,4 +1,3 @@
-import { A } from '@mobily/ts-belt';
 import {
   ALPHANUMERIC_CHARS,
   CHARACTER_COUNT_BITS,
@@ -41,23 +40,17 @@ const detectCharacterMode = (char: string): QRMode => {
 };
 
 /**
- * 데이터의 각 문자를 분석하여 최적 모드 배열 반환
- */
-const analyzeDataModes = (data: string): readonly QRMode[] =>
-  data.split('').map(detectCharacterMode);
-
-/**
  * 전체 데이터 문자열에 대한 가장 효율적인 단일 모드 결정
  */
 const getOptimalMode = (data: string): QRMode => {
-  const modes = analyzeDataModes(data);
-  const uniqueModes = A.uniq(modes);
+  const modes = data.split('').map(detectCharacterMode);
+  const uniqueModes = [...new Set(modes)];
 
   if (uniqueModes.length === 1) {
-    return uniqueModes[0]!;
+    return uniqueModes[0];
   }
 
-  if (A.every(modes, (mode) => mode === 'numeric' || mode === 'alphanumeric')) {
+  if (modes.every((mode) => mode === 'numeric' || mode === 'alphanumeric')) {
     return 'alphanumeric';
   }
 

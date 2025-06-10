@@ -1,29 +1,41 @@
-import { useMemo, useEffect, useDeferredValue } from 'react';
+import { useDeferredValue, useEffect } from 'react';
 import './App.css';
-import { SettingsColumn } from './components/SettingsColumn';
 import { DataEncodingColumn } from './components/DataEncodingColumn';
 import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
+import { FinalGenerationColumn } from './components/FinalGenerationColumn';
+import { MaskingColumn } from './components/MaskingColumn';
 import { MessageConstructionColumn } from './components/MessageConstructionColumn';
 import { ModulePlacementColumn } from './components/ModulePlacementColumn';
-import { MaskingColumn } from './components/MaskingColumn';
-import { FinalGenerationColumn } from './components/FinalGenerationColumn';
 import { ProcessingWrapper } from './components/ProcessingWrapper';
+import { SettingsColumn } from './components/SettingsColumn';
 import { runQRPipeline } from './qr/qrPipeline';
 import { useQueryParams } from './shared';
 
 function App() {
   const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] =
     useQueryParams();
+
   const deferredInputData = useDeferredValue(inputData);
   const deferredQrVersion = useDeferredValue(qrVersion);
   const deferredErrorLevel = useDeferredValue(errorLevel);
-  const isProcessing = inputData !== deferredInputData || qrVersion !== deferredQrVersion || errorLevel !== deferredErrorLevel;
 
-  const { dataAnalysis, dataEncoding, errorCorrection, messageConstruction, modulePlacement, finalGeneration } =
-    useMemo(
-      () => runQRPipeline({ inputData: deferredInputData, qrVersion: deferredQrVersion, errorLevel: deferredErrorLevel }),
-      [deferredInputData, deferredQrVersion, deferredErrorLevel]
-    );
+  const isProcessing =
+    inputData !== deferredInputData ||
+    qrVersion !== deferredQrVersion ||
+    errorLevel !== deferredErrorLevel;
+
+  const {
+    dataAnalysis,
+    dataEncoding,
+    errorCorrection,
+    messageConstruction,
+    modulePlacement,
+    finalGeneration,
+  } = runQRPipeline({
+    inputData: deferredInputData,
+    qrVersion: deferredQrVersion,
+    errorLevel: deferredErrorLevel,
+  });
 
   useEffect(() => {
     if (dataAnalysis?.isValid && dataAnalysis.minimumVersion) {

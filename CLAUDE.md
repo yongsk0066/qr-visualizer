@@ -227,16 +227,21 @@ All 7 steps of QR code generation are now fully implemented with comprehensive t
 ## QR Code Standard Documentation
 
 The Korean QR code standard documentation is available for local reference:
-- Check the `.docs/` directory for ISO/IEC 18004 standard documents
-- Contains original PDF, converted Markdown, and navigation index
-- Use these files for implementation reference and compliance verification
+- **Location**: `docs/standards/` directory contains ISO/IEC 18004 standard documents
+- **Contents**: Original PDF (`KSXISO_IEC18004(2017확인)_KR.pdf`), converted Markdown (`KSXISO_IEC18004_KR.md`), and navigation index (`QR_INDEX.md`)
+- **Usage**: Use these files for implementation reference and compliance verification
+
+**⚠️ IMPORTANT**: The `docs/standards/` directory contains copyrighted standard documents and should **NEVER** be pushed to remote repositories. 
+- **Pre-commit hook**: Automatically excludes `docs/standards/` from commits with a warning
+- **Pre-push hook**: Prevents pushing any commits that contain these files
 
 Key sections for implementation:
-- Section 8: Complete encoding process
-- Data analysis and mode selection
-- Error correction algorithms 
-- Module placement and masking
-- Format and version information
+- **Section 8**: Complete encoding process
+- **Appendix H**: Mode selection algorithms (H.1-H.3)
+- **Data analysis and mode selection**: Numeric/alphanumeric mixing rules
+- **Error correction algorithms**: Reed-Solomon implementation details
+- **Module placement and masking**: Matrix layout specifications
+- **Format and version information**: BCH encoding specifications
 
 ## Code Style Guidelines
 
