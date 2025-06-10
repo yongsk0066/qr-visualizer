@@ -3163,9 +3163,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qr-decompile@workspace:.":
+"qr-visualizer@workspace:.":
   version: 0.0.0-use.local
-  resolution: "qr-decompile@workspace:."
+  resolution: "qr-visualizer@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.28.0"
     "@mobily/ts-belt": "npm:^3.13.1"

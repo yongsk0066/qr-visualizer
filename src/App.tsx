@@ -80,6 +80,10 @@ function App() {
           </ProcessingWrapper>
         ))}
       </div>
+      
+      <footer className="mt-8 text-center text-gray-500 text-xs">
+        <p>QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+      </footer>
     </div>
   );
 }
