@@ -1,5 +1,5 @@
 {
-  "name": "qr-decompile",
+  "name": "qr-visualizer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -21,9 +21,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
-    "@types/react": "^19.1.6",
+    "@types/react": "^19.1.7",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.5.1",
+    "@vitejs/plugin-react": "^4.5.2",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",
     "eslint": "^9.28.0",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
@@ -33,7 +33,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.1",
     "vite": "npm:rolldown-vite@latest",
-    "vitest": "^3.2.2"
+    "vitest": "^3.2.3"
   },
   "packageManager": "yarn@4.9.2"
 }

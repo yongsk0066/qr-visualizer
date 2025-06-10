@@ -58,7 +58,7 @@ function App() {
   return (
     <div className="app">
       <header className="mb-8">
-        <h1 className="text-3xl font-light tracking-wide mb-1">QR Decompile</h1>
+        <h1 className="text-3xl font-light tracking-wide mb-1">QR Visualizer</h1>
         <p className="text-gray-600 text-sm">QR 코드 생성 과정 학습</p>
       </header>
 
