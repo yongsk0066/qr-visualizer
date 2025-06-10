@@ -51,7 +51,8 @@ export const generateVersionInfo = (version: QRVersion): number | null => {
  */
 export const versionInfoToBits = (versionInfo: number): number[] => {
   const bits: number[] = [];
-  for (let i = 17; i >= 0; i--) {
+  // LSB가 0번 위치가 되도록 i=0부터 17까지
+  for (let i = 0; i <= 17; i++) {
     bits.push((versionInfo >> i) & 1);
   }
   return bits;
@@ -77,31 +78,33 @@ export const placeVersionInfo = (
   const result = matrix.map(row => [...row]);
   
   // 버전 정보 위치 1: 좌하단 (6×3 블록)
-  // 6열 × 3행, 분리자 밑에서 3칸 더 아래로
+  // 위치: 가로6 × 세로3 (transpose)
   const position1: [number, number][] = [];
-  for (let row = 0; row < 3; row++) {
-    for (let col = 0; col < 6; col++) {
+  for (let col = 0; col < 6; col++) {
+    for (let row = 0; row < 3; row++) {
       position1.push([size - 11 + row, col]);
     }
   }
   
   // 버전 정보 위치 2: 우상단 (3×6 블록)  
-  // 3열 × 6행, 분리자 오른쪽에서 3칸 더 오른쪽으로
+  // 위치: 가로3 × 세로6 (transpose)
   const position2: [number, number][] = [];
-  for (let col = 0; col < 3; col++) {
-    for (let row = 0; row < 6; row++) {
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 3; col++) {
       position2.push([row, size - 11 + col]);
     }
   }
   
-  // 위치 1에 버전 정보 배치 (가로 방향으로 읽기)
+  // 위치 1에 버전 정보 배치 (좌하단 3×6 - 세로 우선 순서)
+  // ISO/IEC 18004 Figure 20: 비트 0,1,2 / 3,4,5 / 6,7,8 / ...
   position1.forEach(([row, col], index) => {
     if (row < size && col < size && index < bits.length) {
       result[row][col] = bits[index] as (0 | 1);
     }
   });
   
-  // 위치 2에 버전 정보 배치 (세로 방향으로 읽기)
+  // 위치 2에 버전 정보 배치 (우상단 6×3 - 가로 우선 순서)  
+  // ISO/IEC 18004 Figure 20: 비트 0,3,6,9,12,15 / 1,4,7,10,13,16 / 2,5,8,11,14,17
   position2.forEach(([row, col], index) => {
     if (row < size && col < size && index < bits.length) {
       result[row][col] = bits[index] as (0 | 1);

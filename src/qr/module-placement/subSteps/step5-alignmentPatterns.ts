@@ -29,29 +29,17 @@ export const addAlignmentPatternsStep = (
     const startRow = position.row - 2;
     const startCol = position.col - 2;
     
-    // 해당 위치가 비어있는지 확인 (다른 패턴과 겹치지 않는지)
-    let canPlace = true;
-    for (let r = 0; r < 5; r++) {
-      for (let c = 0; c < 5; c++) {
-        if (!isEmpty(matrix, startRow + r, startCol + c)) {
-          canPlace = false;
-          break;
-        }
-      }
-      if (!canPlace) break;
-    }
-    
-    if (canPlace) {
-      const placed = placePattern(
-        matrix,
-        moduleTypes,
-        startRow,
-        startCol,
-        ALIGNMENT_PATTERN,
-        'alignment'
-      );
-      addedModules += placed;
-    }
+    // 얼라인먼트 패턴은 파인더 패턴을 제외한 모든 패턴(타이밍 패턴 포함)을 덮어씀
+    // ISO/IEC 18004 8.7.2: "타이밍 패턴과 정렬 패턴에 부합하는 위치들은 적당하게... 채워질 것이다"
+    const placed = placePattern(
+      matrix,
+      moduleTypes,
+      startRow,
+      startCol,
+      ALIGNMENT_PATTERN,
+      'alignment'
+    );
+    addedModules += placed;
   }
 
   return {

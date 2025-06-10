@@ -195,6 +195,7 @@ src/
 - **4-stage visualization**: Masking → Format info → Version info → Final QR
 - **BCH error correction**: Proper implementation following ISO/IEC 18004 polynomial specifications
 - **Dual placement strategy**: Format info around finder patterns, version info in corners
+- **Version info positioning**: Left-bottom 6×3 block, top-right 3×6 block (ISO compliant)
 - **Color-coded visualization**: Highlighted format/version areas with binary information display
 - **ISO/IEC 18004 compliance**: Exact standard positioning and bit ordering
 - **Responsive scaling**: Adaptive QR matrix size for optimal viewing across versions

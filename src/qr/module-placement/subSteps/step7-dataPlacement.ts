@@ -61,13 +61,23 @@ export const placeDataBitsStep = (
     direction *= -1;
   }
   
+  // 남은 빈 모듈들을 모두 'data' 타입으로 설정 (마스킹을 위해)
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      if (isEmpty(matrix, row, col)) {
+        setModule(matrix, row, col, 0); // 기본값 0으로 설정
+        setModuleType(moduleTypes, row, col, 'data');
+      }
+    }
+  }
+
   const placedBits = Math.min(bitIndex, sampleBits.length);
 
   return {
     matrix,
     moduleTypes,
     stepName: '5-7: Data Placement',
-    description: `지그재그 패턴으로 ${placedBits}비트 데이터 배치`,
+    description: `지그재그 패턴으로 ${placedBits}비트 데이터 배치 + 남은 영역 초기화`,
     addedModules,
   };
 };

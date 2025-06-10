@@ -7,7 +7,7 @@ import type { QRVersion, ErrorCorrectionLevel, ModulePlacementData } from '../..
 import type { MaskPattern } from '../masking/maskPatterns';
 import { applyMaskToMatrix } from '../masking/penaltyCalculation';
 import { generateFormatInfo, placeFormatInfo } from './formatInfo';
-import { placeVersionInfo } from './versionInfo';
+import { generateVersionInfo, placeVersionInfo } from './versionInfo';
 import { generateAllEncodingMaskMatrices, evaluateAllMaskPatterns } from '../masking/maskPatterns';
 
 export interface FinalQRResult {
@@ -61,28 +61,6 @@ export const runFinalGeneration = (
     errorLevel
   );
 };
-// 로컬 버전 정보 생성 함수 (순환 참조 방지)
-function generateVersionInfoLocal(version: QRVersion): number | null {
-  const versionNum = version;
-
-  if (versionNum < 7) {
-    return null;
-  }
-
-  // 버전 정보 생성기 다항식: x^12 + x^11 + x^10 + x^9 + x^8 + x^5 + x^2 + 1
-  const VERSION_GENERATOR_POLYNOMIAL = 0b1111100100101;
-
-  // BCH(18,6) 에러 정정 코드 계산
-  let remainder = versionNum << 12;
-
-  for (let i = 17; i >= 12; i--) {
-    if (remainder & (1 << i)) {
-      remainder ^= VERSION_GENERATOR_POLYNOMIAL << (i - 12);
-    }
-  }
-
-  return (versionNum << 12) | remainder;
-}
 
 /**
  * 최종 QR 코드 생성
@@ -108,7 +86,7 @@ export const generateFinalQR = (
   const step2_withFormatInfo = placeFormatInfo(step1_withSelectedMask, formatInfo);
 
   // Step 3: 버전 정보 생성 및 배치 (버전 7+ 전용)
-  const versionInfo = version >= 7 ? generateVersionInfoLocal(version) : null;
+  const versionInfo = generateVersionInfo(version);
   const step3_withVersionInfo = versionInfo
     ? placeVersionInfo(step2_withFormatInfo, version)
     : step2_withFormatInfo;

@@ -17,4 +17,11 @@ for commit in $commits; do
   fi
 done
 
-echo "✅ Push validation passed - no copyrighted documents found"
+echo "✅ Copyright check passed - no standard documents found"
+
+# Run linting and type checking before push
+echo "🔍 Running lint and type check..."
+yarn lint
+yarn tsc --build
+
+echo "✅ All checks passed - ready to push!"

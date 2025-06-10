@@ -92,10 +92,11 @@ export const getAlignmentPatternPositions = (version: number) => {
   
   for (const row of positions) {
     for (const col of positions) {
-      // 파인더 패턴과 겹치는 위치 제외
-      const isTopLeft = row <= 8 && col <= 8;
-      const isTopRight = row <= 8 && col >= positions[positions.length - 1] - 2;
-      const isBottomLeft = row >= positions[positions.length - 1] - 2 && col <= 8;
+      // 파인더 패턴과 겹치는 위치 제외 (7x7 영역)
+      const lastPos = positions[positions.length - 1];
+      const isTopLeft = row === 6 && col === 6;
+      const isTopRight = row === 6 && col === lastPos;
+      const isBottomLeft = row === lastPos && col === 6;
       
       if (!isTopLeft && !isTopRight && !isBottomLeft) {
         coords.push({ row, col });
