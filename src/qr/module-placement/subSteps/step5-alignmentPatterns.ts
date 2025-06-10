@@ -3,8 +3,7 @@ import type { SubStepResult } from '../types';
 import { 
   cloneMatrix, 
   cloneModuleTypes, 
-  placePattern,
-  isEmpty
+  placePattern
 } from '../utils/matrixUtils';
 import { ALIGNMENT_PATTERN, getAlignmentPatternPositions } from '../utils/constants';
 
