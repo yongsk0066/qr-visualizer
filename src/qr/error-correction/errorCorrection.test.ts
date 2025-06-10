@@ -370,4 +370,34 @@ describe('errorCorrection', () => {
       });
     });
   });
+
+  describe('Galois Field GF(256) 핵심 연산', () => {
+    it('QR 표준 α 거듭제곱 값 검증', () => {
+      // ISO/IEC 18004 Appendix A.1에서 정의된 기본 값들
+      expect(GaloisField256.getExp(0)).toBe(1);   // α^0 = 1
+      expect(GaloisField256.getExp(1)).toBe(2);   // α^1 = 2  
+      expect(GaloisField256.getExp(2)).toBe(4);   // α^2 = 4
+      expect(GaloisField256.getExp(3)).toBe(8);   // α^3 = 8
+      expect(GaloisField256.getExp(4)).toBe(16);  // α^4 = 16
+      expect(GaloisField256.getExp(5)).toBe(32);  // α^5 = 32
+      expect(GaloisField256.getExp(6)).toBe(64);  // α^6 = 64
+      expect(GaloisField256.getExp(7)).toBe(128); // α^7 = 128
+    });
+
+    it('곱셈 연산 기본 속성', () => {
+      // 곱셈 항등원
+      expect(GaloisField256.multiply(42, 1)).toBe(42);
+      expect(GaloisField256.multiply(1, 42)).toBe(42);
+      
+      // 곱셈 영원소
+      expect(GaloisField256.multiply(42, 0)).toBe(0);
+      expect(GaloisField256.multiply(0, 42)).toBe(0);
+    });
+
+    it('255주기 순환 특성', () => {
+      // α^255 = α^0 = 1 (GF(256)의 곱셈군 위수는 255)
+      expect(GaloisField256.getExp(255)).toBe(GaloisField256.getExp(0));
+      expect(GaloisField256.getExp(256)).toBe(GaloisField256.getExp(1));
+    });
+  });
 });

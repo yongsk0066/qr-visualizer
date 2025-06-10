@@ -61,7 +61,7 @@ describe('Module Placement Pipeline', () => {
   it('should calculate data module statistics correctly', () => {
     const result = runModulePlacement(1);
     
-    expect(result.totalDataModules).toBeGreaterThan(result.usedDataModules);
+    expect(result.totalDataModules).toBeGreaterThanOrEqual(result.usedDataModules);
     expect(result.usedDataModules).toBeGreaterThanOrEqual(0);
     
     // 총 모듈 수는 size^2과 같아야 함

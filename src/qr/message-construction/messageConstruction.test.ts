@@ -138,5 +138,30 @@ describe('Message Construction', () => {
       expect(result.remainderBits).toBe(7);
       expect(result.finalBitStream.slice(-7)).toBe('0000000'); // 마지막 7비트는 모두 0
     });
+
+    it('실제 QR 예제: "HELLO WORLD" 메시지 구성', () => {
+      // 실제 "HELLO WORLD" 인코딩 결과를 사용한 테스트
+      const errorCorrectionData: ErrorCorrectionData = {
+        dataCodewords: [64, 196, 132, 84, 196, 196, 242, 194, 4, 132, 20, 37, 34, 16, 236, 17],
+        ecCodewords: [31, 198, 125, 37, 151, 85, 205, 218, 46, 34],
+        interleavedCodewords: [64, 196, 132, 84, 196, 196, 242, 194, 4, 132, 20, 37, 34, 16, 236, 17, 31, 198, 125, 37, 151, 85, 205, 218, 46, 34],
+        totalCodewords: 26,
+        dataBlocks: [[64, 196, 132, 84, 196, 196, 242, 194, 4, 132, 20, 37, 34, 16, 236, 17]],
+        ecBlocks: [[31, 198, 125, 37, 151, 85, 205, 218, 46, 34]],
+        remainderBits: 0
+      };
+
+      const result = constructMessage(errorCorrectionData);
+
+      expect(result.dataBits).toBe(128); // 16 코드워드 * 8비트
+      expect(result.ecBits).toBe(80);    // 10 EC 코드워드 * 8비트
+      expect(result.totalBits).toBe(208); // 버전 1의 전체 비트 수
+      expect(result.remainderBits).toBe(0);
+      
+      // 첫 번째 코드워드 64 = 01000000 확인
+      expect(result.finalBitStream.slice(0, 8)).toBe('01000000');
+      // 데이터 블록 뒤에 EC 블록이 온다
+      expect(result.finalBitStream.length).toBe(208);
+    });
   });
 });

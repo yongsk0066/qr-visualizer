@@ -113,6 +113,14 @@ describe('dataEncoding', () => {
       expect(result.bitStream).toContain('11101100'); // 패드 패턴1
       expect(result.bitStream).toContain('00010001'); // 패드 패턴2
     });
+
+    it('용량 한계 테스트 - 최대 용량 근처 데이터', () => {
+      // 버전 1에서 긴 숫자 데이터 처리
+      const result = encodeData('12345678901234567', 'numeric', 1, 152); // 17자리
+      
+      expect(result.totalBits).toBe(152);
+      expect(result.bitStream.length).toBe(152); // 전체 비트 스트림 길이 확인
+    });
   });
 
   describe('버전별 문자 카운트 비트', () => {

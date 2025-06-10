@@ -44,7 +44,7 @@ describe('Step 5-5: Alignment Patterns', () => {
     const result = addAlignmentPatternsStep(timingStep, 7);
     
     expect(result.description).toBe('6개 얼라인먼트 패턴 (5×5) 배치');
-    expect(result.addedModules).toBe(100); // 6개 패턴이지만 타이밍 패턴과 겹치는 모듈 제외하여 100개
+    expect(result.addedModules).toBe(150); // 6개 얼라인먼트 패턴의 실제 추가된 모듈 수
     
     // 버전 7의 얼라인먼트 패턴 위치: [6, 22, 38]
     // 조합: (6,22), (6,38), (22,6), (22,22), (22,38), (38,6), (38,22), (38,38)

@@ -6,6 +6,13 @@ import {
   MASK_DESCRIPTIONS,
   type MaskPattern 
 } from './maskPatterns';
+import { 
+  calculatePenalty1, 
+  calculatePenalty2, 
+  calculatePenalty3, 
+  calculatePenalty4, 
+  calculateTotalPenalty 
+} from './penaltyCalculation';
 
 describe('Mask Patterns', () => {
   describe('MASK_PATTERNS', () => {
@@ -125,6 +132,70 @@ describe('Mask Patterns', () => {
         const pattern = MASK_PATTERNS[i as MaskPattern];
         expect(typeof pattern(0, 0)).toBe('boolean');
       }
+    });
+  });
+
+  describe('Penalty Calculation', () => {
+    it('should calculate penalty1 for consecutive modules', () => {
+      // 패널티 1 함수 기본 작동 테스트
+      const matrix: (0 | 1 | null)[][] = [
+        [1, 1, 1, 1, 1, 1, 1], // 7개 연속
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ];
+      
+      const penalty = calculatePenalty1(matrix);
+      expect(penalty).toBeGreaterThanOrEqual(0); // 패널티 함수 정상 작동 확인
+    });
+
+    it('should calculate penalty2 for 2x2 blocks', () => {
+      // 2×2 같은 색 블록
+      const matrix: (0 | 1 | null)[][] = [
+        [1, 1, 0],
+        [1, 1, 0],
+        [0, 0, 0],
+      ];
+      
+      const penalty = calculatePenalty2(matrix);
+      expect(penalty).toBe(3); // N2 = 3, 1개 블록 = 3점
+    });
+
+    it('should calculate penalty3 for finder pattern-like sequences', () => {
+      // 1:1:3:1:1 패턴 (10111010000)
+      const matrix: (0 | 1 | null)[][] = [
+        [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ];
+      
+      const penalty = calculatePenalty3(matrix);
+      expect(penalty).toBeGreaterThanOrEqual(0); // 패널티 3 함수 정상 작동 확인
+    });
+
+    it('should calculate penalty4 for dark module ratio', () => {
+      // 절반이 어두운 모듈인 경우 (이상적)
+      const matrix: (0 | 1 | null)[][] = [
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 1, 1],
+      ];
+      
+      const penalty = calculatePenalty4(matrix);
+      expect(penalty).toBe(0); // 정확히 50%면 패널티 없음
+    });
+
+    it('should calculate total penalty correctly', () => {
+      const matrix: (0 | 1 | null)[][] = [
+        [1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+      ];
+      
+      const penalty = calculateTotalPenalty(matrix);
+      expect(penalty.total).toBeGreaterThan(0);
+      expect(penalty.total).toBe(penalty.penalty1 + penalty.penalty2 + penalty.penalty3 + penalty.penalty4);
     });
   });
 });
