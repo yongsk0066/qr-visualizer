@@ -21,11 +21,19 @@ function App() {
           <QRDetectProcess />
         </section>
       </div>
-      
+
       <footer className="mt-8 text-center text-gray-500 text-xs">
         <p>QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
         <p className="mt-2">
-          Created by <a href="https://github.com/yongsk0066" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600">yongsk0066</a>
+          Created by{' '}
+          <a
+            href="https://github.com/yongsk0066"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-600"
+          >
+            yongsk0066
+          </a>
         </p>
       </footer>
     </div>

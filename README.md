@@ -109,10 +109,10 @@ yarn preview
 ## 🏗️ 현재 개발 중
 
 ### Detection Process (구현 중)
-- ✅ Step 1: 이미지 입력 (파일 업로드, 드래그앤드롭)
-- ✅ Step 2: 그레이스케일 변환 (히스토그램 시각화)
-- ✅ Step 3: 이진화 (Sauvola 적응 임계값)
-- ⏳ Step 4: Finder 패턴 검출
+- ✅ Step 1: 이미지 입력 (파일 업로드, 드래그앤드롭, 샘플 이미지 자동 로드)
+- ✅ Step 2: 그레이스케일 변환 (ITU-R BT.709 표준, 히스토그램 시각화)
+- ✅ Step 3: 이진화 (Sauvola 적응 임계값, 적분 이미지 최적화)
+- ✅ Step 4: Finder 패턴 검출 (라인 스캔 알고리즘, 개선된 3점 선택)
 - ⏳ Step 5: 원근 변환 (Homography)
 - ⏳ Step 6: 모듈 샘플링
 - ⏳ Step 7: Tri-state 행렬 생성

@@ -101,7 +101,7 @@ interface DecodePipelineResult {
 
 ## 3. DetectProcess 단계 상세 설계
 
-### 3.1 Step 1: 이미지 입력 및 전처리
+### 3.1 Step 1: 이미지 입력 및 전처리 ✅
 ```typescript
 interface ImageProcessingResult {
   original: ImageData;
@@ -110,8 +110,12 @@ interface ImageProcessingResult {
   blurred: Float32Array;     // 가우시안 블러
 }
 ```
+**구현 완료**:
+- 파일 업로드 및 드래그앤드롭 지원
+- 테스트용 샘플 이미지 자동 로드
+- 이미지 크기 및 메타데이터 표시
 
-### 3.2 Step 2: 그레이스케일 변환
+### 3.2 Step 2: 그레이스케일 변환 ✅
 ```typescript
 interface GrayscaleResult {
   grayscale: Uint8Array;
@@ -123,20 +127,28 @@ interface GrayscaleResult {
   };
 }
 ```
+**구현 완료**:
+- ITU-R BT.709 표준 luma 계수 적용
+- 실시간 히스토그램 시각화
+- 통계 정보 계산 (최소/최대/평균)
 
-### 3.3 Step 3: 이진화 (Sauvola 적응 임계값)
+### 3.3 Step 3: 이진화 (Sauvola 적응 임계값) ✅
 ```typescript
 interface BinarizationResult {
   binary: Uint8Array;        // 0/1 이진 이미지
   threshold: Float32Array;   // Sauvola 임계값 맵
   parameters: {
-    windowSize: number;      // 15px
-    k: number;              // 0.34
+    windowSize: number;      // 31px (최적화)
+    k: number;              // 0.2 (최적화)
   };
 }
 ```
+**구현 완료**:
+- Sauvola 적응 임계값 알고리즘
+- 적분 이미지를 통한 O(1) 지역 통계 계산
+- 임계값 맵 시각화 토글 기능
 
-### 3.4 Step 4: Finder 패턴 검출
+### 3.4 Step 4: Finder 패턴 검출 ✅
 ```typescript
 interface FinderDetectionResult {
   candidates: Pattern[];     // 1:1:3:1:1 비율 후보
@@ -147,6 +159,12 @@ interface FinderDetectionResult {
   };
 }
 ```
+**구현 완료**:
+- 라인 스캔 알고리즘 (수평/수직)
+- 1:1:3:1:1 비율 검증 (50% 허용 오차)
+- 개선된 3점 선택 (각도 검증)
+- 서브픽셀 정확도의 중심점 검출
+- 시각적 패턴 하이라이팅
 
 ### 3.5 Step 5: 원근 변환 (Homography)
 ```typescript
@@ -318,9 +336,9 @@ App.tsx
 
 ### Phase 1: DetectProcess 구현 (진행 중)
 1. ✅ 프로젝트 구조 설정 및 라우팅
-2. ✅ 이미지 입력 UI 컴포넌트
-3. ✅ 그레이스케일/이진화 구현 (Sauvola 알고리즘)
-4. ⏳ Finder 패턴 검출 알고리즘
+2. ✅ 이미지 입력 UI 컴포넌트 (드래그앤드롭, 샘플 이미지)
+3. ✅ 그레이스케일/이진화 구현 (ITU-R BT.709, Sauvola 알고리즘)
+4. ✅ Finder 패턴 검출 알고리즘 (라인 스캔, 개선된 3점 선택)
 5. ⏳ 원근 변환 및 샘플링
 6. ⏳ Tri-state 행렬 생성
 7. ⏳ DetectProcess 7단계 UI 완성

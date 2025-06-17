@@ -2,6 +2,7 @@ import { pipe } from '@mobily/ts-belt';
 import type { DetectPipelineResult } from '../types';
 import { processImage, createGrayscaleResult } from './detector/imageProcessor';
 import { runBinarization } from './detector/binarization';
+import { detectFinders } from './detector/finderDetection';
 
 export interface DetectPipelineParams {
   imageUrl: string;
@@ -27,7 +28,13 @@ export const runDetectPipeline = async ({ imageUrl }: DetectPipelineParams): Pro
         binarization: state.grayscale ? runBinarization(state.grayscale) : null
       }),
       
-      // Step 4-7: TODO
+      // Step 4: Finder 패턴 검출
+      (state) => ({
+        ...state,
+        finderDetection: state.binarization ? detectFinders(state.binarization) : null
+      }),
+      
+      // Step 5-7: TODO
       (state) => ({
         ...state,
         triStateMatrix: null // 추후 구현
@@ -39,6 +46,7 @@ export const runDetectPipeline = async ({ imageUrl }: DetectPipelineParams): Pro
       imageProcessing: null,
       grayscale: null,
       binarization: null,
+      finderDetection: null,
       triStateMatrix: null
     };
   }
