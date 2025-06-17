@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-QR Visualizer is an **educational React-based web application** designed to demonstrate the step-by-step process of QR code generation. This is NOT just a QR code generator, but a learning tool to understand how QR codes are constructed.
+QR Visualizer is an **educational React-based web application** designed to demonstrate the step-by-step process of QR code generation and decoding. This is NOT just a QR code generator/reader, but a learning tool to understand how QR codes are constructed and interpreted.
 
-**Primary Goal**: To visualize and understand each stage of QR code creation process sequentially, following the ISO/IEC 18004 standard.
+**Primary Goal**: To visualize and understand each stage of QR code creation and detection process sequentially, following the ISO/IEC 18004 standard.
 
-### Learning Objectives (All Complete ✅):
+### Learning Objectives:
+
+#### Encoding Process (Complete ✅):
 1. **Step 1: Data Analysis** ✅ - Understand optimal encoding mode selection
 2. **Step 2: Data Encoding** ✅ - Learn bit stream conversion by mode
 3. **Step 3: Error Correction** ✅ - Implement Reed-Solomon error correction
@@ -16,6 +18,15 @@ QR Visualizer is an **educational React-based web application** designed to demo
 5. **Step 5: Module Placement** ✅ - Matrix layout with patterns and data
 6. **Step 6: Masking** ✅ - Optimal mask pattern application
 7. **Step 7: Final Generation** ✅ - Complete QR code with format/version info
+
+#### Detection Process (In Progress 🏗️):
+1. **Step 1: Image Input** ✅ - Load and display QR code images with drag-and-drop
+2. **Step 2: Grayscale** ✅ - Convert to grayscale with histogram visualization
+3. **Step 3: Binarization** ✅ - Sauvola adaptive thresholding with integral images
+4. **Step 4: Finder Detection** ✅ - Line scan algorithm with improved 3-point selection
+5. **Step 5: Homography** 🏗️ - Perspective transformation
+6. **Step 6: Sampling** 🏗️ - Module grid sampling
+7. **Step 7: Matrix Output** 🏗️ - Generate tri-state matrix
 
 Each step's results are displayed in real-time to help users understand the QR code standard (ISO/IEC 18004) principles.
 
@@ -63,11 +74,11 @@ yarn preview
 
 The main application entry point is `src/main.tsx`, which renders `src/App.tsx`.
 
-### QR Code Module Structure
+### Project Structure
 
 ```
 src/
-├── qr/
+├── qr-encode/              # QR Encoding Process
 │   ├── analysis/            # 1단계: 데이터 분석
 │   │   ├── dataAnalysis.ts      # 모드 선택, 버전 계산
 │   │   └── dataAnalysis.test.ts # 39개 테스트
@@ -114,6 +125,36 @@ src/
 │   │   ├── formatInfo.ts           # 15비트 BCH 포맷 정보 생성/배치
 │   │   └── versionInfo.ts          # 18비트 BCH 버전 정보 생성/배치 (버전7+)
 │   └── qrPipeline.ts       # 전체 파이프라인 통합
+│
+├── qr-decode/              # QR Detection/Decoding Process
+│   ├── detect/             # Detection Process (이미지 → tri-state 행렬)
+│   │   ├── detector/
+│   │   │   ├── imageProcessor.ts    # 이미지 로딩, 그레이스케일 변환
+│   │   │   ├── binarization.ts      # Sauvola 적응 임계값 이진화
+│   │   │   ├── finderDetection.ts   # Finder 패턴 검출 (TODO)
+│   │   │   ├── homography.ts        # 원근 변환 (TODO)
+│   │   │   └── sampling.ts          # 모듈 샘플링 (TODO)
+│   │   └── detectPipeline.ts        # Detection 파이프라인
+│   ├── decode/             # Decode Process (TODO)
+│   └── types.ts            # 디코딩 관련 타입 정의
+│
+├── components/             # UI Components
+│   ├── QREncodingProcess.tsx        # Encoding 프로세스 메인
+│   ├── QRDetectProcess.tsx          # Detection 프로세스 메인
+│   ├── encode/                      # Encoding UI 컴포넌트
+│   │   ├── SettingsColumn.tsx      # 입력 설정
+│   │   ├── DataEncodingColumn.tsx  # 데이터 인코딩 시각화
+│   │   ├── ErrorCorrectionColumn.tsx # 에러 정정 시각화
+│   │   ├── MessageConstructionColumn.tsx # 메시지 구성 시각화
+│   │   ├── ModulePlacementColumn.tsx # 모듈 배치 시각화
+│   │   ├── MaskingColumn.tsx       # 마스킹 시각화
+│   │   ├── FinalGenerationColumn.tsx # 최종 생성 시각화
+│   │   └── BitStreamViewer.tsx     # 비트스트림 뷰어
+│   └── detect/                      # Detection UI 컴포넌트
+│       ├── ImageInputColumn.tsx    # 이미지 업로드
+│       ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
+│       └── BinarizationColumn.tsx  # 이진화 시각화
+│
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
     ├── constants/         # 상수 모듈
@@ -131,7 +172,7 @@ src/
 
 ### Current Implementation Status
 
-#### ✅ Completed Features
+#### ✅ Encoding Process - Completed Features
 
 **Step 1 - Data Analysis**
 - Character type detection (numeric/alphanumeric/byte/kanji)
@@ -213,14 +254,49 @@ src/
 - **Sample data integration**: Quick-access buttons for testing different encoding modes
 - **Type safety**: Comprehensive TypeScript types and interfaces
 
-#### ✅ Complete Implementation:
-All 7 steps of QR code generation are now fully implemented with comprehensive testing and visualization!
+#### 🏗️ Detection Process - Implementation Status
+
+**Step 1 - Image Input** ✅
+- File upload and drag-and-drop support
+- Test image auto-loading
+- Image size and metadata display
+
+**Step 2 - Grayscale Conversion** ✅
+- ITU-R BT.709 luma coefficients
+- Real-time histogram visualization
+- Statistical analysis (min/max/mean)
+
+**Step 3 - Binarization** ✅
+- Sauvola adaptive thresholding algorithm
+- Window size: 31px, k: 0.2
+- Threshold map visualization toggle
+- Integral images for O(1) local statistics
+
+**Step 4 - Finder Pattern Detection** ✅
+- Line scanning algorithm with 1:1:3:1:1 ratio detection
+- Horizontal and vertical pattern scanning
+- Improved 3-point selection with angle validation
+- Centers detection with subpixel accuracy
+- Comprehensive validation with strict ratio tolerances
+- Visual highlighting of detected patterns
+
+**Step 5-7** 🏗️
+- Homography transformation (TODO)
+- Module sampling (TODO)
+- Tri-state matrix generation (TODO)
+
+#### 📊 Complete Implementation Summary:
+- **Encoding Process**: All 7 steps fully implemented with 362 tests
+- **Detection Process**: Steps 1-4 implemented, 5-7 in progress
 
 #### 🏗 Application Structure:
-- **QR Pipeline**: `src/qr/qrPipeline.ts` - Centralized processing pipeline
-- **Step Modules**: Each QR step organized in dedicated folders with tests
+- **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
+- **Detection Pipeline**: `src/qr-decode/detect/detectPipeline.ts` - Image processing pipeline
+- **Step Modules**: Each process step organized in dedicated folders with tests
 - **Shared Resources**: Common types, constants, and utilities in `shared/`
-- **Components**: `src/components/` - Step-specific UI components
+- **Components**: 
+  - `src/components/encode/` - Encoding UI components
+  - `src/components/detect/` - Detection UI components
 - **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
 - **UI Layout**: 7-column grid with compact spacing and responsive design
 - **Testing**: 

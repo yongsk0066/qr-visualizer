@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { FinalQRResult } from '../qr/final-generation/finalGeneration';
+import type { FinalQRResult } from '../../qr-encode/final-generation/finalGeneration';
 
 interface FinalGenerationColumnProps {
   finalGeneration: FinalQRResult | null;

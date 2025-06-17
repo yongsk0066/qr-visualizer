@@ -7,7 +7,7 @@ import {
   MASK_DESCRIPTIONS, 
   type MaskPattern,
   type MaskEvaluationResult
-} from '../qr/masking/maskPatterns';
+} from '../../qr-encode/masking/maskPatterns';
 
 interface MaskingColumnProps {
   modulePlacement: ModulePlacementData | null;

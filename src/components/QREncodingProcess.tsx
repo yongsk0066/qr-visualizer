@@ -1,13 +1,13 @@
 import { useDeferredValue, useEffect } from 'react';
-import { DataEncodingColumn } from './DataEncodingColumn';
-import { ErrorCorrectionColumn } from './ErrorCorrectionColumn';
-import { FinalGenerationColumn } from './FinalGenerationColumn';
-import { MaskingColumn } from './MaskingColumn';
-import { MessageConstructionColumn } from './MessageConstructionColumn';
-import { ModulePlacementColumn } from './ModulePlacementColumn';
+import { DataEncodingColumn } from './encode/DataEncodingColumn';
+import { ErrorCorrectionColumn } from './encode/ErrorCorrectionColumn';
+import { FinalGenerationColumn } from './encode/FinalGenerationColumn';
+import { MaskingColumn } from './encode/MaskingColumn';
+import { MessageConstructionColumn } from './encode/MessageConstructionColumn';
+import { ModulePlacementColumn } from './encode/ModulePlacementColumn';
 import { ProcessingWrapper } from './ProcessingWrapper';
-import { SettingsColumn } from './SettingsColumn';
-import { runQRPipeline } from '../qr/qrPipeline';
+import { SettingsColumn } from './encode/SettingsColumn';
+import { runQRPipeline } from '../qr-encode/qrPipeline';
 import { useQueryParams } from '../shared';
 
 export function QREncodingProcess() {

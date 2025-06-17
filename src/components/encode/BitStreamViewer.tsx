@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { EncodedData } from '../qr/encoding/dataEncoding';
+import type { EncodedData } from '../../qr-encode/encoding/dataEncoding';
 
 interface BitStreamViewerProps {
   encodedData: EncodedData | null;
