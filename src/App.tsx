@@ -1,60 +1,7 @@
-import { useDeferredValue, useEffect } from 'react';
 import './App.css';
-import { DataEncodingColumn } from './components/DataEncodingColumn';
-import { ErrorCorrectionColumn } from './components/ErrorCorrectionColumn';
-import { FinalGenerationColumn } from './components/FinalGenerationColumn';
-import { MaskingColumn } from './components/MaskingColumn';
-import { MessageConstructionColumn } from './components/MessageConstructionColumn';
-import { ModulePlacementColumn } from './components/ModulePlacementColumn';
-import { ProcessingWrapper } from './components/ProcessingWrapper';
-import { SettingsColumn } from './components/SettingsColumn';
-import { runQRPipeline } from './qr/qrPipeline';
-import { useQueryParams } from './shared';
+import { QREncodingProcess } from './components/QREncodingProcess';
 
 function App() {
-  const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] =
-    useQueryParams();
-
-  const deferredInputData = useDeferredValue(inputData);
-  const deferredQrVersion = useDeferredValue(qrVersion);
-  const deferredErrorLevel = useDeferredValue(errorLevel);
-
-  const isProcessing =
-    inputData !== deferredInputData ||
-    qrVersion !== deferredQrVersion ||
-    errorLevel !== deferredErrorLevel;
-
-  const {
-    dataAnalysis,
-    dataEncoding,
-    errorCorrection,
-    messageConstruction,
-    modulePlacement,
-    finalGeneration,
-  } = runQRPipeline({
-    inputData: deferredInputData,
-    qrVersion: deferredQrVersion,
-    errorLevel: deferredErrorLevel,
-  });
-
-  useEffect(() => {
-    if (dataAnalysis?.isValid && dataAnalysis.minimumVersion) {
-      const currentVersion = parseInt(deferredQrVersion, 10);
-      if (currentVersion < dataAnalysis.minimumVersion) {
-        updateQueryParams({ version: dataAnalysis.minimumVersion.toString() });
-      }
-    }
-  }, [dataAnalysis, deferredQrVersion, updateQueryParams]);
-
-  const stepColumns = [
-    <DataEncodingColumn encodedData={dataEncoding} />,
-    <ErrorCorrectionColumn errorCorrection={errorCorrection} />,
-    <MessageConstructionColumn result={messageConstruction} />,
-    <ModulePlacementColumn modulePlacement={modulePlacement} />,
-    <MaskingColumn modulePlacement={modulePlacement} />,
-    <FinalGenerationColumn finalGeneration={finalGeneration} />,
-  ];
-
   return (
     <div className="app">
       <header className="mb-8">
@@ -62,27 +9,13 @@ function App() {
         <p className="text-gray-600 text-sm">QR 코드 생성 과정 학습</p>
       </header>
 
-      <div className="steps-grid">
-        <SettingsColumn
-          inputData={inputData}
-          setInputData={(data) => updateQueryParams({ data })}
-          qrVersion={qrVersion}
-          setQrVersion={(version) => updateQueryParams({ version })}
-          errorLevel={errorLevel}
-          setErrorLevel={(error) => updateQueryParams({ error })}
-          dataAnalysis={dataAnalysis}
-          isProcessing={isProcessing}
-        />
-
-        {stepColumns.map((column, index) => (
-          <ProcessingWrapper key={index} isProcessing={isProcessing}>
-            {column}
-          </ProcessingWrapper>
-        ))}
-      </div>
+      <QREncodingProcess />
       
       <footer className="mt-8 text-center text-gray-500 text-xs">
         <p>QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+        <p className="mt-2">
+          Created by <a href="https://github.com/yongsk0066" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600">yongsk0066</a>
+        </p>
       </footer>
     </div>
   );
