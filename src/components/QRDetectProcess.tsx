@@ -3,6 +3,7 @@ import { ProcessingWrapper } from './ProcessingWrapper';
 import { ImageInputColumn } from './detect/ImageInputColumn';
 import { GrayscaleColumn } from './detect/GrayscaleColumn';
 import { BinarizationColumn } from './detect/BinarizationColumn';
+import { FinderDetectionColumn } from './detect/FinderDetectionColumn';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
 import testImage from '../assets/test_image.jpg';
 
@@ -34,23 +35,24 @@ export function QRDetectProcess() {
       <ImageInputColumn 
         imageUrl={imageUrl}
         setImageUrl={setImageUrl}
-        imageProcessing={result?.imageProcessing}
+        imageProcessing={result?.imageProcessing ?? null}
         isProcessing={isProcessing}
       />
 
       <ProcessingWrapper isProcessing={isProcessing}>
-        <GrayscaleColumn grayscale={result?.grayscale} />
+        <GrayscaleColumn grayscale={result?.grayscale ?? null} />
       </ProcessingWrapper>
 
       <ProcessingWrapper isProcessing={isProcessing}>
-        <BinarizationColumn binarization={result?.binarization} />
+        <BinarizationColumn binarization={result?.binarization ?? null} />
       </ProcessingWrapper>
 
-      {/* TODO: Steps 4-7 */}
-      <div className="step-column">
-        <h3 className="step-title">Step 4: Finder Detection</h3>
-        <p className="text-gray-500 text-sm">Coming soon...</p>
-      </div>
+      <ProcessingWrapper isProcessing={isProcessing}>
+        <FinderDetectionColumn 
+          binarization={result?.binarization ?? null} 
+          finderDetection={result?.finderDetection ?? null} 
+        />
+      </ProcessingWrapper>
 
       <div className="step-column">
         <h3 className="step-title">Step 5: Homography</h3>
