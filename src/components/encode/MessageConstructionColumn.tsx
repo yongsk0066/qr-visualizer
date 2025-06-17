@@ -1,5 +1,5 @@
-import type { MessageConstructionResult } from '../qr/message-construction/messageConstruction';
-import { formatBitString } from '../qr/message-construction/messageConstruction';
+import type { MessageConstructionResult } from '../../qr-encode/message-construction/messageConstruction';
+import { formatBitString } from '../../qr-encode/message-construction/messageConstruction';
 
 interface MessageConstructionColumnProps {
   result: MessageConstructionResult | null;

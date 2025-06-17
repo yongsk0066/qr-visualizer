@@ -1,5 +1,6 @@
 import './App.css';
 import { QREncodingProcess } from './components/QREncodingProcess';
+import { QRDetectProcess } from './components/QRDetectProcess';
 
 function App() {
   return (
@@ -9,7 +10,17 @@ function App() {
         <p className="text-gray-600 text-sm">QR 코드 생성 과정 학습</p>
       </header>
 
-      <QREncodingProcess />
+      <div className="flex flex-col gap-12">
+        <section>
+          <h2 className="text-xl font-light mb-4">Encoding Process</h2>
+          <QREncodingProcess />
+        </section>
+
+        <section>
+          <h2 className="text-xl font-light mb-4">Detection Process</h2>
+          <QRDetectProcess />
+        </section>
+      </div>
       
       <footer className="mt-8 text-center text-gray-500 text-xs">
         <p>QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>

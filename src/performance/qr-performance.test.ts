@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeData } from '../qr/analysis/dataAnalysis';
-import { runDataEncoding } from '../qr/encoding/dataEncoding';
-import { runErrorCorrection } from '../qr/error-correction/errorCorrection';
-import { constructMessage } from '../qr/message-construction/messageConstruction';
-import { runModulePlacement } from '../qr/module-placement/modulePlacement';
-import { generateAllEncodingMaskMatrices, evaluateAllMaskPatterns } from '../qr/masking/maskPatterns';
-import { generateFinalQR } from '../qr/final-generation/finalGeneration';
+import { analyzeData } from '../qr-encode/analysis/dataAnalysis';
+import { runDataEncoding } from '../qr-encode/encoding/dataEncoding';
+import { runErrorCorrection } from '../qr-encode/error-correction/errorCorrection';
+import { constructMessage } from '../qr-encode/message-construction/messageConstruction';
+import { runModulePlacement } from '../qr-encode/module-placement/modulePlacement';
+import { generateAllEncodingMaskMatrices, evaluateAllMaskPatterns } from '../qr-encode/masking/maskPatterns';
+import { generateFinalQR } from '../qr-encode/final-generation/finalGeneration';
 import type { QRVersion, ErrorCorrectionLevel } from '../shared/types';
 
 interface PerformanceResult {

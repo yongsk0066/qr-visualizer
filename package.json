@@ -14,24 +14,24 @@
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
-    "@tailwindcss/vite": "^4.1.8",
+    "@tailwindcss/vite": "^4.1.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.8"
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@types/react": "^19.1.7",
+    "@eslint/js": "^9.29.0",
+    "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",
-    "eslint": "^9.28.0",
+    "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "husky": "^9.1.7",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.33.1",
+    "typescript-eslint": "^8.34.1",
     "vite": "npm:rolldown-vite@latest",
     "vitest": "^3.2.3"
   },

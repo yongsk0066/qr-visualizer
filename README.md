@@ -1,10 +1,14 @@
 # QR Visualizer
 
-QR 코드 생성 과정을 단계별로 시각화하여 교육하는 React 웹 애플리케이션입니다.
+QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하는 React 웹 애플리케이션입니다.
 
 ## 📋 프로젝트 개요
 
-**QR Visualizer**는 ISO/IEC 18004 표준을 따라 QR 코드가 어떻게 만들어지는지 7단계에 걸쳐 보여주는 교육용 도구입니다.
+**QR Visualizer**는 ISO/IEC 18004 표준을 따라 QR 코드가 어떻게 만들어지고 해석되는지 단계별로 보여주는 교육용 도구입니다.
+
+### 주요 기능
+- **Encoding Process**: QR 코드 생성 과정 7단계 시각화
+- **Detection Process**: QR 코드 이미지 인식 과정 7단계 시각화 (개발 중)
 
 ## 🚀 기술 스택
 
@@ -19,7 +23,7 @@ QR 코드 생성 과정을 단계별로 시각화하여 교육하는 React 웹 �
 
 ```
 src/
-├── qr/                     # QR 코드 생성 로직
+├── qr-encode/              # QR 코드 인코딩 로직
 │   ├── analysis/           # 1단계: 데이터 분석
 │   ├── encoding/           # 2단계: 데이터 인코딩
 │   ├── error-correction/   # 3단계: 에러 정정
@@ -28,7 +32,16 @@ src/
 │   ├── masking/           # 6단계: 마스킹 패턴
 │   ├── final-generation/  # 7단계: 최종 QR 생성
 │   └── qrPipeline.ts      # 전체 파이프라인 통합
-├── components/            # UI 컴포넌트 (7개 컬럼)
+├── qr-decode/             # QR 코드 디코딩 로직
+│   ├── detect/            # Detection Process
+│   │   ├── detector/      # 이미지 처리 알고리즘
+│   │   └── detectPipeline.ts
+│   └── types.ts           # 디코딩 관련 타입
+├── components/            # UI 컴포넌트
+│   ├── QREncodingProcess.tsx
+│   ├── QRDetectProcess.tsx
+│   ├── encode/            # Encoding UI 컴포넌트
+│   └── detect/            # Detection UI 컴포넌트
 └── shared/               # 공통 모듈 (타입, 상수, 유틸리티, 훅)
 ```
 
@@ -93,11 +106,23 @@ yarn preview
 - 에러 정정 레벨 (L, M, Q, H) 검증
 - ISO/IEC 18004 표준 예제 검증
 
+## 🏗️ 현재 개발 중
+
+### Detection Process (구현 중)
+- ✅ Step 1: 이미지 입력 (파일 업로드, 드래그앤드롭)
+- ✅ Step 2: 그레이스케일 변환 (히스토그램 시각화)
+- ✅ Step 3: 이진화 (Sauvola 적응 임계값)
+- ⏳ Step 4: Finder 패턴 검출
+- ⏳ Step 5: 원근 변환 (Homography)
+- ⏳ Step 6: 모듈 샘플링
+- ⏳ Step 7: Tri-state 행렬 생성
+
 ## 🆕 향후 추가 예정 기능
 
-- **QR 코드 디코딩**: QR 코드를 역으로 해독하는 과정 시각화
+- **Decode Process**: Tri-state 행렬에서 원본 데이터 복원
 - **한글(Kanji) 모드 지원**: 현재 미구현된 한글 인코딩 모드 추가
 - **Micro QR 코드**: 작은 크기의 QR 코드 형식 지원
+- **실시간 카메라 입력**: 웹캠을 통한 실시간 QR 인식
 - **다국어 지원**: UI 및 설명 다국어화
 
 ## 📄 라이선스
