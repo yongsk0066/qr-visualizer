@@ -1,4 +1,4 @@
-import type { ErrorCorrectionData } from '../shared/types';
+import type { ErrorCorrectionData } from '../../shared/types';
 
 interface ErrorCorrectionColumnProps {
   errorCorrection: ErrorCorrectionData | null;
@@ -20,11 +20,11 @@ export function ErrorCorrectionColumn({ errorCorrection }: ErrorCorrectionColumn
 
   const renderColoredInterleavedCodewords = () => {
     const interleavedDataLength = errorCorrection.dataBlocks.reduce(
-      (sum, block) => sum + block.length,
+      (sum: number, block: number[]) => sum + block.length,
       0
     );
 
-    return errorCorrection.interleavedCodewords.map((codeword, index) => {
+    return errorCorrection.interleavedCodewords.map((codeword: number, index: number) => {
       const isDataCodeword = index < interleavedDataLength;
       const hexValue = codeword.toString(16).toUpperCase().padStart(2, '0');
 
@@ -59,7 +59,7 @@ export function ErrorCorrectionColumn({ errorCorrection }: ErrorCorrectionColumn
         {/* 블록별 에러 정정 */}
         <div className="space-y-2">
           <h3 className="text-xs font-semibold text-gray-800 mb-2">블록별 에러 정정</h3>
-          {errorCorrection.dataBlocks.map((dataBlock, index) => (
+          {errorCorrection.dataBlocks.map((dataBlock: number[], index: number) => (
             <div key={index} className="space-y-1">
               <div className="text-xs font-medium text-gray-700">블록 {index + 1}</div>
               <div className="pl-2 space-y-1">

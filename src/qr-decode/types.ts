@@ -59,10 +59,17 @@ export interface TriStateQR {
   };
 }
 
+// Finder detection types
+export interface FinderDetectionResult {
+  candidates: Pattern[];
+  selected: [Point, Point, Point] | null;
+}
+
 // Pipeline result types
 export interface DetectPipelineResult {
   imageProcessing: ImageProcessingResult | null;
   grayscale: GrayscaleResult | null;
   binarization: BinarizationResult | null;
+  finderDetection: FinderDetectionResult | null;
   triStateMatrix: TriStateQR | null;
 }

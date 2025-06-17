@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { ModulePlacementData } from '../shared/types';
+import type { ModulePlacementData } from '../../shared/types';
 import { 
   generateAllMaskMatrices, 
   generateAllEncodingMaskMatrices,
