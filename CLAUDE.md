@@ -63,6 +63,8 @@ yarn preview
 - **Package Manager**: Yarn Berry (4.9.2) with node-modules linker
 - **Utilities**: @mobily/ts-belt for functional programming utilities
 - **Testing**: Vitest 3.2.2 with comprehensive test coverage
+- **Computer Vision**: OpenCV.js for QR detection algorithms
+- **Media Capture**: WebRTC getUserMedia API for camera access
 
 ## Key Configuration Notes
 

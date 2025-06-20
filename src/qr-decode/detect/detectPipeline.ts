@@ -1,7 +1,6 @@
 import { pipe } from '@mobily/ts-belt';
 import type { DetectPipelineResult } from '../types';
 import { runBinarization } from './detector/binarization';
-import { runBinarizationOpenCV } from './detector/binarizationOpenCV';
 import { runFinderDetection } from './detector/finderDetection';
 import { createGrayscaleResult, processImage } from './detector/imageProcessor';
 
@@ -13,8 +12,11 @@ export const runDetectPipeline = async ({
   imageUrl,
 }: DetectPipelineParams): Promise<DetectPipelineResult> => {
   try {
+    // 타임스탬프가 있는 경우 제거
+    const cleanImageUrl = imageUrl.split('#')[0];
+    
     // Step 1: 이미지 처리
-    const imageProcessing = await processImage(imageUrl);
+    const imageProcessing = await processImage(cleanImageUrl);
 
     const syncResult = pipe(
       { imageProcessing },
@@ -27,13 +29,11 @@ export const runDetectPipeline = async ({
     );
 
     // Step 3: 이진화 (일단 원래 Sauvola 사용)
-    const binarization = syncResult.grayscale
-      ? runBinarization(syncResult.grayscale)
-      : null;
+    const binarization = syncResult.grayscale ? runBinarization(syncResult.grayscale) : null;
 
     // Step 4: Finder Pattern 검출 (async)
-    const finderDetection = binarization 
-      ? await runFinderDetection(binarization).catch(err => {
+    const finderDetection = binarization
+      ? await runFinderDetection(binarization).catch((err) => {
           console.error('Finder detection error:', err);
           return null;
         })

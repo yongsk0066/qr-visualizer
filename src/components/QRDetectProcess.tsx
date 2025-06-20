@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import testImage from '../assets/test_image_2.jpg';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
 import { ProcessingWrapper } from './ProcessingWrapper';
@@ -8,26 +8,57 @@ import { GrayscaleColumn } from './detect/GrayscaleColumn';
 import { ImageInputColumn } from './detect/ImageInputColumn';
 
 export function QRDetectProcess() {
-  const [imageUrl, setImageUrl] = useState<string>(testImage);
+  const [imageUrl, setImageUrl] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<Awaited<ReturnType<typeof runDetectPipeline>> | null>(null);
+  const processingRef = useRef(false);
+  const lastProcessedUrlRef = useRef<string>('');
+
+  // 초기 테스트 이미지 로드
+  useEffect(() => {
+    setImageUrl(testImage);
+  }, []);
 
   useEffect(() => {
     const processImage = async () => {
       if (!imageUrl) return;
+      
+      // 이미 처리 중이거나 같은 이미지를 다시 처리하려는 경우 스킵
+      if (processingRef.current) {
+        console.log('Skipping: already processing');
+        return;
+      }
+      
+      if (imageUrl === lastProcessedUrlRef.current) {
+        console.log('Skipping: same image');
+        return;
+      }
 
+      console.log('Starting detection pipeline...');
+      processingRef.current = true;
       setIsProcessing(true);
+      
       try {
         const pipelineResult = await runDetectPipeline({ imageUrl });
+        console.log('Pipeline result:', pipelineResult);
         setResult(pipelineResult);
+        lastProcessedUrlRef.current = imageUrl;
       } catch (error) {
         console.error('Detection error:', error);
       } finally {
         setIsProcessing(false);
+        processingRef.current = false;
       }
     };
 
-    processImage();
+    // 카메라 모드인 경우 (data URL) 디바운싱 적용
+    if (imageUrl.startsWith('data:')) {
+      const timer = setTimeout(processImage, 100); // 100ms 디바운스
+      return () => clearTimeout(timer);
+    } else {
+      // 파일 업로드인 경우 즉시 처리
+      processImage();
+    }
   }, [imageUrl]);
 
   return (
