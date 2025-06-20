@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
-import { ProcessingWrapper } from './ProcessingWrapper';
-import { ImageInputColumn } from './detect/ImageInputColumn';
-import { GrayscaleColumn } from './detect/GrayscaleColumn';
-import { BinarizationColumn } from './detect/BinarizationColumn';
-import { FinderDetectionColumn } from './detect/FinderDetectionColumn';
-import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
+import { useEffect, useState } from 'react';
 import testImage from '../assets/test_image.jpg';
+import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
+import { ProcessingWrapper } from './ProcessingWrapper';
+import { BinarizationColumn } from './detect/BinarizationColumn';
+import { GrayscaleColumn } from './detect/GrayscaleColumn';
+import { ImageInputColumn } from './detect/ImageInputColumn';
 
 export function QRDetectProcess() {
   const [imageUrl, setImageUrl] = useState<string>(testImage);
@@ -15,7 +14,7 @@ export function QRDetectProcess() {
   useEffect(() => {
     const processImage = async () => {
       if (!imageUrl) return;
-      
+
       setIsProcessing(true);
       try {
         const pipelineResult = await runDetectPipeline({ imageUrl });
@@ -32,7 +31,7 @@ export function QRDetectProcess() {
 
   return (
     <div className="steps-grid">
-      <ImageInputColumn 
+      <ImageInputColumn
         imageUrl={imageUrl}
         setImageUrl={setImageUrl}
         imageProcessing={result?.imageProcessing ?? null}
@@ -46,28 +45,6 @@ export function QRDetectProcess() {
       <ProcessingWrapper isProcessing={isProcessing}>
         <BinarizationColumn binarization={result?.binarization ?? null} />
       </ProcessingWrapper>
-
-      <ProcessingWrapper isProcessing={isProcessing}>
-        <FinderDetectionColumn 
-          binarization={result?.binarization ?? null} 
-          finderDetection={result?.finderDetection ?? null} 
-        />
-      </ProcessingWrapper>
-
-      <div className="step-column">
-        <h3 className="step-title">Step 5: Homography</h3>
-        <p className="text-gray-500 text-sm">Coming soon...</p>
-      </div>
-
-      <div className="step-column">
-        <h3 className="step-title">Step 6: Sampling</h3>
-        <p className="text-gray-500 text-sm">Coming soon...</p>
-      </div>
-
-      <div className="step-column">
-        <h3 className="step-title">Step 7: Matrix Output</h3>
-        <p className="text-gray-500 text-sm">Coming soon...</p>
-      </div>
     </div>
   );
 }

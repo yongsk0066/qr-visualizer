@@ -23,7 +23,7 @@ QR Visualizer is an **educational React-based web application** designed to demo
 1. **Step 1: Image Input** ✅ - Load and display QR code images with drag-and-drop
 2. **Step 2: Grayscale** ✅ - Convert to grayscale with histogram visualization
 3. **Step 3: Binarization** ✅ - Sauvola adaptive thresholding with integral images
-4. **Step 4: Finder Detection** ✅ - Line scan algorithm with improved 3-point selection
+4. **Step 4: Finder Detection** 🏗️ - Line scan algorithm with 3-point selection
 5. **Step 5: Homography** 🏗️ - Perspective transformation
 6. **Step 6: Sampling** 🏗️ - Module grid sampling
 7. **Step 7: Matrix Output** 🏗️ - Generate tri-state matrix
@@ -272,13 +272,13 @@ src/
 - Threshold map visualization toggle
 - Integral images for O(1) local statistics
 
-**Step 4 - Finder Pattern Detection** ✅
-- Line scanning algorithm with 1:1:3:1:1 ratio detection
-- Horizontal and vertical pattern scanning
-- Improved 3-point selection with angle validation
-- Centers detection with subpixel accuracy
-- Comprehensive validation with strict ratio tolerances
-- Visual highlighting of detected patterns
+**Step 4 - Finder Pattern Detection** 🏗️
+- Line scanning algorithm with 1:1:3:1:1 ratio detection (TODO)
+- Horizontal and vertical pattern scanning (TODO)
+- 3-point selection with angle validation (TODO)
+- Centers detection with subpixel accuracy (TODO)
+- Comprehensive validation with strict ratio tolerances (TODO)
+- Visual highlighting of detected patterns (TODO)
 
 **Step 5-7** 🏗️
 - Homography transformation (TODO)
@@ -287,7 +287,7 @@ src/
 
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 362 tests
-- **Detection Process**: Steps 1-4 implemented, 5-7 in progress
+- **Detection Process**: Steps 1-3 implemented, 4-7 in progress
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
