@@ -24,7 +24,7 @@ QR Visualizer is an **educational React-based web application** designed to demo
 2. **Step 2: Grayscale** ✅ - Convert to grayscale with histogram visualization
 3. **Step 3: Binarization** ✅ - Sauvola adaptive thresholding with integral images
 4. **Step 4: Finder Detection** 🏗️ - Line scan algorithm with 3-point selection
-5. **Step 5: Homography** 🏗️ - Perspective transformation
+5. **Step 5: Homography** ✅ - Perspective transformation with corner detection
 6. **Step 6: Sampling** 🏗️ - Module grid sampling
 7. **Step 7: Matrix Output** 🏗️ - Generate tri-state matrix
 
@@ -134,7 +134,7 @@ src/
 │   │   │   ├── imageProcessor.ts    # 이미지 로딩, 그레이스케일 변환
 │   │   │   ├── binarization.ts      # Sauvola 적응 임계값 이진화
 │   │   │   ├── finderDetection.ts   # Finder 패턴 검출 (TODO)
-│   │   │   ├── homography.ts        # 원근 변환 (TODO)
+│   │   │   ├── homography.ts        # 원근 변환
 │   │   │   └── sampling.ts          # 모듈 샘플링 (TODO)
 │   │   └── detectPipeline.ts        # Detection 파이프라인
 │   ├── decode/             # Decode Process (TODO)
@@ -155,7 +155,8 @@ src/
 │   └── detect/                      # Detection UI 컴포넌트
 │       ├── ImageInputColumn.tsx    # 이미지 업로드
 │       ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
-│       └── BinarizationColumn.tsx  # 이진화 시각화
+│       ├── BinarizationColumn.tsx  # 이진화 시각화
+│       └── HomographyColumn.tsx    # 원근 변환 시각화
 │
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
@@ -282,14 +283,23 @@ src/
 - Comprehensive validation with strict ratio tolerances (TODO)
 - Visual highlighting of detected patterns (TODO)
 
-**Step 5-7** 🏗️
-- Homography transformation (TODO)
+**Step 5 - Homography Transformation** ✅
+- **Finder Pattern corner detection**: Uses 3 detected Finder Patterns as anchor points
+- **Bottom-right corner calculation**: Line intersection method from ISO/IEC 18004 standard
+- **Perspective transformation**: OpenCV.js getPerspectiveTransform for accurate mapping
+- **Padding application**: 3.5 module padding for fine-tuning transformation boundaries
+- **Version estimation**: Calculates QR version from Finder Pattern distances
+- **Transformed image generation**: 512x512 normalized QR code output
+- **Visual feedback**: Side-by-side comparison of original and transformed images
+- **Corner visualization**: Highlights detected corners with color-coded markers
+
+**Step 6-7** 🏗️
 - Module sampling (TODO)
 - Tri-state matrix generation (TODO)
 
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 362 tests
-- **Detection Process**: Steps 1-3 implemented, 4-7 in progress
+- **Detection Process**: Steps 1-5 implemented, 6-7 in progress
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline

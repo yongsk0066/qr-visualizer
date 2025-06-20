@@ -5,6 +5,7 @@ import { ProcessingWrapper } from './ProcessingWrapper';
 import { BinarizationColumn } from './detect/BinarizationColumn';
 import { FinderDetectionColumn } from './detect/FinderDetectionColumn';
 import { GrayscaleColumn } from './detect/GrayscaleColumn';
+import { HomographyColumn } from './detect/HomographyColumn';
 import { ImageInputColumn } from './detect/ImageInputColumn';
 
 export function QRDetectProcess() {
@@ -80,6 +81,14 @@ export function QRDetectProcess() {
 
       <ProcessingWrapper isProcessing={isProcessing}>
         <FinderDetectionColumn finderDetection={result?.finderDetection ?? null} />
+      </ProcessingWrapper>
+
+      <ProcessingWrapper isProcessing={isProcessing}>
+        <HomographyColumn 
+          homography={result?.homography ?? null}
+          binarization={result?.binarization ?? null}
+          finderDetection={result?.finderDetection ?? null}
+        />
       </ProcessingWrapper>
     </div>
   );

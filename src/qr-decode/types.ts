@@ -88,4 +88,5 @@ export interface DetectPipelineResult {
   grayscale: GrayscaleResult | null;
   binarization: BinarizationResult | null;
   finderDetection: FinderDetectionResult | null;
+  homography: HomographyResult | null;
 }

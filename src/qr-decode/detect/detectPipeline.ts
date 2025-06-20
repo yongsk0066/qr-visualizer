@@ -2,6 +2,7 @@ import { pipe } from '@mobily/ts-belt';
 import type { DetectPipelineResult } from '../types';
 import { runBinarization } from './detector/binarization';
 import { runFinderDetection } from './detector/finderDetection';
+import { runHomography } from './detector/homography';
 import { createGrayscaleResult, processImage } from './detector/imageProcessor';
 
 export interface DetectPipelineParams {
@@ -39,10 +40,21 @@ export const runDetectPipeline = async ({
         })
       : null;
 
+    // Step 5: Homography 변환
+    const homography = finderDetection && syncResult.imageProcessing && binarization
+      ? runHomography(
+          finderDetection, 
+          syncResult.imageProcessing.width, 
+          syncResult.imageProcessing.height,
+          binarization.binary
+        )
+      : null;
+
     return {
       ...syncResult,
       binarization,
       finderDetection,
+      homography,
     };
   } catch (error) {
     console.error('Detect pipeline error:', error);
@@ -51,6 +63,7 @@ export const runDetectPipeline = async ({
       grayscale: null,
       binarization: null,
       finderDetection: null,
+      homography: null,
     };
   }
 };
