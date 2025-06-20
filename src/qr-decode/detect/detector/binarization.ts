@@ -133,8 +133,8 @@ export const sauvolaBinarization = (
       const idx = y * width + x;
       threshold[idx] = thr;
       
-      // 임계값 적용
-      binary[idx] = grayscale[idx] < thr ? 1 : 0;
+      // 임계값 적용 (어두운 부분=0, 밝은 부분=255)
+      binary[idx] = grayscale[idx] > thr ? 255 : 0;
     }
   }
   

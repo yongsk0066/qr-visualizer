@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import testImage from '../assets/test_image.jpg';
+import testImage from '../assets/test_image_2.jpg';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
 import { ProcessingWrapper } from './ProcessingWrapper';
 import { BinarizationColumn } from './detect/BinarizationColumn';
+import { FinderDetectionColumn } from './detect/FinderDetectionColumn';
 import { GrayscaleColumn } from './detect/GrayscaleColumn';
 import { ImageInputColumn } from './detect/ImageInputColumn';
 
@@ -44,6 +45,10 @@ export function QRDetectProcess() {
 
       <ProcessingWrapper isProcessing={isProcessing}>
         <BinarizationColumn binarization={result?.binarization ?? null} />
+      </ProcessingWrapper>
+
+      <ProcessingWrapper isProcessing={isProcessing}>
+        <FinderDetectionColumn finderDetection={result?.finderDetection ?? null} />
       </ProcessingWrapper>
     </div>
   );

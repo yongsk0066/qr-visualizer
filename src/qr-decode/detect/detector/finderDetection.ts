@@ -1,367 +1,448 @@
-import { pipe } from '@mobily/ts-belt';
-import type { BinarizationResult, FinderDetectionResult, Point, Pattern, RunLength } from '../../types';
+import type { BinarizationResult, FinderDetectionResult, FinderPattern } from '../../types';
 
-// Constants for finder pattern detection
-const RATIO_TOLERANCE = 0.5; // 50% tolerance for 1:1:3:1:1 ratio
-const MIN_MODULE_SIZE = 2; // Minimum pixels per module
-const MAX_MODULE_SIZE = 100; // Maximum pixels per module
-const SCAN_SKIP = 3; // Skip every N rows for performance
+// OpenCV.js를 전역 변수로 사용
+declare global {
+  interface Window {
+    cv: any;
+  }
+}
 
-/**
- * Detect QR finder patterns using the 1:1:3:1:1 ratio scanning method
- * Educational implementation following ISO/IEC 18004 standard
- */
-export const detectFinderPatterns = (
-  binarization: BinarizationResult
-): FinderDetectionResult => {
-  const { binary, width, height } = binarization;
+// OpenCV.js 초기화 확인
+let cvReady = false;
 
-  return pipe(
-    binary,
-    // Step 1: Horizontal scanning for 1:1:3:1:1 patterns
-    (data) => scanForPatterns(data, width, height),
-    // Step 2: Vertical verification of candidates
-    (candidates) => verifyCandidates(candidates, binary, width, height),
-    // Step 3: Select best triplet of patterns
-    (verified) => selectFinderTriplet(verified),
-    // Step 4: Return result
-    (selected) => ({
-      candidates: selected?.patterns || [],
-      selected: selected?.points || null,
-    })
-  );
+export const initOpenCV = async (): Promise<void> => {
+  if (cvReady) return;
+
+  // OpenCV.js가 로드될 때까지 대기
+  await new Promise<void>((resolve) => {
+    if (window.cv && window.cv.Mat) {
+      cvReady = true;
+      resolve();
+      return;
+    }
+
+    // cv.onRuntimeInitialized 체크
+    if (window.cv) {
+      window.cv.onRuntimeInitialized = () => {
+        cvReady = true;
+        resolve();
+      };
+    } else {
+      // cv 객체가 아직 없으면 주기적으로 확인
+      const checkInterval = setInterval(() => {
+        if (window.cv) {
+          clearInterval(checkInterval);
+          if (window.cv.Mat) {
+            cvReady = true;
+            resolve();
+          } else {
+            window.cv.onRuntimeInitialized = () => {
+              cvReady = true;
+              resolve();
+            };
+          }
+        }
+      }, 100);
+    }
+  });
 };
 
 /**
- * Scan image rows for potential finder patterns with 1:1:3:1:1 ratio
+ * Finder Pattern 검출 함수
+ * OpenCV.js를 사용하여 윤곽선 기반으로 QR 코드의 Finder Pattern 검출
  */
-function scanForPatterns(
-  binary: Uint8Array,
-  width: number,
-  height: number
-): Point[] {
-  const candidates: Point[] = [];
+export const runFinderDetection = async (
+  binarization: BinarizationResult
+): Promise<FinderDetectionResult> => {
+  await initOpenCV();
 
-  // Scan every SCAN_SKIP rows for performance
-  for (let y = 0; y < height; y += SCAN_SKIP) {
-    const runs = getRunLengths(binary, y * width, width);
+  const { binary: data, width, height } = binarization;
+  const cv = window.cv;
+
+  // 이진화된 이미지를 OpenCV Mat으로 변환
+  // 입력 데이터 확인 및 정규화
+  const normalizedData = new Uint8Array(data.length);
+  for (let i = 0; i < data.length; i++) {
+    // 0/1 형식을 0/255 형식으로 변환 (필요한 경우)
+    if (data[i] === 0 || data[i] === 1) {
+      normalizedData[i] = data[i] * 255;
+    } else {
+      normalizedData[i] = data[i];
+    }
+  }
+  
+  const mat = cv.matFromArray(height, width, cv.CV_8UC1, Array.from(normalizedData));
+  
+
+  // 윤곽선 검출을 위한 변수들
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+
+  try {
+    // 윤곽선 검출 (RETR_TREE: 전체 계층 구조 검출)
+    // OpenCV는 흰색(255) 객체를 찾으므로, 현재 이미지가 맞는지 확인
+    cv.findContours(mat, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
+
+
+    const finderPatterns: FinderPattern[] = [];
+
+    // 디버깅: 검출 통계
+    let squareCount = 0;
+    let largeSquareCount = 0;
+    let candidateCount = 0;
     
-    // Need at least 5 runs for a potential pattern (B-W-B-W-B)
-    if (runs.length < 5) continue;
+    // 계층 구조를 이용한 Finder Pattern 검출
+    // Finder Pattern은 3개의 중첩된 사각형 구조 (흑-백-흑)
+    for (let i = 0; i < contours.size(); i++) {
+      const contour = contours.get(i);
 
-    // Check each sequence of 5 consecutive runs
-    for (let i = 0; i <= runs.length - 5; i++) {
-      const pattern = runs.slice(i, i + 5);
+      // 윤곽선을 다각형으로 근사화
+      let approx = new cv.Mat();
+      const perimeter = cv.arcLength(contour, true);
       
-      // First run should be black (0)
-      if (pattern[0].value !== 0) continue;
+      // 여러 epsilon 값으로 시도 (0.02부터 0.1까지)
+      const epsilonValues = [0.02, 0.03, 0.04, 0.05, 0.07, 0.1];
+      let isSquare = false;
       
-      // Check alternating black/white pattern
-      if (!isAlternatingPattern(pattern)) continue;
+      for (const epsilon of epsilonValues) {
+        cv.approxPolyDP(contour, approx, epsilon * perimeter, true);
+        if (approx.rows === 4) {
+          isSquare = true;
+          break;
+        }
+        // 4개가 아니면 다음 epsilon으로 재시도
+        if (epsilon < epsilonValues[epsilonValues.length - 1]) {
+          approx.delete();
+          approx = new cv.Mat();
+        }
+      }
+
+      // 사각형이 아니면 스킵
+      if (!isSquare) {
+        approx.delete();
+        contour.delete();
+        continue;
+      }
       
-      // Check 1:1:3:1:1 ratio
-      const center = checkRatio(pattern);
-      if (center) {
-        candidates.push({
-          x: pattern[0].start + center,
-          y: y,
+      squareCount++;
+
+      // 면적 계산 (이미지 크기에 상대적으로)
+      const area = cv.contourArea(contour);
+      const imageArea = width * height;
+      const minAreaRatio = 0.00001; // 이미지 크기의 0.001%
+      
+      if (area < imageArea * minAreaRatio || area < 50) {
+        // 너무 작은 윤곽선 제외
+        approx.delete();
+        contour.delete();
+        continue;
+      }
+      
+      largeSquareCount++;
+      
+      // 너무 큰 윤곽선도 제외 (이미지의 50% 이상)
+      if (area > imageArea * 0.5) {
+        approx.delete();
+        contour.delete();
+        continue;
+      }
+
+      // 중심점 계산
+      const moments = cv.moments(contour);
+      const centerX = moments.m10 / moments.m00;
+      const centerY = moments.m01 / moments.m00;
+
+      // 계층 구조 확인 (부모-자식 관계)
+      // const hierarchyData = hierarchy.data32S;
+      // const currentHierarchy = {
+      //   next: hierarchyData[i * 4],
+      //   previous: hierarchyData[i * 4 + 1],
+      //   firstChild: hierarchyData[i * 4 + 2],
+      //   parent: hierarchyData[i * 4 + 3],
+      // };
+
+      // Finder Pattern 후보인지 확인 (3단계 중첩 구조)
+      if (isFinderPatternCandidate(i, hierarchy, contours)) {
+        candidateCount++;
+        // 경계 박스 계산
+        const rect = cv.boundingRect(contour);
+        
+        
+
+        finderPatterns.push({
+          center: { x: centerX, y: centerY },
+          size: Math.max(rect.width, rect.height),
+          corners: extractCorners(approx),
+          score: calculatePatternScore(contour),
         });
       }
+
+      approx.delete();
+      contour.delete();
     }
-  }
+    
+    console.log('Detection stats:', {
+      totalContours: contours.size(),
+      squares: squareCount,
+      largeSquares: largeSquareCount,
+      candidates: candidateCount,
+      patternsFound: finderPatterns.length
+    });
 
-  return candidates;
-}
+    // 상위 3개의 Finder Pattern 선택 (점수 기준)
+    const selectedPatterns = selectBestThreePatterns(finderPatterns);
 
-/**
- * Get run-length encoding of a row
- */
-function getRunLengths(data: Uint8Array, start: number, width: number): RunLength[] {
-  const runs: RunLength[] = [];
-  let currentValue = data[start];
-  let currentStart = 0;
-  let currentLength = 1;
-
-  for (let x = 1; x < width; x++) {
-    const value = data[start + x];
-    if (value === currentValue) {
-      currentLength++;
-    } else {
-      runs.push({
-        start: currentStart,
-        length: currentLength,
-        value: currentValue,
-      });
-      currentValue = value;
-      currentStart = x;
-      currentLength = 1;
-    }
-  }
-
-  // Don't forget the last run
-  runs.push({
-    start: currentStart,
-    length: currentLength,
-    value: currentValue,
-  });
-
-  return runs;
-}
-
-/**
- * Check if runs form alternating black/white pattern
- */
-function isAlternatingPattern(runs: RunLength[]): boolean {
-  return runs.every((run, i) => run.value === (i % 2 === 0 ? 0 : 1));
-}
-
-/**
- * Check if runs match 1:1:3:1:1 ratio within tolerance
- * Returns the center position if match found, null otherwise
- */
-function checkRatio(runs: RunLength[]): number | null {
-  const lengths = runs.map(r => r.length);
-  const moduleSize = (lengths[0] + lengths[1] + lengths[3] + lengths[4]) / 4;
-  
-  // Check module size bounds
-  if (moduleSize < MIN_MODULE_SIZE || moduleSize > MAX_MODULE_SIZE) {
-    return null;
-  }
-
-  // Expected lengths based on module size
-  const expected = [moduleSize, moduleSize, moduleSize * 3, moduleSize, moduleSize];
-  
-  // Check each segment against expected ratio
-  for (let i = 0; i < 5; i++) {
-    const ratio = lengths[i] / expected[i];
-    if (ratio < (1 - RATIO_TOLERANCE) || ratio > (1 + RATIO_TOLERANCE)) {
-      return null;
-    }
-  }
-
-  // Return center of the pattern (middle of the 3-module center)
-  return Math.round(runs[0].length + runs[1].length + runs[2].length / 2);
-}
-
-/**
- * Verify candidates by checking vertical direction
- */
-function verifyCandidates(
-  candidates: Point[],
-  binary: Uint8Array,
-  width: number,
-  height: number
-): Pattern[] {
-  const verified: Pattern[] = [];
-
-  for (const candidate of candidates) {
-    // Extract vertical run at candidate position
-    const verticalRuns = getVerticalRuns(
-      binary,
-      candidate.x,
-      candidate.y,
-      width,
-      height
+    // 검출 시각화를 위한 이미지 생성
+    const visualizationCanvas = createVisualizationCanvas(
+      binarization,
+      finderPatterns,
+      selectedPatterns
     );
 
-    if (verticalRuns.length >= 5) {
-      // Find the run containing our y position
-      let accumulatedLength = 0;
-      for (let i = 0; i <= verticalRuns.length - 5; i++) {
-        const pattern = verticalRuns.slice(i, i + 5);
-        
-        if (!isAlternatingPattern(pattern)) continue;
-        
-        const centerOffset = checkRatio(pattern);
-        if (centerOffset !== null) {
-          // Calculate refined center position
-          const yStart = accumulatedLength + pattern[0].start;
-          const refinedY = yStart + centerOffset;
-          
-          // Check if this pattern contains our original y
-          if (Math.abs(refinedY - candidate.y) < pattern[2].length) {
-            const moduleSize = (pattern[0].length + pattern[1].length + 
-                               pattern[3].length + pattern[4].length) / 4;
-            
-            verified.push({
-              x: candidate.x,
-              y: refinedY,
-              size: moduleSize,
-            });
-            break;
-          }
-        }
-        
-        accumulatedLength += pattern[0].length;
+    return {
+      patterns: selectedPatterns,
+      candidates: finderPatterns,
+      visualizationCanvas,
+      confidence: calculateDetectionConfidence(selectedPatterns),
+    };
+  } finally {
+    // 정리
+    mat.delete();
+    contours.delete();
+    hierarchy.delete();
+  }
+};
+
+/**
+ * Finder Pattern 후보인지 확인
+ * 3단계 중첩 구조 (흑-백-흑)를 가지는지 검증
+ */
+function isFinderPatternCandidate(
+  index: number,
+  hierarchy: any,
+  contours: any
+): boolean {
+  const hierarchyData = hierarchy.data32S;
+
+  // 현재 윤곽선의 계층 정보
+  const firstChild = hierarchyData[index * 4 + 2];
+  if (firstChild === -1) return false; // 자식이 없으면 후보가 아님
+
+  // 첫 번째 자식의 자식 확인 (3단계 구조)
+  const secondChild = hierarchyData[firstChild * 4 + 2];
+  if (secondChild === -1) return false;
+  
+
+  // 면적 비율 검증 (1:1:3:1:1 비율에 근사한지)
+  const cv = window.cv;
+  const outerContour = contours.get(index);
+  const middleContour = contours.get(firstChild);
+  const innerContour = contours.get(secondChild);
+
+  const outerArea = cv.contourArea(outerContour);
+  const middleArea = cv.contourArea(middleContour);
+  const innerArea = cv.contourArea(innerContour);
+
+  outerContour.delete();
+  middleContour.delete();
+  innerContour.delete();
+
+  const ratio1 = middleArea / outerArea;
+  const ratio2 = innerArea / middleArea;
+  
+  // 이론적 비율: middle/outer ≈ 9/25 = 0.36, inner/middle ≈ 1/9 = 0.11
+  // 하지만 실제로는 면적 비율이 다를 수 있음 (픽셀 근사화, 회전, 변형 등)
+  // 더 관대한 범위 설정
+  const isValid = ratio1 > 0.2 && ratio1 < 0.7 && ratio2 > 0.1 && ratio2 < 0.5;
+  
+  return isValid;
+}
+
+/**
+ * 윤곽선에서 코너 좌표 추출
+ */
+function extractCorners(approx: any): Array<{ x: number; y: number }> {
+  const corners = [];
+  for (let i = 0; i < approx.rows; i++) {
+    corners.push({
+      x: approx.data32S[i * 2],
+      y: approx.data32S[i * 2 + 1],
+    });
+  }
+  return corners;
+}
+
+/**
+ * Finder Pattern의 품질 점수 계산
+ */
+function calculatePatternScore(contour: any): number {
+  const cv = window.cv;
+  let score = 100;
+
+  // 정사각형에 가까울수록 높은 점수
+  const rect = cv.boundingRect(contour);
+  const aspectRatio = rect.width / rect.height;
+  score -= Math.abs(1 - aspectRatio) * 50;
+
+  // 면적이 클수록 높은 점수 (더 명확한 패턴)
+  const area = cv.contourArea(contour);
+  score += Math.log(area) * 5;
+  
+  // 컨투어의 컨벡스성 확인 (볼록할수록 좋음)
+  const hull = new cv.Mat();
+  cv.convexHull(contour, hull);
+  const hullArea = cv.contourArea(hull);
+  const convexity = area / hullArea;
+  score += convexity * 20; // 볼록할수록 높은 점수
+  hull.delete();
+
+  return Math.max(0, score);
+}
+
+/**
+ * 상위 3개의 Finder Pattern 선택
+ */
+function selectBestThreePatterns(patterns: FinderPattern[]): FinderPattern[] {
+  if (patterns.length <= 3) return patterns;
+
+  // 점수 기준 정렬
+  const sorted = [...patterns].sort((a, b) => b.score - a.score);
+
+  // 상위 3개 선택하되, 삼각형 구성 가능 여부 확인
+  const selected: FinderPattern[] = [];
+
+  for (const pattern of sorted) {
+    if (selected.length === 0) {
+      selected.push(pattern);
+    } else if (selected.length === 1) {
+      // 두 번째 패턴은 첫 번째와 너무 가깝지 않아야 함
+      const dist = distance(selected[0].center, pattern.center);
+      if (dist > pattern.size * 2) {
+        selected.push(pattern);
+      }
+    } else if (selected.length === 2) {
+      // 세 번째 패턴은 삼각형을 형성해야 함
+      if (formsValidTriangle(selected[0], selected[1], pattern)) {
+        selected.push(pattern);
+        break;
       }
     }
   }
 
-  return verified;
+  return selected;
 }
 
 /**
- * Get vertical run-length encoding around a point
+ * 두 점 사이의 거리 계산
  */
-function getVerticalRuns(
-  data: Uint8Array,
-  x: number,
-  centerY: number,
-  width: number,
-  height: number
-): RunLength[] {
-  const runs: RunLength[] = [];
-  
-  // Scan from top to center
-  let y = Math.max(0, centerY - 50); // Look 50 pixels up
-  let currentValue = data[y * width + x];
-  let currentStart = y;
-  let currentLength = 1;
+function distance(p1: { x: number; y: number }, p2: { x: number; y: number }): number {
+  return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+}
 
-  for (y = currentStart + 1; y < Math.min(height, centerY + 50); y++) {
-    const value = data[y * width + x];
-    if (value === currentValue) {
-      currentLength++;
-    } else {
-      runs.push({
-        start: currentStart,
-        length: currentLength,
-        value: currentValue,
-      });
-      currentValue = value;
-      currentStart = y;
-      currentLength = 1;
+/**
+ * 세 패턴이 유효한 삼각형을 형성하는지 확인
+ */
+function formsValidTriangle(p1: FinderPattern, p2: FinderPattern, p3: FinderPattern): boolean {
+  const d1 = distance(p1.center, p2.center);
+  const d2 = distance(p2.center, p3.center);
+  const d3 = distance(p3.center, p1.center);
+
+  // 삼각형 부등식
+  if (d1 + d2 <= d3 || d2 + d3 <= d1 || d3 + d1 <= d2) {
+    return false;
+  }
+
+  // 너무 찌그러진 삼각형 제외
+  const maxDist = Math.max(d1, d2, d3);
+  const minDist = Math.min(d1, d2, d3);
+
+  return maxDist / minDist < 3; // 비율이 3배 이내
+}
+
+/**
+ * 검출 신뢰도 계산
+ */
+function calculateDetectionConfidence(patterns: FinderPattern[]): number {
+  if (patterns.length !== 3) return 0;
+
+  // 평균 점수를 신뢰도로 사용
+  const avgScore = patterns.reduce((sum, p) => sum + p.score, 0) / patterns.length;
+
+  // 0-1 범위로 정규화
+  return Math.min(1, avgScore / 100);
+}
+
+/**
+ * 시각화 캔버스 생성
+ */
+function createVisualizationCanvas(
+  binarization: BinarizationResult,
+  allPatterns: FinderPattern[],
+  selectedPatterns: FinderPattern[]
+): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = binarization.width;
+  canvas.height = binarization.height;
+
+  const ctx = canvas.getContext('2d')!;
+
+  // 이진화 이미지를 배경으로
+  const imageData = ctx.createImageData(binarization.width, binarization.height);
+  const data = binarization.binary;
+  for (let i = 0; i < data.length; i++) {
+    // 원본 이진화 이미지 표시 (0=검은색, 255=흰색)
+    const value = data[i];
+    imageData.data[i * 4] = value;
+    imageData.data[i * 4 + 1] = value;
+    imageData.data[i * 4 + 2] = value;
+    imageData.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  // 모든 후보 패턴 표시 (회색)
+  ctx.strokeStyle = '#999999';
+  ctx.lineWidth = 1;
+  for (const pattern of allPatterns) {
+    if (!selectedPatterns.includes(pattern)) {
+      drawPattern(ctx, pattern, false);
     }
   }
 
-  runs.push({
-    start: currentStart,
-    length: currentLength,
-    value: currentValue,
-  });
+  // 선택된 패턴 강조 표시 (빨간색)
+  ctx.strokeStyle = '#ff0000';
+  ctx.lineWidth = 2;
+  for (const pattern of selectedPatterns) {
+    drawPattern(ctx, pattern, true);
+  }
 
-  return runs;
+  return canvas;
 }
 
 /**
- * Select the best triplet of finder patterns
- * Validates that they form a proper triangle with right angles
+ * 패턴 그리기
  */
-function selectFinderTriplet(
-  patterns: Pattern[]
-): { patterns: Pattern[], points: [Point, Point, Point] } | null {
-  if (patterns.length < 3) return null;
+function drawPattern(ctx: CanvasRenderingContext2D, pattern: FinderPattern, highlight: boolean) {
+  // 중심점 표시
+  ctx.beginPath();
+  ctx.arc(pattern.center.x, pattern.center.y, 3, 0, Math.PI * 2);
+  ctx.fillStyle = highlight ? '#ff0000' : '#999999';
+  ctx.fill();
 
-  // Sort patterns by size to group similar ones
-  const sorted = [...patterns].sort((a, b) => a.size - b.size);
-  
-  // Try to find 3 patterns with similar sizes
-  for (let i = 0; i < sorted.length - 2; i++) {
-    for (let j = i + 1; j < sorted.length - 1; j++) {
-      for (let k = j + 1; k < sorted.length; k++) {
-        const p1 = sorted[i];
-        const p2 = sorted[j];
-        const p3 = sorted[k];
-        
-        // Check if sizes are similar (within 50% tolerance)
-        const avgSize = (p1.size + p2.size + p3.size) / 3;
-        const sizeValid = [p1, p2, p3].every(
-          p => Math.abs(p.size - avgSize) / avgSize < 0.5
-        );
-        
-        if (!sizeValid) continue;
-        
-        // Check if they form a right-angled triangle
-        if (isValidFinderTriangle(p1, p2, p3)) {
-          // Order points: top-left, top-right, bottom-left
-          const ordered = orderFinderPatterns(p1, p2, p3);
-          return {
-            patterns: [p1, p2, p3],
-            points: ordered,
-          };
-        }
-      }
+  // 경계 박스 표시
+  if (pattern.corners.length === 4) {
+    ctx.beginPath();
+    ctx.moveTo(pattern.corners[0].x, pattern.corners[0].y);
+    for (let i = 1; i < pattern.corners.length; i++) {
+      ctx.lineTo(pattern.corners[i].x, pattern.corners[i].y);
     }
+    ctx.closePath();
+    ctx.stroke();
   }
 
-  return null;
-}
-
-/**
- * Check if three patterns form a valid QR finder triangle
- */
-function isValidFinderTriangle(p1: Pattern, p2: Pattern, p3: Pattern): boolean {
-  // Calculate distances between patterns
-  const d12 = distance(p1, p2);
-  const d13 = distance(p1, p3);
-  const d23 = distance(p2, p3);
-  
-  // Sort distances
-  const distances = [d12, d13, d23].sort((a, b) => a - b);
-  
-  // Check if it forms a right triangle (with some tolerance)
-  // a² + b² ≈ c²
-  const [a, b, c] = distances;
-  const rightAngle = Math.abs(a * a + b * b - c * c) / (c * c) < 0.1;
-  
-  // Check if two sides are approximately equal (isosceles right triangle)
-  const isosceles = Math.abs(a - b) / a < 0.1;
-  
-  return rightAngle && isosceles;
-}
-
-/**
- * Calculate distance between two patterns
- */
-function distance(p1: Pattern, p2: Pattern): number {
-  const dx = p1.x - p2.x;
-  const dy = p1.y - p2.y;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-/**
- * Order finder patterns as: top-left, top-right, bottom-left
- */
-function orderFinderPatterns(
-  p1: Pattern,
-  p2: Pattern,
-  p3: Pattern
-): [Point, Point, Point] {
-  const patterns = [p1, p2, p3];
-  
-  // Find the pattern that is alone on one side (bottom-left)
-  let bottomLeft: Pattern | null = null;
-  let others: Pattern[] = [];
-  
-  for (let i = 0; i < 3; i++) {
-    const current = patterns[i];
-    const rest = patterns.filter((_, idx) => idx !== i);
-    
-    // Check if this pattern is on a different horizontal line than the others
-    const yDiff1 = Math.abs(current.y - rest[0].y);
-    const yDiff2 = Math.abs(current.y - rest[1].y);
-    const yDiffOthers = Math.abs(rest[0].y - rest[1].y);
-    
-    if (yDiff1 > yDiffOthers * 2 && yDiff2 > yDiffOthers * 2) {
-      bottomLeft = current;
-      others = rest;
-      break;
-    }
+  // 점수 표시 (highlight인 경우만)
+  if (highlight) {
+    ctx.fillStyle = '#ff0000';
+    ctx.font = '12px Arial';
+    ctx.fillText(pattern.score.toFixed(1), pattern.center.x + 10, pattern.center.y - 10);
   }
-  
-  if (!bottomLeft) {
-    // Fallback: use the bottom-most pattern
-    patterns.sort((a, b) => b.y - a.y);
-    bottomLeft = patterns[0];
-    others = [patterns[1], patterns[2]];
-  }
-  
-  // Order the other two as top-left and top-right
-  const [topLeft, topRight] = others[0].x < others[1].x ? others : [others[1], others[0]];
-  
-  return [
-    { x: topLeft.x, y: topLeft.y },
-    { x: topRight.x, y: topRight.y },
-    { x: bottomLeft.x, y: bottomLeft.y },
-  ];
 }

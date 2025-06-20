@@ -24,7 +24,8 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
     // 이진 이미지 그리기
     const imageData = ctx.createImageData(width, height);
     for (let i = 0; i < binary.length; i++) {
-      const value = binary[i] === 1 ? 0 : 255; // 1은 검정, 0은 흰색
+      // Sauvola: 0=흰색, 255=검정 (또는 0/1)
+      const value = binary[i] === 0 ? 255 : 0;
       const offset = i * 4;
       imageData.data[offset] = value;     // R
       imageData.data[offset + 1] = value; // G
@@ -100,7 +101,7 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
             <p>Sauvola 파라미터:</p>
             <p className="pl-2">• 윈도우 크기: {binarization.parameters.windowSize}px</p>
             <p className="pl-2">• k 값: {binarization.parameters.k}</p>
-            <p>검은 픽셀: {binarization.binary.filter(v => v === 1).length.toLocaleString()}</p>
+            <p>검은 픽셀: {binarization.binary.filter(v => v === 255).length.toLocaleString()}</p>
             <p>흰 픽셀: {binarization.binary.filter(v => v === 0).length.toLocaleString()}</p>
           </div>
         </div>
