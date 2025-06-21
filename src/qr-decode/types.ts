@@ -80,6 +80,7 @@ export interface FinderDetectionResult {
   candidates: FinderPattern[]; // 모든 후보 패턴
   visualizationCanvas: HTMLCanvasElement;
   confidence: number; // 0-1 범위의 검출 신뢰도
+  isRefinement?: boolean; // 정제 단계 여부
 }
 
 // Pipeline result types
@@ -89,4 +90,6 @@ export interface DetectPipelineResult {
   binarization: BinarizationResult | null;
   finderDetection: FinderDetectionResult | null;
   homography: HomographyResult | null;
+  sampling: TriStateQR | null;
+  homographyImage: ImageData | null;
 }

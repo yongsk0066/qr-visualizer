@@ -1,4 +1,5 @@
 import type { FinderDetectionResult, HomographyResult } from '../../types';
+import { countTimingPatternModules } from './timingPatternCounter';
 
 // OpenCV.js를 전역 변수로 사용
 declare global {
@@ -40,6 +41,7 @@ export const runHomography = (
   imageHeight: number,
   binarizedImage?: Uint8Array
 ): HomographyResult | null => {
+  console.log('runHomography called with:', { imageWidth, imageHeight });
   const cv = window.cv;
   
   if (!finderDetection || finderDetection.patterns.length !== 3) {
@@ -63,7 +65,83 @@ export const runHomography = (
     ) / 3;
     
     // QR 코드 버전 추정 (패턴 간 거리 기반)
-    const estimatedVersion = estimateQRVersion(sortedPatterns);
+    let estimatedVersion = estimateQRVersion(sortedPatterns);
+    
+    // 펼쳐진 이미지인 경우 (정사각형)
+    if (imageWidth === imageHeight && sortedPatterns.topLeft.corners && sortedPatterns.topRight.corners && binarizedImage) {
+      // 타이밍 패턴을 사용한 정확한 모듈 수 계산
+      const timingModules = countTimingPatternModules(
+        binarizedImage,
+        imageWidth,
+        imageHeight,
+        sortedPatterns.topLeft,
+        sortedPatterns.topRight,
+        sortedPatterns.bottomLeft,
+        avgFinderSize / 7  // 모듈 크기 전달
+      );
+      
+      if (timingModules) {
+        const timingVersion = (timingModules - 17) / 4;
+        console.log('Timing pattern based version:', {
+          modules: timingModules,
+          version: timingVersion
+        });
+        
+        estimatedVersion = timingVersion;
+      } else {
+        // 타이밍 패턴 실패시 기존 방법 사용
+        // TL의 가장 왼쪽과 TR의 가장 오른쪽 사이 거리 = 전체 QR 너비
+        const tlLeftmost = Math.min(...sortedPatterns.topLeft.corners.map(c => c.x));
+        const trRightmost = Math.max(...sortedPatterns.topRight.corners.map(c => c.x));
+        const totalWidth = trRightmost - tlLeftmost;
+        
+        // 모듈 크기 = Finder Pattern 크기 / 7
+        const moduleSize = avgFinderSize / 7;
+        
+        // 전체 모듈 수 = 전체 너비 / 모듈 크기
+        const calculatedModules = Math.round(totalWidth / moduleSize);
+        
+        // 디버깅을 위한 다른 계산 방법들
+        const method2Modules = Math.round(imageWidth / moduleSize);
+        const method3Modules = Math.round(totalWidth / (avgFinderSize / 7));
+        
+        
+        // 가장 가까운 유효한 QR 크기 찾기
+        const validModuleCounts = [];
+        for (let v = 1; v <= 40; v++) {
+          validModuleCounts.push(17 + 4 * v);
+        }
+        
+        let closestModules = validModuleCounts[0];
+        let minDiff = Math.abs(calculatedModules - closestModules);
+        
+        for (const modules of validModuleCounts) {
+          const diff = Math.abs(calculatedModules - modules);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestModules = modules;
+          }
+        }
+        
+        const calculatedVersion = (closestModules - 17) / 4;
+        
+        console.log(`Rectified image version estimation (fallback):`, {
+          tlLeftmost,
+          trRightmost,
+          totalWidth,
+          finderSize: avgFinderSize,
+          moduleSize,
+          calculatedModules,
+          method2Modules,
+          method3Modules,
+          closestValidModules: closestModules,
+          version: calculatedVersion
+        });
+        
+        estimatedVersion = calculatedVersion;
+      }
+    }
+    
     const moduleCount = 17 + estimatedVersion * 4; // 버전별 모듈 수
     
     console.log(`Estimated version: ${estimatedVersion}, Module count: ${moduleCount}`);
@@ -99,13 +177,13 @@ export const runHomography = (
     // Finder Pattern corners를 직접 사용한 정확한 변환
     const calculateQRCornersWithCV = () => {
       const moduleSize = avgFinderSize / 7;
-      const margin = moduleSize * 0.3; // QR 코드 quiet zone (조금 더 타이트하게)
+      const margin = 0; // margin 제거 - Finder Pattern 외곽선을 정확히 사용
       
       // 각 Finder Pattern에서 QR 코드 외곽 corner 선택
       const getOuterCorner = (pattern: typeof sortedPatterns.topLeft, position: 'topLeft' | 'topRight' | 'bottomLeft') => {
         if (!pattern.corners || pattern.corners.length !== 4) {
           // corners가 없으면 center 기반 계산
-          const offset = moduleSize * 3.5 + margin;
+          const offset = moduleSize * 3.5; // Finder Pattern 중심에서 외곽까지는 3.5 모듈
           switch(position) {
             case 'topLeft':
               return { x: pattern.center.x - offset, y: pattern.center.y - offset };
@@ -323,86 +401,103 @@ function sortFinderPatterns(patterns: typeof FinderDetectionResult.prototype.pat
  * Finder Pattern 간 거리를 기반으로 QR 코드 버전 추정
  */
 function estimateQRVersion(sortedPatterns: ReturnType<typeof sortFinderPatterns>): number {
-  // Top-left와 Top-right 사이의 거리 계산
-  const dx = sortedPatterns.topRight.center.x - sortedPatterns.topLeft.center.x;
-  const dy = sortedPatterns.topRight.center.y - sortedPatterns.topLeft.center.y;
-  const distanceHorizontal = Math.sqrt(dx * dx + dy * dy);
-  
-  // Top-left와 Bottom-left 사이의 거리 계산
-  const dx2 = sortedPatterns.bottomLeft.center.x - sortedPatterns.topLeft.center.x;
-  const dy2 = sortedPatterns.bottomLeft.center.y - sortedPatterns.topLeft.center.y;
-  const distanceVertical = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-  
-  // 평균 거리 사용
-  const avgDistance = (distanceHorizontal + distanceVertical) / 2;
-  
-  // Finder Pattern 크기 추정 (평균)
+  // Finder Pattern 크기 평균
   const avgFinderSize = (
     sortedPatterns.topLeft.size + 
     sortedPatterns.topRight.size + 
     sortedPatterns.bottomLeft.size
   ) / 3;
   
-  // 모듈 크기 추정 (Finder Pattern은 7모듈)
-  const moduleSize = avgFinderSize / 7;
+  // 모듈 크기 = Finder Pattern 크기 / 7
+  // perspective distortion 보정 (약 8%)
+  const perspectiveCorrection = 1.08;
+  const moduleSize = (avgFinderSize / 7) * perspectiveCorrection;
   
-  // Finder Pattern 중심 간 거리를 모듈 단위로 변환
-  const modulesBetweeenCenters = avgDistance / moduleSize;
+  // Finder Pattern 중심 간 거리
+  const centerDistH = sortedPatterns.topRight.center.x - sortedPatterns.topLeft.center.x;
+  const centerDistV = sortedPatterns.bottomLeft.center.y - sortedPatterns.topLeft.center.y;
+  const avgCenterDist = (centerDistH + centerDistV) / 2;
   
-  // QR 코드 전체 모듈 수 계산
-  // Finder Pattern 중심은 코드 가장자리에서 3.5모듈 떨어져 있음
-  // 따라서: 전체 모듈 수 = 중심간 거리 + 7
-  const estimatedModules = modulesBetweeenCenters + 7;
+  // 중심 간 거리를 모듈 수로 변환
+  const modulesBetweenCenters = avgCenterDist / moduleSize;
   
-  // 디버깅을 위한 대체 계산 방법
-  // Finder Pattern의 바운딩 박스로 직접 계산
-  const boundingWidth = Math.abs(sortedPatterns.topRight.center.x - sortedPatterns.topLeft.center.x) + avgFinderSize;
-  const boundingHeight = Math.abs(sortedPatterns.bottomLeft.center.y - sortedPatterns.topLeft.center.y) + avgFinderSize;
-  const avgBounding = (boundingWidth + boundingHeight) / 2;
-  const estimatedModulesAlt = avgBounding / moduleSize;
+  // QR 코드 전체 모듈 수 = 중심 간 모듈 수 + 7
+  // (Finder Pattern 중심은 외곽에서 3.5 모듈 떨어져 있음)
+  // 하지만 실제로는 약간의 오차가 있을 수 있음
+  const baseEstimate = modulesBetweenCenters + 7;
   
-  console.log('Alternative estimation:', {
-    boundingWidth,
-    boundingHeight,
-    avgBounding,
-    estimatedModulesAlt
-  });
+  // 다양한 추정 방법의 평균 사용
+  const estimates = [];
   
-  // 버전 계산 (모듈 수 = 17 + 4 * version)
-  const rawVersion = (estimatedModules - 17) / 4;
+  // 방법 1: 기본 추정
+  estimates.push(baseEstimate);
   
-  // 가장 가까운 정수 버전 찾기
-  const versionLow = Math.floor(rawVersion);
-  const versionHigh = Math.ceil(rawVersion);
+  // 방법 2: 가로/세로 비율 고려
+  const horizontalModules = centerDistH / moduleSize + 7;
+  const verticalModules = centerDistV / moduleSize + 7;
+  estimates.push((horizontalModules + verticalModules) / 2);
   
-  // 각 버전의 예상 모듈 수
-  const modulesLow = 17 + 4 * versionLow;
-  const modulesHigh = 17 + 4 * versionHigh;
+  // 방법 3: 대각선 거리 사용
+  const diagonalDist = Math.sqrt(centerDistH * centerDistH + centerDistV * centerDistV);
+  const diagonalModules = diagonalDist / moduleSize / Math.sqrt(2) + 7;
+  estimates.push(diagonalModules);
   
-  // 더 가까운 버전 선택
-  const version = Math.abs(estimatedModules - modulesLow) < Math.abs(estimatedModules - modulesHigh) 
-    ? versionLow 
-    : versionHigh;
+  // 가중 평균 계산 - 수직 거리가 더 신뢰할 수 있음
+  const weightedEstimate = (
+    baseEstimate * 1.0 +
+    horizontalModules * 0.8 +
+    verticalModules * 1.2 +
+    diagonalModules * 1.0
+  ) / 4.0;
   
-  const finalVersion = Math.max(1, Math.min(40, version));
+  const estimatedModules = weightedEstimate;
+  
+  // 가능한 QR 버전들과 그 모듈 수
+  const versions = [];
+  for (let v = 1; v <= 40; v++) {
+    const modules = 17 + 4 * v;
+    versions.push({ version: v, modules });
+  }
+  
+  // 추정값과 가장 가까운 버전 찾기
+  let bestVersion = 1;
+  let minDiff = Math.abs(estimatedModules - 21);
+  
+  for (const { version, modules } of versions) {
+    const diff = Math.abs(estimatedModules - modules);
+    if (diff < minDiff) {
+      minDiff = diff;
+      bestVersion = version;
+    }
+  }
+  
+  // 디버깅: 근처 버전들의 차이 확인
+  const nearbyVersions = versions
+    .filter(v => Math.abs(v.version - bestVersion) <= 2)
+    .map(v => ({
+      version: v.version,
+      modules: v.modules,
+      diff: Math.abs(estimatedModules - v.modules)
+    }));
   
   console.log('Version estimation:', {
-    distanceHorizontal,
-    distanceVertical,
-    avgDistance,
-    avgFinderSize,
+    finderSize: avgFinderSize,
     moduleSize,
-    modulesBetweeenCenters,
-    estimatedModules,
-    rawVersion,
-    versionLow,
-    versionHigh,
-    modulesLow,
-    modulesHigh,
-    finalVersion
+    centerDistances: { horizontal: centerDistH, vertical: centerDistV, average: avgCenterDist },
+    modulesBetweenCenters,
+    estimates: {
+      base: baseEstimate,
+      horizontal: horizontalModules,
+      vertical: verticalModules,
+      diagonal: diagonalModules,
+      average: estimatedModules
+    },
+    bestVersion,
+    expectedModules: 17 + 4 * bestVersion,
+    nearbyVersions
   });
   
-  return finalVersion;
+  return bestVersion;
 }
 
 /**

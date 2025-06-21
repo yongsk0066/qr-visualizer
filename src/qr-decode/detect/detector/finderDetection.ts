@@ -167,11 +167,15 @@ export const runFinderDetection = async (
         // 경계 박스 계산
         const rect = cv.boundingRect(contour);
         
-        
+        // Finder Pattern의 실제 크기 계산
+        // boundingRect는 최소 경계이므로 실제보다 작을 수 있음
+        // 이진화 과정에서 손실된 가장자리를 보정
+        const paddingFactor = 1.0; // 보정 제거 (원래대로)
+        const adjustedSize = Math.max(rect.width, rect.height) * paddingFactor;
 
         finderPatterns.push({
           center: { x: centerX, y: centerY },
-          size: Math.max(rect.width, rect.height),
+          size: adjustedSize,
           corners: extractCorners(approx),
           score: calculatePatternScore(contour),
         });
