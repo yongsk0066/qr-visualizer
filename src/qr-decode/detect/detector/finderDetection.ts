@@ -165,23 +165,34 @@ export const runFinderDetection = async (
       if (isFinderPatternCandidate(i, hierarchy, contours)) {
         candidateCount++;
         
-        // 회전된 경계 박스 계산 (minAreaRect)
-        const rotatedRect = cv.minAreaRect(contour);
-        const boxPoints = cv.boxPoints(rotatedRect);
+        // 경계 박스 계산 (boundingRect 사용)
+        const rect = cv.boundingRect(contour);
         
-        // 박스 포인트를 배열로 변환
+        // approx에서 실제 코너 추출
         const corners = [];
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < approx.rows; j++) {
           corners.push({
-            x: boxPoints.data32F[j * 2],
-            y: boxPoints.data32F[j * 2 + 1]
+            x: approx.data32S[j * 2],
+            y: approx.data32S[j * 2 + 1]
           });
         }
         
-        // 실제 패턴 크기 계산 (회전된 박스의 대각선 길이)
-        const width = rotatedRect.size.width;
-        const height = rotatedRect.size.height;
-        const adjustedSize = Math.max(width, height);
+        // 4개의 코너가 있으면 시계방향으로 정렬
+        if (corners.length === 4) {
+          // 중심점 계산
+          const cx = corners.reduce((sum, p) => sum + p.x, 0) / 4;
+          const cy = corners.reduce((sum, p) => sum + p.y, 0) / 4;
+          
+          // 각도로 정렬
+          corners.sort((a, b) => {
+            const angleA = Math.atan2(a.y - cy, a.x - cx);
+            const angleB = Math.atan2(b.y - cy, b.x - cx);
+            return angleA - angleB;
+          });
+        }
+        
+        // 실제 패턴 크기 계산
+        const adjustedSize = Math.max(rect.width, rect.height);
 
         finderPatterns.push({
           center: { x: centerX, y: centerY },
@@ -189,8 +200,6 @@ export const runFinderDetection = async (
           corners: corners,
           score: calculatePatternScore(contour),
         });
-        
-        boxPoints.delete();
       }
 
       approx.delete();
@@ -304,11 +313,9 @@ function calculatePatternScore(contour: any): number {
   const cv = window.cv;
   let score = 100;
 
-  // 회전된 경계 사각형을 사용하여 정확한 aspect ratio 계산
-  const rotatedRect = cv.minAreaRect(contour);
-  const width = rotatedRect.size.width;
-  const height = rotatedRect.size.height;
-  const aspectRatio = Math.min(width, height) / Math.max(width, height);
+  // 경계 사각형을 사용하여 aspect ratio 계산
+  const rect = cv.boundingRect(contour);
+  const aspectRatio = Math.min(rect.width, rect.height) / Math.max(rect.width, rect.height);
   score += aspectRatio * 50; // 정사각형에 가까울수록(1에 가까울수록) 높은 점수
 
   // 면적이 클수록 높은 점수 (더 명확한 패턴)
