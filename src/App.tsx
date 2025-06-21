@@ -1,5 +1,5 @@
 import './App.css';
-// import { QREncodingProcess } from './components/QREncodingProcess';
+import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDetectProcess } from './components/QRDetectProcess';
 
 function App() {
@@ -11,10 +11,10 @@ function App() {
       </header>
 
       <div className="flex flex-col gap-12">
-        {/* <section>
+        <section>
           <h2 className="text-xl font-light mb-4">Encoding Process</h2>
           <QREncodingProcess />
-        </section> */}
+        </section>
 
         <section>
           <h2 className="text-xl font-light mb-4">Detection Process</h2>

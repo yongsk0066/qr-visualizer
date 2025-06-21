@@ -19,6 +19,7 @@ export function RefinedHomographyColumn({
   const [refinedFinderDetection, setRefinedFinderDetection] = useState<FinderDetectionResult | null>(null);
   const [refinedHomography, setRefinedHomography] = useState<HomographyResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
   const paddingRef = useRef(0);
 
   useEffect(() => {
@@ -146,6 +147,47 @@ export function RefinedHomographyColumn({
     refineHomography();
   }, [homographyImage, homography, onRefinedHomography]);
 
+  const drawGrid = (
+    ctx: CanvasRenderingContext2D, 
+    moduleCount: number, 
+    width: number, 
+    height: number
+  ) => {
+    const moduleSize = width / moduleCount;
+    
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+    ctx.lineWidth = 0.5;
+    
+    // 수직선
+    for (let i = 0; i <= moduleCount; i++) {
+      const x = i * moduleSize;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    
+    // 수평선
+    for (let i = 0; i <= moduleCount; i++) {
+      const y = i * moduleSize;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+    
+    // Finder Pattern 영역 강조
+    ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+    ctx.lineWidth = 2;
+    
+    // Top-left
+    ctx.strokeRect(0, 0, 7 * moduleSize, 7 * moduleSize);
+    // Top-right
+    ctx.strokeRect(width - 7 * moduleSize, 0, 7 * moduleSize, 7 * moduleSize);
+    // Bottom-left
+    ctx.strokeRect(0, height - 7 * moduleSize, 7 * moduleSize, 7 * moduleSize);
+  };
+
   useEffect(() => {
     if (!canvasRef.current || !homographyImage) return;
     
@@ -159,6 +201,11 @@ export function RefinedHomographyColumn({
     
     // Draw the homography image
     ctx.putImageData(homographyImage, 0, 0);
+    
+    // Draw grid if enabled
+    if (showGrid && refinedHomography) {
+      drawGrid(ctx, refinedHomography.qrSize, canvas.width, canvas.height);
+    }
     
     // Draw refined finder patterns if found
     if (refinedFinderDetection) {
@@ -183,57 +230,93 @@ export function RefinedHomographyColumn({
       ctx.fill();
     });
     }
-  }, [homographyImage, refinedFinderDetection]);
+  }, [homographyImage, refinedFinderDetection, showGrid, refinedHomography]);
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 5.1: Refined Homography</h3>
+      <h3 className="step-title">Step 5: Homography Transform</h3>
       
       {isProcessing ? (
         <div className="text-gray-500 text-sm">Refining...</div>
       ) : homographyImage ? (
         <div className="space-y-3">
+          {/* 변환 정보 */}
           <div className="info-section">
-            <h4 className="info-title">Refinement Results</h4>
+            <h4 className="info-title">Transform Info</h4>
             <div className="space-y-1 text-xs">
               <div className="info-item">
-                <span className="info-label">Original Version:</span>
-                <span className="info-value">{homography?.version}</span>
+                <span className="info-label">Detected Version:</span>
+                <span className="info-value">Version {refinedHomography?.version || homography?.version}</span>
               </div>
-              {refinedHomography ? (
-                <>
-                  <div className="info-item">
-                    <span className="info-label">Refined Version:</span>
-                    <span className="info-value font-bold text-green-600">{refinedHomography.version}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Module Count:</span>
-                    <span className="info-value">{refinedHomography.qrSize} × {refinedHomography.qrSize}</span>
-                  </div>
-                </>
-              ) : (
-                <div className="info-item text-red-600">
-                  <span className="info-label">Status:</span>
-                  <span className="info-value">Finder detection failed</span>
-                </div>
-              )}
               <div className="info-item">
-                <span className="info-label">Patterns Found:</span>
-                <span className="info-value">{refinedFinderDetection?.patterns.length || 0}</span>
+                <span className="info-label">Module Count:</span>
+                <span className="info-value">{refinedHomography?.qrSize || homography?.qrSize} × {refinedHomography?.qrSize || homography?.qrSize}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Output Size:</span>
+                <span className="info-value">{homographyImage.width} × {homographyImage.height}px</span>
               </div>
             </div>
           </div>
           
+          {/* 변환된 이미지 */}
           <div className="visualization-section">
-            <h4 className="info-title mb-2">Refined Finder Detection</h4>
-            <div className="bg-gray-50 p-2 rounded">
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="info-title">Rectified QR Code</h4>
+              <button
+                onClick={() => setShowGrid(!showGrid)}
+                className="text-xs text-blue-600 hover:text-blue-700"
+              >
+                {showGrid ? '그리드 숨기기' : '그리드 보기'}
+              </button>
+            </div>
+            <div className="bg-gray-50 p-3 rounded">
               <canvas 
                 ref={canvasRef} 
                 className="w-full h-auto border border-gray-300"
-                style={{ imageRendering: 'pixelated' }}
+                style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
               />
             </div>
           </div>
+
+          {/* 변환 행렬 */}
+          {refinedHomography && (
+            <div className="info-section">
+              <h4 className="info-title">Homography Matrix</h4>
+              <div className="text-xs font-mono bg-gray-100 p-2 rounded overflow-x-auto">
+                <table className="w-full">
+                  <tbody>
+                    {[0, 1, 2].map(row => (
+                      <tr key={row}>
+                        {[0, 1, 2].map(col => (
+                          <td key={col} className="px-2 py-1 text-center">
+                            {refinedHomography.transform[row * 3 + col].toFixed(4)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* 코너 좌표 */}
+          {refinedHomography && (
+            <div className="info-section">
+              <h4 className="info-title">Corner Points</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {['Top-left', 'Top-right', 'Bottom-right', 'Bottom-left'].map((label, idx) => (
+                  <div key={idx} className="bg-gray-50 p-2 rounded">
+                    <div className="font-medium">{label}:</div>
+                    <div className="text-gray-600">
+                      ({refinedHomography.corners[idx].x.toFixed(1)}, {refinedHomography.corners[idx].y.toFixed(1)})
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-gray-500 text-sm">

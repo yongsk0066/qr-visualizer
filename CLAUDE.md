@@ -23,10 +23,10 @@ QR Visualizer is an **educational React-based web application** designed to demo
 1. **Step 1: Image Input** ✅ - Load and display QR code images with drag-and-drop
 2. **Step 2: Grayscale** ✅ - Convert to grayscale with histogram visualization
 3. **Step 3: Binarization** ✅ - Sauvola adaptive thresholding with integral images
-4. **Step 4: Finder Detection** 🏗️ - Line scan algorithm with 3-point selection
-5. **Step 5: Homography** ✅ - Perspective transformation with corner detection
-6. **Step 6: Sampling** 🏗️ - Module grid sampling
-7. **Step 7: Matrix Output** 🏗️ - Generate tri-state matrix
+4. **Step 4: Finder Detection** ✅ - OpenCV.js contour-based detection with 3-pattern selection
+5. **Step 5: Homography** ✅ - Perspective transformation with refined version detection
+6. **Step 6: Sampling** ✅ - Module grid sampling with tri-state matrix generation
+7. **Step 7: Matrix Output** 🏗️ - Decode tri-state matrix to data
 
 Each step's results are displayed in real-time to help users understand the QR code standard (ISO/IEC 18004) principles.
 
@@ -133,9 +133,11 @@ src/
 │   │   ├── detector/
 │   │   │   ├── imageProcessor.ts    # 이미지 로딩, 그레이스케일 변환
 │   │   │   ├── binarization.ts      # Sauvola 적응 임계값 이진화
-│   │   │   ├── finderDetection.ts   # Finder 패턴 검출 (TODO)
-│   │   │   ├── homography.ts        # 원근 변환
-│   │   │   └── sampling.ts          # 모듈 샘플링 (TODO)
+│   │   │   ├── finderDetection.ts   # Finder 패턴 검출 (OpenCV.js 윤곽선 기반)
+│   │   │   ├── homography.ts        # 원근 변환 및 버전 추정
+│   │   │   ├── directFinderDetection.ts # 정사각형 이미지용 직접 검출
+│   │   │   ├── timingPatternCounter.ts  # 타이밍 패턴 기반 모듈 수 계산
+│   │   │   └── sampling.ts          # 모듈 샘플링 및 tri-state 행렬 생성
 │   │   └── detectPipeline.ts        # Detection 파이프라인
 │   ├── decode/             # Decode Process (TODO)
 │   └── types.ts            # 디코딩 관련 타입 정의
@@ -156,7 +158,10 @@ src/
 │       ├── ImageInputColumn.tsx    # 이미지 업로드
 │       ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
 │       ├── BinarizationColumn.tsx  # 이진화 시각화
-│       └── HomographyColumn.tsx    # 원근 변환 시각화
+│       ├── FinderDetectionColumn.tsx # Finder 패턴 검출 시각화
+│       ├── HomographyColumn.tsx    # 원근 변환 시각화 (숨김)
+│       ├── RefinedHomographyColumn.tsx # 정제된 원근 변환 시각화
+│       └── SamplingColumn.tsx      # 모듈 샘플링 시각화
 │
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
@@ -275,31 +280,41 @@ src/
 - Threshold map visualization toggle
 - Integral images for O(1) local statistics
 
-**Step 4 - Finder Pattern Detection** 🏗️
-- Line scanning algorithm with 1:1:3:1:1 ratio detection (TODO)
-- Horizontal and vertical pattern scanning (TODO)
-- 3-point selection with angle validation (TODO)
-- Centers detection with subpixel accuracy (TODO)
-- Comprehensive validation with strict ratio tolerances (TODO)
-- Visual highlighting of detected patterns (TODO)
+**Step 4 - Finder Pattern Detection** ✅
+- OpenCV.js contour-based detection algorithm
+- Hierarchical contour analysis for nested square patterns
+- Multiple epsilon values for polygon approximation (0.02 to 0.1)
+- Pattern scoring and ranking system
+- Top 3 patterns selection with position-based classification
+- Visual highlighting with color-coded markers (red, green, blue)
 
 **Step 5 - Homography Transformation** ✅
-- **Finder Pattern corner detection**: Uses 3 detected Finder Patterns as anchor points
-- **Bottom-right corner calculation**: Line intersection method from ISO/IEC 18004 standard
+- **Initial transformation**: Uses 3 detected Finder Patterns as anchor points
+- **Bottom-right corner calculation**: Line intersection method (not parallelogram assumption)
 - **Perspective transformation**: OpenCV.js getPerspectiveTransform for accurate mapping
-- **Padding application**: 3.5 module padding for fine-tuning transformation boundaries
-- **Version estimation**: Calculates QR version from Finder Pattern distances
+- **Refined homography**: Re-detects finder patterns on rectified image for better accuracy
+- **Timing pattern analysis**: Counts actual modules for precise version detection
+- **Version estimation**: Improved from v12 to v13 using timing pattern counting
 - **Transformed image generation**: 512x512 normalized QR code output
-- **Visual feedback**: Side-by-side comparison of original and transformed images
-- **Corner visualization**: Highlights detected corners with color-coded markers
+- **Visual feedback**: Grid overlay toggle and transformation matrix display
 
-**Step 6-7** 🏗️
-- Module sampling (TODO)
-- Tri-state matrix generation (TODO)
+**Step 6 - Module Sampling** ✅
+- **Grid-based sampling**: Samples center of each module based on QR version
+- **Tri-state classification**: Black (0), White (1), Unknown (-1) values
+- **Adaptive thresholding**: Uses local brightness for robust classification
+- **Sampling statistics**: Displays percentages of each module type
+- **Visual feedback**: Color-coded matrix with grid overlay toggle
+- **Unknown handling**: ~2.6% unknown modules for typical images
+
+**Step 7 - Data Decoding** 🏗️
+- Format information extraction (TODO)
+- Data masking reversal (TODO)
+- Error correction decoding (TODO)
+- Data extraction and interpretation (TODO)
 
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 362 tests
-- **Detection Process**: Steps 1-5 implemented, 6-7 in progress
+- **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) in progress
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline

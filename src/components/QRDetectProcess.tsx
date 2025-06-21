@@ -87,13 +87,15 @@ export function QRDetectProcess() {
         <FinderDetectionColumn finderDetection={result?.finderDetection ?? null} />
       </ProcessingWrapper>
 
-      <ProcessingWrapper isProcessing={isProcessing}>
-        <HomographyColumn
-          homography={result?.homography ?? null}
-          binarization={result?.binarization ?? null}
-          finderDetection={result?.finderDetection ?? null}
-        />
-      </ProcessingWrapper>
+      <div style={{ display: 'none' }}>
+        <ProcessingWrapper isProcessing={isProcessing}>
+          <HomographyColumn
+            homography={result?.homography ?? null}
+            binarization={result?.binarization ?? null}
+            finderDetection={result?.finderDetection ?? null}
+          />
+        </ProcessingWrapper>
+      </div>
 
       <ProcessingWrapper isProcessing={isProcessing}>
         <RefinedHomographyColumn
