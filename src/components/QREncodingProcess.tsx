@@ -10,7 +10,11 @@ import { SettingsColumn } from './encode/SettingsColumn';
 import { runQRPipeline } from '../qr-encode/qrPipeline';
 import { useQueryParams } from '../shared';
 
-export function QREncodingProcess() {
+interface QREncodingProcessProps {
+  onQRGenerated?: (matrix: number[][] | null) => void;
+}
+
+export function QREncodingProcess({ onQRGenerated }: QREncodingProcessProps) {
   const [{ data: inputData, version: qrVersion, error: errorLevel }, updateQueryParams] =
     useQueryParams();
   const deferredInputData = useDeferredValue(inputData);
@@ -43,6 +47,17 @@ export function QREncodingProcess() {
       }
     }
   }, [dataAnalysis, deferredQrVersion, updateQueryParams]);
+
+  // Pass the final QR matrix to parent
+  useEffect(() => {
+    if (onQRGenerated && finalGeneration?.finalMatrix) {
+      // Convert (0 | 1 | null)[][] to number[][]
+      const matrix = finalGeneration.finalMatrix.map(row =>
+        row.map(cell => (cell === null ? 0 : cell))
+      );
+      onQRGenerated(matrix);
+    }
+  }, [finalGeneration?.finalMatrix, onQRGenerated]);
 
   return (
     <div className="steps-grid">

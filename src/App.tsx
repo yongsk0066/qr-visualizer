@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import './App.css';
 import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDetectProcess } from './components/QRDetectProcess';
 
 function App() {
+  const [encodedQRMatrix, setEncodedQRMatrix] = useState<number[][] | null>(null);
+  console.log(encodedQRMatrix);
   return (
     <div className="app">
       <header className="mb-8">
@@ -13,12 +16,12 @@ function App() {
       <div className="flex flex-col gap-12">
         <section>
           <h2 className="text-xl font-light mb-4">Encoding Process</h2>
-          <QREncodingProcess />
+          <QREncodingProcess onQRGenerated={setEncodedQRMatrix} />
         </section>
 
         <section>
           <h2 className="text-xl font-light mb-4">Detection Process</h2>
-          <QRDetectProcess />
+          <QRDetectProcess encodedQRMatrix={encodedQRMatrix} />
         </section>
       </div>
 

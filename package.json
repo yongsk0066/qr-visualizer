@@ -14,10 +14,14 @@
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
+    "@react-three/drei": "^10.3.0",
+    "@react-three/fiber": "^9.1.2",
     "@tailwindcss/vite": "^4.1.10",
+    "@types/three": "^0.177.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "three": "^0.177.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

@@ -11,7 +11,11 @@ import { ImageInputColumn } from './detect/ImageInputColumn';
 import { RefinedHomographyColumn } from './detect/RefinedHomographyColumn';
 import { SamplingColumn } from './detect/SamplingColumn';
 
-export function QRDetectProcess() {
+interface QRDetectProcessProps {
+  encodedQRMatrix?: number[][] | null;
+}
+
+export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<Awaited<ReturnType<typeof runDetectPipeline>> | null>(null);
@@ -73,6 +77,7 @@ export function QRDetectProcess() {
         setImageUrl={setImageUrl}
         imageProcessing={result?.imageProcessing ?? null}
         isProcessing={isProcessing}
+        encodedQRMatrix={encodedQRMatrix}
       />
 
       <ProcessingWrapper isProcessing={isProcessing}>
