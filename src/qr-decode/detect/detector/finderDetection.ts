@@ -164,21 +164,33 @@ export const runFinderDetection = async (
       // Finder Pattern 후보인지 확인 (3단계 중첩 구조)
       if (isFinderPatternCandidate(i, hierarchy, contours)) {
         candidateCount++;
-        // 경계 박스 계산
-        const rect = cv.boundingRect(contour);
         
-        // Finder Pattern의 실제 크기 계산
-        // boundingRect는 최소 경계이므로 실제보다 작을 수 있음
-        // 이진화 과정에서 손실된 가장자리를 보정
-        const paddingFactor = 1.0; // 보정 제거 (원래대로)
-        const adjustedSize = Math.max(rect.width, rect.height) * paddingFactor;
+        // 회전된 경계 박스 계산 (minAreaRect)
+        const rotatedRect = cv.minAreaRect(contour);
+        const boxPoints = cv.boxPoints(rotatedRect);
+        
+        // 박스 포인트를 배열로 변환
+        const corners = [];
+        for (let j = 0; j < 4; j++) {
+          corners.push({
+            x: boxPoints.data32F[j * 2],
+            y: boxPoints.data32F[j * 2 + 1]
+          });
+        }
+        
+        // 실제 패턴 크기 계산 (회전된 박스의 대각선 길이)
+        const width = rotatedRect.size.width;
+        const height = rotatedRect.size.height;
+        const adjustedSize = Math.max(width, height);
 
         finderPatterns.push({
           center: { x: centerX, y: centerY },
           size: adjustedSize,
-          corners: extractCorners(approx),
+          corners: corners,
           score: calculatePatternScore(contour),
         });
+        
+        boxPoints.delete();
       }
 
       approx.delete();
@@ -247,34 +259,43 @@ function isFinderPatternCandidate(
   const middleArea = cv.contourArea(middleContour);
   const innerArea = cv.contourArea(innerContour);
 
-  outerContour.delete();
-  middleContour.delete();
-  innerContour.delete();
-
   const ratio1 = middleArea / outerArea;
   const ratio2 = innerArea / middleArea;
   
   // 이론적 비율: middle/outer ≈ 9/25 = 0.36, inner/middle ≈ 1/9 = 0.11
   // 하지만 실제로는 면적 비율이 다를 수 있음 (픽셀 근사화, 회전, 변형 등)
   // 더 관대한 범위 설정
-  const isValid = ratio1 > 0.2 && ratio1 < 0.7 && ratio2 > 0.1 && ratio2 < 0.5;
+  let isValid = ratio1 > 0.15 && ratio1 < 0.8 && ratio2 > 0.05 && ratio2 < 0.6;
+  
+  // 추가 검증: 중심점이 거의 일치해야 함
+  if (isValid) {
+    const outerMoments = cv.moments(outerContour);
+    const middleMoments = cv.moments(middleContour);
+    const innerMoments = cv.moments(innerContour);
+    
+    const outerCenterX = outerMoments.m10 / outerMoments.m00;
+    const outerCenterY = outerMoments.m01 / outerMoments.m00;
+    const middleCenterX = middleMoments.m10 / middleMoments.m00;
+    const middleCenterY = middleMoments.m01 / middleMoments.m00;
+    const innerCenterX = innerMoments.m10 / innerMoments.m00;
+    const innerCenterY = innerMoments.m01 / innerMoments.m00;
+    
+    // 중심점 간 거리 계산
+    const dist1 = Math.sqrt(Math.pow(outerCenterX - middleCenterX, 2) + Math.pow(outerCenterY - middleCenterY, 2));
+    const dist2 = Math.sqrt(Math.pow(middleCenterX - innerCenterX, 2) + Math.pow(middleCenterY - innerCenterY, 2));
+    
+    // 중심점이 너무 떨어져 있으면 패턴이 아님
+    const maxDist = Math.sqrt(outerArea / Math.PI) * 0.2; // 외부 반경의 20%
+    isValid = dist1 < maxDist && dist2 < maxDist;
+  }
+
+  outerContour.delete();
+  middleContour.delete();
+  innerContour.delete();
   
   return isValid;
 }
 
-/**
- * 윤곽선에서 코너 좌표 추출
- */
-function extractCorners(approx: any): Array<{ x: number; y: number }> {
-  const corners = [];
-  for (let i = 0; i < approx.rows; i++) {
-    corners.push({
-      x: approx.data32S[i * 2],
-      y: approx.data32S[i * 2 + 1],
-    });
-  }
-  return corners;
-}
 
 /**
  * Finder Pattern의 품질 점수 계산
@@ -283,10 +304,12 @@ function calculatePatternScore(contour: any): number {
   const cv = window.cv;
   let score = 100;
 
-  // 정사각형에 가까울수록 높은 점수
-  const rect = cv.boundingRect(contour);
-  const aspectRatio = rect.width / rect.height;
-  score -= Math.abs(1 - aspectRatio) * 50;
+  // 회전된 경계 사각형을 사용하여 정확한 aspect ratio 계산
+  const rotatedRect = cv.minAreaRect(contour);
+  const width = rotatedRect.size.width;
+  const height = rotatedRect.size.height;
+  const aspectRatio = Math.min(width, height) / Math.max(width, height);
+  score += aspectRatio * 50; // 정사각형에 가까울수록(1에 가까울수록) 높은 점수
 
   // 면적이 클수록 높은 점수 (더 명확한 패턴)
   const area = cv.contourArea(contour);
@@ -299,6 +322,11 @@ function calculatePatternScore(contour: any): number {
   const convexity = area / hullArea;
   score += convexity * 20; // 볼록할수록 높은 점수
   hull.delete();
+
+  // 둘레 대비 면적 비율 (원형도 체크)
+  const perimeter = cv.arcLength(contour, true);
+  const circularity = 4 * Math.PI * area / (perimeter * perimeter);
+  score += circularity * 30; // 원에 가까울수록 높은 점수 (정사각형은 ~0.785)
 
   return Math.max(0, score);
 }
