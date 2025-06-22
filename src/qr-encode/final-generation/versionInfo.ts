@@ -48,11 +48,13 @@ export const generateVersionInfo = (version: QRVersion): number | null => {
 
 /**
  * 버전 정보를 비트 배열로 변환
+ * LSB first 방식: 최하위 비트(bit 0)가 배열의 첫 번째 요소가 됨
+ * 예: 0x07C94 (버전 7) -> [0,0,1,0,1,0,0,1,1,1,1,1,0,0,0,0,0,0]
  */
 export const versionInfoToBits = (versionInfo: number): number[] => {
   const bits: number[] = [];
-  // MSB first로 변경 - ISO/IEC 18004 표준에 따름
-  for (let i = 17; i >= 0; i--) {
+  // LSB first: i=0부터 17까지 (최하위 비트부터 추출)
+  for (let i = 0; i <= 17; i++) {
     bits.push((versionInfo >> i) & 1);
   }
   return bits;

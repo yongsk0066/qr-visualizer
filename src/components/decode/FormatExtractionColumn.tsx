@@ -166,6 +166,7 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
                           {formatInfo.location1.errorBits}비트 정정됨
                         </span>
                       )}
+                      <span className="text-orange-600">MSB first</span>
                     </div>
                   </div>
                 </div>
@@ -197,6 +198,7 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
                           {formatInfo.location2.errorBits}비트 정정됨
                         </span>
                       )}
+                      <span className="text-orange-600">MSB first</span>
                     </div>
                   </div>
                 </div>

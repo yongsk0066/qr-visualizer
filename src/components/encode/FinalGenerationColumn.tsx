@@ -208,9 +208,9 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
         <div className="font-medium mb-1">최종 생성 과정</div>
         <div className="space-y-1">
           <div><strong>마스킹 적용:</strong> 선택된 패턴을 인코딩 영역에 XOR</div>
-          <div><strong>포맷 정보:</strong> 에러 레벨 + 마스크 패턴 (BCH 인코딩)</div>
+          <div><strong>포맷 정보:</strong> 에러 레벨 + 마스크 패턴 (BCH 인코딩, MSB first)</div>
           {hasVersionInfo && (
-            <div><strong>버전 정보:</strong> 버전 7+ 전용 (BCH 인코딩)</div>
+            <div><strong>버전 정보:</strong> 버전 7+ 전용 (BCH 인코딩, LSB first)</div>
           )}
           <div><strong>최종 완성:</strong> 스캔 가능한 완전한 QR 코드</div>
         </div>

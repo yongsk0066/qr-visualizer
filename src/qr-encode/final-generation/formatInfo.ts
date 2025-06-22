@@ -68,9 +68,12 @@ export const generateFormatInfo = (
 
 /**
  * 포맷 정보를 비트 배열로 변환
+ * MSB first 방식: 최상위 비트(bit 14)가 배열의 첫 번째 요소가 됨
+ * 예: 0x5412 -> [1,0,1,0,1,0,0,0,0,0,1,0,0,1,0]
  */
 export const formatInfoToBits = (formatInfo: number): number[] => {
   const bits: number[] = [];
+  // MSB first: i=14부터 0까지 (최상위 비트부터 추출)
   for (let i = 14; i >= 0; i--) {
     bits.push((formatInfo >> i) & 1);
   }

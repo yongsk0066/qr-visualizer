@@ -308,6 +308,9 @@ export const VersionExtractionColumn = ({
                       <div>전체 18비트: 0x{versionInfo.rawBits.toString(16).toUpperCase().padStart(5, '0')}</div>
                       <div>버전 번호 (6비트): {toBinaryString(versionInfo.rawBits >> 12, 6)} = {versionInfo.version}</div>
                       <div>BCH 코드 (12비트): {toBinaryString(versionInfo.rawBits & 0xFFF, 12)}</div>
+                      <div className="text-orange-600 mt-1">
+                        * LSB first 방식: 배열의 첫 비트가 최하위 비트(bit 0)
+                      </div>
                     </div>
                     <div className="mt-2 p-2 bg-blue-50 rounded">
                       <div className="text-[10px] text-blue-700">

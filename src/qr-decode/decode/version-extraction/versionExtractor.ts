@@ -169,10 +169,12 @@ const decodeVersionInfo = (versionBits: VersionBitsLocation): VersionInfoResult 
       testBits[unknownIndices[i]] = (combo >> i) & 1;
     }
 
-    // 18비트로 조합 (MSB first로 변환)
+    // 18비트로 조합 (LSB first로 변환)
+    // encode 과정에서 LSB first로 저장했으므로 동일하게 읽음
+    // 배열의 첫 번째 요소(index 0)가 최하위 비트(bit 0)
     let rawBits = 0;
     for (let i = 0; i < 18; i++) {
-      rawBits |= (testBits[i] as number) << (17 - i);
+      rawBits |= (testBits[i] as number) << i;
     }
 
     // BCH 디코딩
