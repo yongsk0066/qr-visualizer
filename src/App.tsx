@@ -39,12 +39,10 @@ function App() {
           />
         </section>
 
-        {triStateMatrix && (
-          <section>
-            <h2 className="text-xl font-light mb-4">Decode Process</h2>
-            <QRDecodeProcess triStateMatrix={triStateMatrix} />
-          </section>
-        )}
+        <section>
+          <h2 className="text-xl font-light mb-4">Decode Process</h2>
+          <QRDecodeProcess triStateMatrix={triStateMatrix} />
+        </section>
       </div>
 
       <footer className="mt-8 text-center text-gray-500 text-xs">
