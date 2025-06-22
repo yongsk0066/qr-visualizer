@@ -3,14 +3,16 @@
  */
 
 /** 인코딩 모드 */
-export enum Mode {
-  NUMERIC = 0b0001,      // 숫자 모드
-  ALPHANUMERIC = 0b0010, // 영숫자 모드
-  BYTE = 0b0100,        // 바이트 모드
-  KANJI = 0b1000,       // 한자 모드
-  ECI = 0b0111,         // ECI 모드
-  TERMINATOR = 0b0000    // 종료 패턴
-}
+export const Mode = {
+  NUMERIC: 0b0001,      // 숫자 모드
+  ALPHANUMERIC: 0b0010, // 영숫자 모드
+  BYTE: 0b0100,        // 바이트 모드
+  KANJI: 0b1000,       // 한자 모드
+  ECI: 0b0111,         // ECI 모드
+  TERMINATOR: 0b0000    // 종료 패턴
+} as const;
+
+export type Mode = typeof Mode[keyof typeof Mode];
 
 /** 비트 스트림 인터페이스 */
 export interface BitStream {
