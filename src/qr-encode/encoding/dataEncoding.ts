@@ -17,9 +17,16 @@ export interface EncodedData {
 
 /**
  * 문자 카운트 지시자를 생성
+ * 바이트 모드의 경우 문자 수가 아닌 바이트 수를 사용
  */
-const createCharacterCountIndicator = (count: number, mode: QRMode, version: QRVersion): string => {
+const createCharacterCountIndicator = (data: string, mode: QRMode, version: QRVersion): string => {
   const bits = getCharacterCountBits(mode, version);
+  
+  // 바이트 모드는 UTF-8 바이트 수를 사용, 다른 모드는 문자 수 사용
+  const count = mode === 'byte' 
+    ? new TextEncoder().encode(data).length  // UTF-8 바이트 수
+    : data.length;  // 문자 수
+    
   return toBinaryString(count, bits);
 };
 
@@ -57,14 +64,17 @@ const encodeAlphanumericMode = (data: string): string => {
 
 /**
  * 바이트 모드 인코딩 (각 바이트를 8비트로)
+ * UTF-8 인코딩을 사용하여 멀티바이트 문자(한글 등)를 올바르게 처리
  */
-const encodeByteMode = (data: string): string =>
-  pipe(
-    data,
-    (str) => str.split(''),
-    A.map((char) => toBinaryString(char.charCodeAt(0), 8)),
-    A.join('')
-  );
+const encodeByteMode = (data: string): string => {
+  // UTF-8 바이트 배열 생성
+  const utf8Bytes = new TextEncoder().encode(data);
+  
+  // 각 바이트를 8비트 이진 문자열로 변환
+  return Array.from(utf8Bytes)
+    .map(byte => toBinaryString(byte, 8))
+    .join('');
+};
 
 /**
  * 한자 모드 인코딩 (미구현 - 복잡한 Shift JIS 인코딩 필요)
@@ -128,7 +138,7 @@ export const encodeData = (
 ): EncodedData => {
   // 1. 기본 구성 요소 생성 (ISO/IEC 18004 - 8.4 데이터 부호화)
   const modeIndicator = MODE_INDICATORS[mode]; // 표 2: 4비트 모드 지시자
-  const characterCount = createCharacterCountIndicator(data.length, mode, version); // 표 3: 문자 카운트 지시자
+  const characterCount = createCharacterCountIndicator(data, mode, version); // 표 3: 문자 카운트 지시자
   const encodedData = encodeDataByMode(data, mode); // 8.4.2~8.4.5: 모드별 데이터 인코딩
 
   // 2. 비트 스트림 처리 파이프라인 (ISO/IEC 18004 - 8.4.9)

@@ -86,6 +86,30 @@ describe('dataExtractor', () => {
       expect(result?.data).toBe('Hello');
       expect(result?.bytes).toEqual(bytes);
     });
+
+    it('should decode Korean text as UTF-8', () => {
+      const text = '안녕하세요';
+      const bytes = Array.from(new TextEncoder().encode(text));
+      
+      const bitStream = codewordsToBitStream(bytes);
+      const result = decodeByte(bitStream, bytes.length);
+      
+      expect(result).not.toBeNull();
+      expect(result?.data).toBe('안녕하세요');
+      expect(result?.bytes).toEqual(bytes);
+    });
+
+    it('should handle mixed Korean and English text', () => {
+      const text = 'Hello 안녕하세요 World!';
+      const bytes = Array.from(new TextEncoder().encode(text));
+      
+      const bitStream = codewordsToBitStream(bytes);
+      const result = decodeByte(bitStream, bytes.length);
+      
+      expect(result).not.toBeNull();
+      expect(result?.data).toBe('Hello 안녕하세요 World!');
+      expect(result?.bytes).toEqual(bytes);
+    });
   });
 
   describe('Full data extraction', () => {

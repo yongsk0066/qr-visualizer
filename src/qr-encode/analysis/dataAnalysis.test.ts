@@ -93,6 +93,24 @@ describe('dataAnalysis', () => {
       const result = analyzeData('A B C');
       expect(result.characterCount).toBe(5);
     });
+
+    it('한글 텍스트는 바이트 수로 계산 (UTF-8)', () => {
+      const result = analyzeData('안녕하세요');
+      
+      // 문자 수는 5개이지만, UTF-8 바이트 수는 15개 (한글 1글자 = 3바이트)
+      expect(result.recommendedMode).toBe('byte');
+      expect(result.characterCount).toBe(15); // 바이트 수
+      expect(result.characterCount).not.toBe(5); // 문자 수가 아님
+    });
+
+    it('한영 혼합 텍스트는 바이트 수로 계산', () => {
+      const result = analyzeData('Hi안녕');
+      
+      // Hi(2바이트) + 안녕(6바이트) = 8바이트
+      expect(result.recommendedMode).toBe('byte');
+      expect(result.characterCount).toBe(8); // 바이트 수
+      expect(result.characterCount).not.toBe(4); // 문자 수가 아님
+    });
   });
 
   describe('에러 정정 레벨별 테스트', () => {

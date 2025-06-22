@@ -148,10 +148,15 @@ export const analyzeData = (
   const minimumVersion = findMinimumVersion(data, recommendedMode, errorLevel);
   const isValid = minimumVersion !== null;
 
+  // 바이트 모드의 경우 UTF-8 바이트 수를 반환, 다른 모드는 문자 수 반환
+  const characterCount = recommendedMode === 'byte' 
+    ? new TextEncoder().encode(data).length  // UTF-8 바이트 수
+    : data.length;  // 문자 수
+
   return {
     recommendedMode,
     minimumVersion: minimumVersion || 40,
-    characterCount: data.length,
+    characterCount,
     isValid,
   };
 };

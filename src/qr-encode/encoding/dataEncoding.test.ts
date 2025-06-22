@@ -87,6 +87,35 @@ describe('dataEncoding', () => {
       // !=33, @=64, #=35
       expect(result.data).toBe('001000010100000000100011');
     });
+
+    it('한글 텍스트 UTF-8 인코딩', () => {
+      const result = encodeData('안녕', 'byte', 1, 152);
+      
+      // '안녕'을 UTF-8로 인코딩하면 6바이트
+      // '안' = [236, 149, 136], '녕' = [235, 133, 149]
+      const expectedBytes = [236, 149, 136, 235, 133, 149];
+      
+      expect(result.characterCount).toBe('00000110'); // 6바이트 (문자 수가 아님)
+      
+      // 각 바이트를 8비트 이진수로 변환한 결과
+      const expectedBits = expectedBytes.map(b => b.toString(2).padStart(8, '0')).join('');
+      expect(result.data).toBe(expectedBits);
+    });
+
+    it('한글과 영어 혼합 텍스트 인코딩', () => {
+      const text = 'Hi안녕';
+      const result = encodeData(text, 'byte', 1, 152);
+      
+      // UTF-8 바이트 수 계산
+      const utf8Bytes = new TextEncoder().encode(text);
+      const expectedByteCount = utf8Bytes.length; // 8바이트: Hi(2) + 안녕(6)
+      
+      expect(result.characterCount).toBe(expectedByteCount.toString(2).padStart(8, '0'));
+      
+      // 모든 바이트가 올바르게 인코딩되었는지 확인
+      const expectedBits = Array.from(utf8Bytes).map(b => b.toString(2).padStart(8, '0')).join('');
+      expect(result.data).toBe(expectedBits);
+    });
   });
 
   describe('종단자 및 패딩', () => {
