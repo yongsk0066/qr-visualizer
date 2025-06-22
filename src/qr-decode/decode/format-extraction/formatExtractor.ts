@@ -134,8 +134,8 @@ const extractBitsFromLocations = (
       // Unknown 모듈은 일단 0으로 가정
       bits[bitIndex] = '0';
     } else {
-      // QR 코드에서: 검은색(0) = 비트 1, 흰색(1) = 비트 0
-      bits[bitIndex] = module === 0 ? '1' : '0';
+      // QR 코드에서: 검은색(1) = 비트 1, 흰색(0) = 비트 0
+      bits[bitIndex] = module === 1 ? '1' : '0';
     }
   }
 

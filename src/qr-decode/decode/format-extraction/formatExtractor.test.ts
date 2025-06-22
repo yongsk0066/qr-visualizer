@@ -5,7 +5,7 @@ import type { TriStateQR } from '../../types';
 describe('formatExtractor', () => {
   // 테스트용 tri-state 매트릭스 생성 (흰색 배경)
   const createTestMatrix = (size: number): (-1 | 0 | 1)[][] => {
-    return Array(size).fill(null).map(() => Array(size).fill(1)); // 1 = 흰색
+    return Array(size).fill(null).map(() => Array(size).fill(0)); // 0 = 흰색
   };
 
   // 포맷 정보 비트 설정 (위치 1)
@@ -18,8 +18,8 @@ describe('formatExtractor', () => {
     bits.split('').forEach((bit, index) => {
       if (index < locations.length) {
         const [row, col] = locations[index];
-        // QR 코드에서: 비트 1 = 검은색(0), 비트 0 = 흰색(1)
-        matrix[row][col] = bit === '1' ? 0 : 1;
+        // QR 코드에서: 비트 1 = 검은색(1), 비트 0 = 흰색(0)
+        matrix[row][col] = bit === '1' ? 1 : 0;
       }
     });
   };

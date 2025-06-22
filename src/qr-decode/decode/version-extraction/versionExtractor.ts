@@ -172,9 +172,12 @@ const decodeVersionInfo = (versionBits: VersionBitsLocation): VersionInfoResult 
     // 18비트로 조합 (LSB first로 변환)
     // encode 과정에서 LSB first로 저장했으므로 동일하게 읽음
     // 배열의 첫 번째 요소(index 0)가 최하위 비트(bit 0)
+    // QR 표준: 검은색(1) = 비트 1, 흰색(0) = 비트 0
     let rawBits = 0;
     for (let i = 0; i < 18; i++) {
-      rawBits |= (testBits[i] as number) << i;
+      const moduleValue = testBits[i] as number;
+      const bitValue = moduleValue; // 이미 1=검은색, 0=흰색으로 저장됨
+      rawBits |= bitValue << i;
     }
 
     // BCH 디코딩

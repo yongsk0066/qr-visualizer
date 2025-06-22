@@ -391,12 +391,16 @@ export function FormatExtractionColumn({ formatInfo }: FormatExtractionColumnPro
 - [x] 검정색 모듈 = 1, 흰색 모듈 = 0 (QR 표준 준수)
 - [x] 모든 UI 컴포넌트에 일관된 색상 매핑 적용
 
-### 🏗️ 진행 중인 작업
-
 #### 3. 마스크 패턴 제거 (mask-removal)
-- [ ] 8가지 마스크 패턴 함수 구현
-- [ ] 데이터 영역만 선택적 마스킹
-- [ ] 마스크 제거 전/후 시각화
+- [x] 8가지 마스크 패턴 함수 구현
+- [x] 데이터 영역만 선택적 마스킹
+- [x] 마스크 제거 전/후 시각화
+- [x] 모듈 타입 정확한 분류 (finder, separator, timing, alignment, format, version, dark, data)
+- [x] 버전 정보 영역 정확한 위치 설정 (왼쪽 하단: 가로 6 × 세로 3, 오른쪽 상단: 가로 3 × 세로 6)
+- [x] 3컬럼 UI 구현 (원본 → 마스크 패턴 → 결과)
+- [x] 6개 테스트 케이스 작성
+
+### 🏗️ 진행 중인 작업
 
 #### 4. 데이터 모듈 읽기 (data-reading)
 - [ ] 지그재그 패턴 구현
@@ -404,7 +408,8 @@ export function FormatExtractionColumn({ formatInfo }: FormatExtractionColumnPro
 - [ ] 비트 스트림 생성
 
 ### 📊 테스트 현황
-- 전체 디코드 테스트: 40개
+- 전체 디코드 테스트: 46개
   - 포맷 추출: 7개
   - 버전 추출: 13개
+  - 마스크 제거: 6개
   - 기타: 20개

@@ -2,6 +2,7 @@ import type { TriStateQR } from '../types';
 import type { DecodePipelineResult } from './types';
 import { extractFormatInfo } from './format-extraction/formatExtractor';
 import { extractVersionInfo } from './version-extraction/versionExtractor';
+import { removeMask } from './mask-removal/maskRemover';
 
 /**
  * QR 디코드 파이프라인
@@ -13,6 +14,7 @@ export const runDecodePipeline = async (
   const result: DecodePipelineResult = {
     formatInfo: null,
     versionInfo: null,
+    maskRemoval: null,
     unmaskedMatrix: null,
     rawBitStream: null,
     codewords: null,
@@ -36,7 +38,14 @@ export const runDecodePipeline = async (
     }
     result.versionInfo = versionInfo;
     
-    // TODO: Step 3: 마스크 패턴 제거
+    // Step 3: 마스크 패턴 제거
+    const maskRemovalResult = removeMask(
+      triStateQR,
+      formatInfo.maskPattern,
+      formatInfo.errorLevel,
+      versionInfo.version
+    );
+    result.maskRemoval = maskRemovalResult;
     
     // TODO: Step 4: 데이터 모듈 읽기
     

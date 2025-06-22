@@ -346,7 +346,12 @@ src/
   - MSB first bit ordering (ISO/IEC 18004 compliant)
   - Unknown module handling with confidence scoring
   - Visual extraction process with bit-by-bit display
-- Data masking reversal (TODO)
+- Mask pattern removal ✅
+  - All 8 mask patterns support
+  - Correct module type classification (finder, separator, timing, alignment, format, version, dark, data)
+  - XOR operation on data modules only
+  - 3-column visualization: original → mask pattern → result
+  - Unknown module handling
 - Error correction decoding (TODO)
 - Data extraction and interpretation (TODO)
 
@@ -355,8 +360,9 @@ src/
 - **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) partially complete
   - Format extraction ✅
   - Version extraction ✅
+  - Mask pattern removal ✅
   - Remaining decode steps in progress
-- **Total Test Coverage**: 317 tests (264 encoding + 40 detection/decode + 13 utilities)
+- **Total Test Coverage**: 323 tests (264 encoding + 46 detection/decode + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
@@ -386,6 +392,10 @@ src/
     - Binarization: 7 tests (Sauvola algorithm)
     - Timing Pattern Counter: 6 tests (module counting)
     - Direct Finder Detection: 3 tests (pattern matching)
+  - **Decode Process Tests**: 26 comprehensive tests
+    - Format Extraction: 7 tests (BCH error correction, edge cases)
+    - Version Extraction: 13 tests (BCH error correction, dual location)
+    - Mask Removal: 6 tests (all patterns, module classification)
   - **Shared Utilities Tests**: 13 tests
     - Geometry utilities: 13 tests (line intersection, scaling, etc.)
   - **Integration Tests**: 62 comprehensive pipeline tests
