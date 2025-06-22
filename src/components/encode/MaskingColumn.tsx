@@ -146,7 +146,17 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">6단계: 마스킹</h2>
-        <div className="text-gray-500 text-sm">모듈 배치가 완료되면 마스킹 패턴이 표시됩니다</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            8가지 마스크 패턴을 평가하여 최적의 패턴을 선택합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🎭</div>
+            <div className="text-gray-500 text-sm">모듈 배치가 완료되면 마스킹 패턴이 표시됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -10,7 +10,17 @@ export function MessageConstructionColumn({ result }: MessageConstructionColumnP
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">4단계: 최종 비트스트림</h2>
-        <div className="text-gray-500 text-sm">에러 정정이 완료되면 최종 비트스트림이 표시됩니다</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            데이터와 에러 정정 코드를 결합하여 최종 비트스트림을 생성합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🔗</div>
+            <div className="text-gray-500 text-sm">에러 정정이 완료되면 최종 비트스트림이 표시됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }

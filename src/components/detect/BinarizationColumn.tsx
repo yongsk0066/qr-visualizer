@@ -162,7 +162,16 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
           </div>
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">대기 중...</p>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            그레이스케일 이미지를 흑백으로 변환하여 모듈을 명확히 구분합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">⚫</div>
+            <div className="text-gray-500 text-sm">그레이스케일 변환이 완료되면 이진화가 표시됩니다</div>
+          </div>
+        </div>
       )}
     </div>
   );

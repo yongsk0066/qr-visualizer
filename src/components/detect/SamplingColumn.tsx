@@ -230,8 +230,15 @@ export function SamplingColumn({
           </div>
         </div>
       ) : (
-        <div className="text-gray-500 text-sm">
-          {homography ? '샘플링 중...' : '원근 변환이 필요합니다'}
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            변환된 QR 코드에서 각 모듈의 값을 읽어 tri-state 행렬을 생성합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">⚡</div>
+            <div className="text-gray-500 text-sm">원근 변환이 완료되면 모듈 샘플링이 표시됩니다</div>
+          </div>
         </div>
       )}
     </div>

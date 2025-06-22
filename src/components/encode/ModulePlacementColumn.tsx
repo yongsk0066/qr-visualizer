@@ -117,7 +117,17 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
-        <div className="text-gray-500 text-sm">메시지 구성이 완료되면 모듈 배치가 표시됩니다</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            QR 코드 매트릭스에 데이터를 배치하고 기능 패턴을 추가합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🎯</div>
+            <div className="text-gray-500 text-sm">메시지 구성이 완료되면 모듈 배치가 표시됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }

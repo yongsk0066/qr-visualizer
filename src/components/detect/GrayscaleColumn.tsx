@@ -123,7 +123,16 @@ export function GrayscaleColumn({ grayscale }: GrayscaleColumnProps) {
           </div>
         </div>
       ) : (
-        <div className="text-gray-500 text-sm">이미지를 기다리는 중...</div>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            컬러 이미지를 흑백으로 변환하여 QR 코드 처리를 준비합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🎨</div>
+            <div className="text-gray-500 text-sm">이미지를 선택하면 그레이스케일 변환이 표시됩니다</div>
+          </div>
+        </div>
       )}
     </div>
   );

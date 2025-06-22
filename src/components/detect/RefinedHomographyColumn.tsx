@@ -361,7 +361,16 @@ export function RefinedHomographyColumn({
           </div>
         </div>
       ) : (
-        <div className="text-gray-500 text-sm">대기 중...</div>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🔄</div>
+            <div className="text-gray-500 text-sm">파인더 패턴이 검출되면 원근 변환이 표시됩니다</div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -145,7 +145,17 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">7단계: 최종 생성</h2>
-        <div className="text-gray-500 text-sm">마스킹이 완료되면 최종 QR 코드가 표시됩니다</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            포맷 정보와 버전 정보를 추가하여 완전한 QR 코드를 생성합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🎉</div>
+            <div className="text-gray-500 text-sm">마스킹이 완료되면 최종 QR 코드가 표시됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -14,7 +14,18 @@ interface BitSegment {
 
 export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
   if (!encodedData) {
-    return <div className="text-gray-500 text-sm">데이터를 입력하면 비트 스트림이 표시됩니다</div>;
+    return (
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          입력된 데이터를 QR 코드 비트 스트림으로 변환합니다
+        </p>
+        
+        <div className="p-8 bg-gray-50 rounded text-center">
+          <div className="text-gray-400 text-3xl mb-2">💾</div>
+          <div className="text-gray-500 text-sm">데이터를 입력하면 비트 스트림이 표시됩니다</div>
+        </div>
+      </div>
+    );
   }
 
   const segments: BitSegment[] = [
