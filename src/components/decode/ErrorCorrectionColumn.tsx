@@ -13,7 +13,17 @@ export function ErrorCorrectionColumn({
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">5단계: 에러 정정</h2>
-        <div className="text-gray-500 text-sm">에러 정정을 기다리는 중...</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Reed-Solomon 에러 정정 알고리즘으로 손상된 데이터를 복구합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🔧</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 에러 정정이 표시됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }
