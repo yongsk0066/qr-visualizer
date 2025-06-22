@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import testImage from '../../../assets/test_image/test_image_2.jpg';
+import testImage from '../../../assets/test_image/test_image.jpg';
 
 interface FileInputProps {
   onImageSelect: (url: string) => void;
