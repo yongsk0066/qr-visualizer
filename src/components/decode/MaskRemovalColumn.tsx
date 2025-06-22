@@ -73,9 +73,9 @@ export function MaskRemovalColumn({ maskRemovalResult, triStateMatrix }: MaskRem
   const scale = useMemo(() => {
     if (!triStateMatrix) return 4;
     const size = triStateMatrix.size;
-    if (size <= 25) return 6;
-    if (size <= 45) return 4;
-    if (size <= 65) return 3;
+    if (size <= 45) return 6;
+    if (size <= 77) return 4;
+    if (size <= 125) return 3;
     return 2;
   }, [triStateMatrix]);
 

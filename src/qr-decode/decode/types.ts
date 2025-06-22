@@ -1,11 +1,13 @@
 import type { FormatInfoResult } from './format-extraction/types';
 import type { VersionInfoResult } from './version-extraction/types';
 import type { MaskRemovalResult } from './mask-removal/types';
+import type { DataReadingResult } from './data-reading/types';
 
 export interface DecodePipelineResult {
   formatInfo: FormatInfoResult | null;
   versionInfo: VersionInfoResult | null;
   maskRemoval: MaskRemovalResult | null;
+  dataReading: DataReadingResult | null;
   unmaskedMatrix: (0 | 1)[][] | null;
   rawBitStream: string | null;
   codewords: CodewordBlocks | null;

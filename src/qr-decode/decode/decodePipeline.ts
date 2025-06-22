@@ -1,8 +1,10 @@
 import type { TriStateQR } from '../types';
 import type { DecodePipelineResult } from './types';
+import type { DataReadingResult } from './data-reading/types';
 import { extractFormatInfo } from './format-extraction/formatExtractor';
 import { extractVersionInfo } from './version-extraction/versionExtractor';
 import { removeMask } from './mask-removal/maskRemover';
+import { readDataModules } from './data-reading/dataReader';
 
 /**
  * QR 디코드 파이프라인
@@ -15,6 +17,7 @@ export const runDecodePipeline = async (
     formatInfo: null,
     versionInfo: null,
     maskRemoval: null,
+    dataReading: null,
     unmaskedMatrix: null,
     rawBitStream: null,
     codewords: null,
@@ -47,7 +50,22 @@ export const runDecodePipeline = async (
     );
     result.maskRemoval = maskRemovalResult;
     
-    // TODO: Step 4: 데이터 모듈 읽기
+    // Step 4: 데이터 모듈 읽기
+    if (maskRemovalResult.unmaskedMatrix) {
+      const dataReadingResult = readDataModules(
+        maskRemovalResult.unmaskedMatrix,
+        maskRemovalResult.dataModules,
+        versionInfo.version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40,
+        formatInfo.errorLevel
+      );
+      result.dataReading = dataReadingResult;
+      result.rawBitStream = dataReadingResult.bitStream;
+      result.codewords = {
+        dataBlocks: dataReadingResult.blockInfo.dataBlocks,
+        ecBlocks: dataReadingResult.blockInfo.ecBlocks,
+        totalCodewords: dataReadingResult.codewords.length
+      };
+    }
     
     // TODO: Step 5: 에러 정정
     

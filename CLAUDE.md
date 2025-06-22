@@ -154,6 +154,22 @@ src/
 │   │   │   ├── formatExtractor.ts  # BCH 에러 정정 포함 포맷 추출
 │   │   │   ├── formatExtractor.test.ts # 7개 테스트 (BCH, 엣지케이스, ISO 준수)
 │   │   │   └── types.ts            # 포맷 관련 타입
+│   │   ├── version-extraction/     # 버전 정보 추출
+│   │   │   ├── versionExtractor.ts # BCH 에러 정정 포함 버전 추출
+│   │   │   ├── versionExtractor.test.ts # 13개 테스트
+│   │   │   └── types.ts            # 버전 관련 타입
+│   │   ├── mask-removal/           # 마스크 패턴 제거
+│   │   │   ├── maskRemover.ts      # 8가지 마스크 패턴 제거
+│   │   │   ├── maskRemover.test.ts # 6개 테스트
+│   │   │   └── types.ts            # 마스크 제거 관련 타입
+│   │   ├── data-reading/           # 데이터 모듈 읽기
+│   │   │   ├── dataReader.ts       # 지그재그 패턴으로 데이터 읽기
+│   │   │   ├── dataReader.test.ts  # 9개 테스트
+│   │   │   ├── types.ts            # 데이터 읽기 타입
+│   │   │   └── utils/
+│   │   │       ├── zigzagPattern.ts       # 지그재그 패턴 생성
+│   │   │       ├── zigzagPattern.test.ts  # 6개 테스트
+│   │   │       └── codewordInfo.ts        # 코드워드 정보 유틸리티
 │   │   ├── decodePipeline.ts       # 디코드 파이프라인
 │   │   └── types.ts                # 디코드 결과 타입
 │   └── types.ts            # 디코딩 관련 타입 정의
@@ -182,7 +198,10 @@ src/
 │   │   ├── RefinedHomographyColumn.tsx # 정제된 원근 변환 시각화
 │   │   └── SamplingColumn.tsx      # 모듈 샘플링 시각화
 │   ├── decode/                      # Decode UI 컴포넌트
-│   │   └── FormatExtractionColumn.tsx # 포맷 정보 추출 시각화
+│   │   ├── FormatExtractionColumn.tsx # 포맷 정보 추출 시각화
+│   │   ├── VersionExtractionColumn.tsx # 버전 정보 추출 시각화
+│   │   ├── MaskRemovalColumn.tsx    # 마스크 패턴 제거 시각화
+│   │   └── DataReadingColumn.tsx    # 데이터 모듈 읽기 시각화
 │   └── QRDecodeProcess.tsx          # Decode 프로세스 메인
 │
 └── shared/                 # 전역 공유 모듈
@@ -352,6 +371,14 @@ src/
   - XOR operation on data modules only
   - 3-column visualization: original → mask pattern → result
   - Unknown module handling
+- Data module reading ✅
+  - Zigzag pattern generation following ISO/IEC 18004 Section 7.7.3
+  - 8-bit codeword conversion with MSB first ordering
+  - Data/EC codeword separation with visual distinction (green/red)
+  - 3-column visualization: full matrix → data areas → zigzag pattern
+  - Rainbow-colored byte blocks for reading order clarity
+  - Confidence calculation with detailed explanation
+  - Full interleaved codeword display without scrolling
 - Error correction decoding (TODO)
 - Data extraction and interpretation (TODO)
 
@@ -361,8 +388,9 @@ src/
   - Format extraction ✅
   - Version extraction ✅
   - Mask pattern removal ✅
+  - Data module reading ✅
   - Remaining decode steps in progress
-- **Total Test Coverage**: 323 tests (264 encoding + 46 detection/decode + 13 utilities)
+- **Total Test Coverage**: 338 tests (264 encoding + 61 detection/decode + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
@@ -392,10 +420,11 @@ src/
     - Binarization: 7 tests (Sauvola algorithm)
     - Timing Pattern Counter: 6 tests (module counting)
     - Direct Finder Detection: 3 tests (pattern matching)
-  - **Decode Process Tests**: 26 comprehensive tests
+  - **Decode Process Tests**: 41 comprehensive tests
     - Format Extraction: 7 tests (BCH error correction, edge cases)
     - Version Extraction: 13 tests (BCH error correction, dual location)
     - Mask Removal: 6 tests (all patterns, module classification)
+    - Data Reading: 15 tests (zigzag pattern, codeword conversion, all versions)
   - **Shared Utilities Tests**: 13 tests
     - Geometry utilities: 13 tests (line intersection, scaling, etc.)
   - **Integration Tests**: 62 comprehensive pipeline tests
@@ -451,6 +480,30 @@ This project follows specific coding practices to maintain consistency and reada
 3. Observe how changes in input affect each step
 4. Learn the QR standard through interactive exploration
 
+## UI/UX Guidelines
+
+When implementing new UI components, especially for decode steps:
+
+1. **Consistent Column Style**: Always reference existing decode columns for consistent styling
+   - Use `step-column` class for main container
+   - Use `font-medium mb-3` for step titles
+   - Use `bg-gray-50 rounded` for content boxes
+   - Use `text-xs` and `text-[10px]` for appropriate font sizes
+
+2. **Matrix Visualization**: 
+   - Show progression with multiple columns (e.g., 전체 매트릭스 → 데이터 영역 → 처리 결과)
+   - Use consistent scale calculations across all decode steps
+   - Color-code different areas for clarity (data modules, function patterns, etc.)
+
+3. **Data Display**:
+   - Visually distinguish data types (e.g., green for data codewords, red for error correction)
+   - Include legends/explanations for color coding
+   - Show all content without scrolling where possible
+   - Add clear explanations for metrics like confidence scores
+
+4. **Progressive Disclosure**:
+   - Start with overall view, then show detailed/processed views
+   - Use visual cues to show transformations between steps
 
 ## Implementation Priority
 
