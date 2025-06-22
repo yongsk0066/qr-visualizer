@@ -5,7 +5,7 @@ import { FileInput } from './FileInput';
 
 // VirtualCameraInput를 lazy load
 const VirtualCameraInput = lazy(() =>
-  import('./VirtualCameraInput').then((module) => ({
+  import('./virtual-camera').then((module) => ({
     default: module.VirtualCameraInput,
   }))
 );
