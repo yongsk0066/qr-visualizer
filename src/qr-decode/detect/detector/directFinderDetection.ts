@@ -48,7 +48,6 @@ export const detectFindersDirectly = (
     
     // 3개 모두 찾았으면 성공
     if (patterns.length === 3) {
-      console.log(`Direct detection successful for version ${version}`);
       
       // 시각화를 위한 캔버스 생성
       const canvas = document.createElement('canvas');

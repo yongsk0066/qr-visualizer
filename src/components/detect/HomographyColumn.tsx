@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import type { HomographyResult, BinarizationResult, FinderDetectionResult } from '../../qr-decode/types';
 import { applyHomography } from '../../qr-decode/detect/detector/homography';
-import { initOpenCV } from '../../qr-decode/detect/detector/finderDetection';
+import type {
+  BinarizationResult,
+  FinderDetectionResult,
+  HomographyResult,
+} from '../../qr-decode/types';
 
 interface HomographyColumnProps {
   homography: HomographyResult | null;
@@ -9,7 +12,11 @@ interface HomographyColumnProps {
   finderDetection: FinderDetectionResult | null;
 }
 
-export function HomographyColumn({ homography, binarization, finderDetection }: HomographyColumnProps) {
+export function HomographyColumn({
+  homography,
+  binarization,
+  finderDetection,
+}: HomographyColumnProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showGrid, setShowGrid] = useState(true);
   const [imageData, setImageData] = useState<ImageData | null>(null);
@@ -27,7 +34,7 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
     tempCanvas.width = width;
     tempCanvas.height = height;
     const tempCtx = tempCanvas.getContext('2d');
-    
+
     if (tempCtx) {
       const imageData = tempCtx.createImageData(width, height);
       for (let i = 0; i < binary.length; i++) {
@@ -39,17 +46,17 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
         imageData.data[idx + 3] = 255;
       }
       tempCtx.putImageData(imageData, 0, 0);
-      
+
       // Homography 변환 적용
       const srcImageData = tempCtx.getImageData(0, 0, width, height);
       const warpedImage = applyHomography(srcImageData, homography);
       setImageData(warpedImage);
-      
+
       // 캔버스에 그리기
       canvas.width = warpedImage.width;
       canvas.height = warpedImage.height;
       ctx.putImageData(warpedImage, 0, 0);
-      
+
       // 그리드 오버레이
       if (showGrid) {
         drawGrid(ctx, homography.qrSize, canvas.width, canvas.height);
@@ -58,16 +65,16 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
   }, [homography, binarization, showGrid]);
 
   const drawGrid = (
-    ctx: CanvasRenderingContext2D, 
-    moduleCount: number, 
-    width: number, 
+    ctx: CanvasRenderingContext2D,
+    moduleCount: number,
+    width: number,
     height: number
   ) => {
     const moduleSize = width / moduleCount;
-    
+
     ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
     ctx.lineWidth = 0.5;
-    
+
     // 수직선
     for (let i = 0; i <= moduleCount; i++) {
       const x = i * moduleSize;
@@ -76,7 +83,7 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
       ctx.lineTo(x, height);
       ctx.stroke();
     }
-    
+
     // 수평선
     for (let i = 0; i <= moduleCount; i++) {
       const y = i * moduleSize;
@@ -85,11 +92,11 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
       ctx.lineTo(width, y);
       ctx.stroke();
     }
-    
+
     // Finder Pattern 영역 강조
     ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
     ctx.lineWidth = 2;
-    
+
     // Top-left
     ctx.strokeRect(0, 0, 7 * moduleSize, 7 * moduleSize);
     // Top-right
@@ -101,7 +108,7 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
   return (
     <div className="step-column">
       <h3 className="step-title">Step 5: Homography Transform</h3>
-      
+
       {homography ? (
         <div className="space-y-3">
           {/* 변환 정보 */}
@@ -114,11 +121,17 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
               </div>
               <div className="info-item">
                 <span className="info-label">Module Count:</span>
-                <span className="info-value">{homography.qrSize} × {homography.qrSize}</span>
+                <span className="info-value">
+                  {homography.qrSize} × {homography.qrSize}
+                </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Output Size:</span>
-                <span className="info-value">{imageData ? `${imageData.width} × ${imageData.height}px` : `${homography.qrSize * 10} × ${homography.qrSize * 10}px`}</span>
+                <span className="info-value">
+                  {imageData
+                    ? `${imageData.width} × ${imageData.height}px`
+                    : `${homography.qrSize * 10} × ${homography.qrSize * 10}px`}
+                </span>
               </div>
             </div>
           </div>
@@ -135,7 +148,7 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
               </button>
             </div>
             <div className="bg-gray-50 p-3 rounded">
-              <canvas 
+              <canvas
                 ref={canvasRef}
                 className="w-full h-auto border border-gray-300"
                 style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
@@ -149,9 +162,9 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
             <div className="text-xs font-mono bg-gray-100 p-2 rounded overflow-x-auto">
               <table className="w-full">
                 <tbody>
-                  {[0, 1, 2].map(row => (
+                  {[0, 1, 2].map((row) => (
                     <tr key={row}>
-                      {[0, 1, 2].map(col => (
+                      {[0, 1, 2].map((col) => (
                         <td key={col} className="px-2 py-1 text-center">
                           {homography.transform[row * 3 + col].toFixed(4)}
                         </td>
@@ -180,7 +193,7 @@ export function HomographyColumn({ homography, binarization, finderDetection }: 
         </div>
       ) : (
         <div className="text-gray-500 text-sm">
-          {finderDetection?.patterns.length !== 3 
+          {finderDetection?.patterns.length !== 3
             ? 'Finder Pattern 3개가 필요합니다'
             : '대기 중...'}
         </div>

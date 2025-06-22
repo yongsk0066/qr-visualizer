@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import './App.css';
-import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDetectProcess } from './components/QRDetectProcess';
+import { QREncodingProcess } from './components/QREncodingProcess';
 
 function App() {
   const [encodedQRMatrix, setEncodedQRMatrix] = useState<number[][] | null>(null);
-  console.log(encodedQRMatrix);
+
   return (
     <div className="app">
       <header className="mb-8">

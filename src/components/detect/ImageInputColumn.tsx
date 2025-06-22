@@ -22,7 +22,7 @@ function QRCodeMesh({ matrix }: { matrix: number[][] }) {
 
     // Create canvas for QR code texture
     const size = matrix.length;
-    const scale = 10;
+    const scale = 20; // Increased for better resolution
     const canvas = document.createElement('canvas');
     canvas.width = size * scale;
     canvas.height = size * scale;
@@ -97,14 +97,14 @@ function Scene({ matrix, isCapturing, onCapture }: {
       onCapture(dataUrl);
     };
 
-    const interval = setInterval(captureFrame, 100);
+    const interval = setInterval(captureFrame, 50); // 20 FPS (1000ms / 20 = 50ms)
     return () => clearInterval(interval);
   }, [gl, scene, camera, onCapture, isCapturing]);
 
   // 단건 캡처를 위한 함수
   useFrame(() => {
     // Scene을 외부에서 접근할 수 있도록 gl을 window에 저장
-    (window as any).virtualCameraGL = { gl, scene, camera };
+    (window as unknown as { virtualCameraGL?: { gl: unknown; scene: unknown; camera: unknown } }).virtualCameraGL = { gl, scene, camera };
   });
 
   return (
@@ -203,15 +203,14 @@ export function ImageInputColumn({
     
     // 캔버스 내용을 data URL로 변환
     const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-    console.log('Frame captured, size:', video.videoWidth, 'x', video.videoHeight);
     // 타임스탬프를 추가하여 매번 다른 URL로 인식되도록 함
     setImageUrl(dataUrl + '#' + Date.now());
   }, [setImageUrl]);
 
   // 주기적으로 프레임 캡처
   const startCapturing = useCallback(() => {
-    // 500ms마다 프레임 캡처 (초당 2프레임)
-    intervalRef.current = window.setInterval(captureFrame, 500);
+    // 50ms마다 프레임 캡처 (20 FPS)
+    intervalRef.current = window.setInterval(captureFrame, 50);
   }, [captureFrame]);
 
   // 카메라 시작
@@ -237,12 +236,10 @@ export function ImageInputColumn({
         
         // 비디오가 실제로 재생되기 시작하면 캡처 시작
         videoRef.current.onplaying = () => {
-          console.log('Video is playing, starting capture...');
           startCapturing();
         };
       }
-    } catch (error) {
-      console.error('카메라 접근 오류:', error);
+    } catch {
       alert('카메라에 접근할 수 없습니다.');
     }
   }, [startCapturing]);
@@ -401,10 +398,11 @@ export function ImageInputColumn({
             </div>
           </div>
           
-          <div className="bg-gray-50 p-3 rounded relative" style={{ height: '300px' }}>
+          <div className="bg-gray-50 p-3 rounded relative" style={{ width: '512px', height: '512px', margin: '0 auto' }}>
             <Canvas
-              gl={{ preserveDrawingBuffer: true }}
+              gl={{ preserveDrawingBuffer: true, antialias: false }}
               camera={{ position: [0, 0, 5], fov: 50 }}
+              dpr={[1, 2]}
             >
               <Scene matrix={encodedQRMatrix} onCapture={handleVirtualCapture} isCapturing={isVirtualCapturing} />
             </Canvas>
@@ -422,7 +420,7 @@ export function ImageInputColumn({
             <button
               onClick={() => {
                 // Single capture
-                const { gl, scene, camera } = (window as any).virtualCameraGL || {};
+                const { gl, scene, camera } = (window as unknown as { virtualCameraGL?: { gl: { render: (scene: unknown, camera: unknown) => void; domElement: HTMLCanvasElement }; scene: unknown; camera: unknown } }).virtualCameraGL || {};
                 if (gl && scene && camera) {
                   gl.render(scene, camera);
                   const dataUrl = gl.domElement.toDataURL('image/png');

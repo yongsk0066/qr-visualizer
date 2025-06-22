@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import testImage from '../assets/test_image_2.jpg';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
 import type { HomographyResult } from '../qr-decode/types';
@@ -20,10 +20,10 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<Awaited<ReturnType<typeof runDetectPipeline>> | null>(null);
   const [refinedHomography, setRefinedHomography] = useState<HomographyResult | null>(null);
+  const [refinedImage, setRefinedImage] = useState<ImageData | null>(null);
   const processingRef = useRef(false);
   const lastProcessedUrlRef = useRef<string>('');
 
-  // 초기 테스트 이미지 로드
   useEffect(() => {
     setImageUrl(testImage);
   }, []);
@@ -34,26 +34,22 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
 
       // 이미 처리 중이거나 같은 이미지를 다시 처리하려는 경우 스킵
       if (processingRef.current) {
-        console.log('Skipping: already processing');
         return;
       }
 
       if (imageUrl === lastProcessedUrlRef.current) {
-        console.log('Skipping: same image');
         return;
       }
 
-      console.log('Starting detection pipeline...');
       processingRef.current = true;
       setIsProcessing(true);
 
       try {
         const pipelineResult = await runDetectPipeline({ imageUrl });
-        console.log('Pipeline result:', pipelineResult);
         setResult(pipelineResult);
         lastProcessedUrlRef.current = imageUrl;
-      } catch (error) {
-        console.error('Detection error:', error);
+      } catch {
+        // Error handling intentionally left empty
       } finally {
         setIsProcessing(false);
         processingRef.current = false;
@@ -106,7 +102,10 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
         <RefinedHomographyColumn
           homography={result?.homography ?? null}
           homographyImage={result?.homographyImage ?? null}
-          onRefinedHomography={setRefinedHomography}
+          onRefinedHomography={(homography, image) => {
+            setRefinedHomography(homography);
+            setRefinedImage(image);
+          }}
         />
       </ProcessingWrapper>
 
@@ -114,7 +113,7 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
         <SamplingColumn
           sampling={result?.sampling ?? null}
           homography={refinedHomography || (result?.homography ?? null)}
-          homographyImage={result?.homographyImage ?? null}
+          homographyImage={refinedImage || (result?.homographyImage ?? null)}
         />
       </ProcessingWrapper>
     </div>

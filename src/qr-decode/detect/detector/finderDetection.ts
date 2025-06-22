@@ -1,11 +1,5 @@
 import type { BinarizationResult, FinderDetectionResult, FinderPattern } from '../../types';
-
-// OpenCV.js를 전역 변수로 사용
-declare global {
-  interface Window {
-    cv: any;
-  }
-}
+import type { OpenCVMat, OpenCVMatVector } from '../../../types/opencv';
 
 // OpenCV.js 초기화 확인
 let cvReady = false;
@@ -70,9 +64,8 @@ export const runFinderDetection = async (
       normalizedData[i] = data[i];
     }
   }
-  
+
   const mat = cv.matFromArray(height, width, cv.CV_8UC1, Array.from(normalizedData));
-  
 
   // 윤곽선 검출을 위한 변수들
   const contours = new cv.MatVector();
@@ -83,14 +76,8 @@ export const runFinderDetection = async (
     // OpenCV는 흰색(255) 객체를 찾으므로, 현재 이미지가 맞는지 확인
     cv.findContours(mat, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
 
-
     const finderPatterns: FinderPattern[] = [];
 
-    // 디버깅: 검출 통계
-    let squareCount = 0;
-    let largeSquareCount = 0;
-    let candidateCount = 0;
-    
     // 계층 구조를 이용한 Finder Pattern 검출
     // Finder Pattern은 3개의 중첩된 사각형 구조 (흑-백-흑)
     for (let i = 0; i < contours.size(); i++) {
@@ -99,11 +86,11 @@ export const runFinderDetection = async (
       // 윤곽선을 다각형으로 근사화
       let approx = new cv.Mat();
       const perimeter = cv.arcLength(contour, true);
-      
+
       // 여러 epsilon 값으로 시도 (0.02부터 0.1까지)
       const epsilonValues = [0.02, 0.03, 0.04, 0.05, 0.07, 0.1];
       let isSquare = false;
-      
+
       for (const epsilon of epsilonValues) {
         cv.approxPolyDP(contour, approx, epsilon * perimeter, true);
         if (approx.rows === 4) {
@@ -123,23 +110,19 @@ export const runFinderDetection = async (
         contour.delete();
         continue;
       }
-      
-      squareCount++;
 
       // 면적 계산 (이미지 크기에 상대적으로)
       const area = cv.contourArea(contour);
       const imageArea = width * height;
       const minAreaRatio = 0.00001; // 이미지 크기의 0.001%
-      
+
       if (area < imageArea * minAreaRatio || area < 50) {
         // 너무 작은 윤곽선 제외
         approx.delete();
         contour.delete();
         continue;
       }
-      
-      largeSquareCount++;
-      
+
       // 너무 큰 윤곽선도 제외 (이미지의 50% 이상)
       if (area > imageArea * 0.5) {
         approx.delete();
@@ -152,37 +135,26 @@ export const runFinderDetection = async (
       const centerX = moments.m10 / moments.m00;
       const centerY = moments.m01 / moments.m00;
 
-      // 계층 구조 확인 (부모-자식 관계)
-      // const hierarchyData = hierarchy.data32S;
-      // const currentHierarchy = {
-      //   next: hierarchyData[i * 4],
-      //   previous: hierarchyData[i * 4 + 1],
-      //   firstChild: hierarchyData[i * 4 + 2],
-      //   parent: hierarchyData[i * 4 + 3],
-      // };
-
       // Finder Pattern 후보인지 확인 (3단계 중첩 구조)
       if (isFinderPatternCandidate(i, hierarchy, contours)) {
-        candidateCount++;
-        
         // 경계 박스 계산 (boundingRect 사용)
         const rect = cv.boundingRect(contour);
-        
+
         // approx에서 실제 코너 추출
         const corners = [];
         for (let j = 0; j < approx.rows; j++) {
           corners.push({
             x: approx.data32S[j * 2],
-            y: approx.data32S[j * 2 + 1]
+            y: approx.data32S[j * 2 + 1],
           });
         }
-        
+
         // 4개의 코너가 있으면 시계방향으로 정렬
         if (corners.length === 4) {
           // 중심점 계산
           const cx = corners.reduce((sum, p) => sum + p.x, 0) / 4;
           const cy = corners.reduce((sum, p) => sum + p.y, 0) / 4;
-          
+
           // 각도로 정렬
           corners.sort((a, b) => {
             const angleA = Math.atan2(a.y - cy, a.x - cx);
@@ -190,7 +162,7 @@ export const runFinderDetection = async (
             return angleA - angleB;
           });
         }
-        
+
         // 실제 패턴 크기 계산
         const adjustedSize = Math.max(rect.width, rect.height);
 
@@ -205,14 +177,6 @@ export const runFinderDetection = async (
       approx.delete();
       contour.delete();
     }
-    
-    console.log('Detection stats:', {
-      totalContours: contours.size(),
-      squares: squareCount,
-      largeSquares: largeSquareCount,
-      candidates: candidateCount,
-      patternsFound: finderPatterns.length
-    });
 
     // 상위 3개의 Finder Pattern 선택 (점수 기준)
     const selectedPatterns = selectBestThreePatterns(finderPatterns);
@@ -244,8 +208,8 @@ export const runFinderDetection = async (
  */
 function isFinderPatternCandidate(
   index: number,
-  hierarchy: any,
-  contours: any
+  hierarchy: OpenCVMat,
+  contours: OpenCVMatVector
 ): boolean {
   const hierarchyData = hierarchy.data32S;
 
@@ -256,7 +220,6 @@ function isFinderPatternCandidate(
   // 첫 번째 자식의 자식 확인 (3단계 구조)
   const secondChild = hierarchyData[firstChild * 4 + 2];
   if (secondChild === -1) return false;
-  
 
   // 면적 비율 검증 (1:1:3:1:1 비율에 근사한지)
   const cv = window.cv;
@@ -270,29 +233,33 @@ function isFinderPatternCandidate(
 
   const ratio1 = middleArea / outerArea;
   const ratio2 = innerArea / middleArea;
-  
+
   // 이론적 비율: middle/outer ≈ 9/25 = 0.36, inner/middle ≈ 1/9 = 0.11
   // 하지만 실제로는 면적 비율이 다를 수 있음 (픽셀 근사화, 회전, 변형 등)
   // 더 관대한 범위 설정
   let isValid = ratio1 > 0.15 && ratio1 < 0.8 && ratio2 > 0.05 && ratio2 < 0.6;
-  
+
   // 추가 검증: 중심점이 거의 일치해야 함
   if (isValid) {
     const outerMoments = cv.moments(outerContour);
     const middleMoments = cv.moments(middleContour);
     const innerMoments = cv.moments(innerContour);
-    
+
     const outerCenterX = outerMoments.m10 / outerMoments.m00;
     const outerCenterY = outerMoments.m01 / outerMoments.m00;
     const middleCenterX = middleMoments.m10 / middleMoments.m00;
     const middleCenterY = middleMoments.m01 / middleMoments.m00;
     const innerCenterX = innerMoments.m10 / innerMoments.m00;
     const innerCenterY = innerMoments.m01 / innerMoments.m00;
-    
+
     // 중심점 간 거리 계산
-    const dist1 = Math.sqrt(Math.pow(outerCenterX - middleCenterX, 2) + Math.pow(outerCenterY - middleCenterY, 2));
-    const dist2 = Math.sqrt(Math.pow(middleCenterX - innerCenterX, 2) + Math.pow(middleCenterY - innerCenterY, 2));
-    
+    const dist1 = Math.sqrt(
+      Math.pow(outerCenterX - middleCenterX, 2) + Math.pow(outerCenterY - middleCenterY, 2)
+    );
+    const dist2 = Math.sqrt(
+      Math.pow(middleCenterX - innerCenterX, 2) + Math.pow(middleCenterY - innerCenterY, 2)
+    );
+
     // 중심점이 너무 떨어져 있으면 패턴이 아님
     const maxDist = Math.sqrt(outerArea / Math.PI) * 0.2; // 외부 반경의 20%
     isValid = dist1 < maxDist && dist2 < maxDist;
@@ -301,15 +268,14 @@ function isFinderPatternCandidate(
   outerContour.delete();
   middleContour.delete();
   innerContour.delete();
-  
+
   return isValid;
 }
-
 
 /**
  * Finder Pattern의 품질 점수 계산
  */
-function calculatePatternScore(contour: any): number {
+function calculatePatternScore(contour: OpenCVMat): number {
   const cv = window.cv;
   let score = 100;
 
@@ -321,7 +287,7 @@ function calculatePatternScore(contour: any): number {
   // 면적이 클수록 높은 점수 (더 명확한 패턴)
   const area = cv.contourArea(contour);
   score += Math.log(area) * 5;
-  
+
   // 컨투어의 컨벡스성 확인 (볼록할수록 좋음)
   const hull = new cv.Mat();
   cv.convexHull(contour, hull);
@@ -332,7 +298,7 @@ function calculatePatternScore(contour: any): number {
 
   // 둘레 대비 면적 비율 (원형도 체크)
   const perimeter = cv.arcLength(contour, true);
-  const circularity = 4 * Math.PI * area / (perimeter * perimeter);
+  const circularity = (4 * Math.PI * area) / (perimeter * perimeter);
   score += circularity * 30; // 원에 가까울수록 높은 점수 (정사각형은 ~0.785)
 
   return Math.max(0, score);

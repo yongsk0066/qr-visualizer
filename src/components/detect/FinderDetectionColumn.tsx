@@ -34,7 +34,6 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
       // 평균 Finder Pattern 크기
       const avgFinderSize = (topLeft.size + topRight.size + bottomLeft.size) / 3;
       const moduleSize = avgFinderSize / 7;
-      const margin = moduleSize * 0.5; // 0.5모듈 여백
       const halfFinder = moduleSize * 3.5;
       
       // 실제 corners 데이터 사용하여 극점 찾기
@@ -47,91 +46,122 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
         return pattern.center[axis] + (type === 'min' ? -halfFinder : halfFinder);
       };
       
-      // 각 Finder Pattern의 극점 찾기
-      const tlMinX = getExtremePoint(topLeft, 'min', 'x');
-      const tlMinY = getExtremePoint(topLeft, 'min', 'y');
-      
-      const trMaxX = getExtremePoint(topRight, 'max', 'x');
-      const trMinY = getExtremePoint(topRight, 'min', 'y');
-      
-      const blMinX = getExtremePoint(bottomLeft, 'min', 'x');
-      const blMaxY = getExtremePoint(bottomLeft, 'max', 'y');
-      
-      // QR 코드 모서리 계산
-      const tlCorner = {
-        x: tlMinX - margin,
-        y: tlMinY - margin
+      // 직선 교점 계산 함수
+      const calculateIntersection = (
+        x1: number, y1: number, x2: number, y2: number,
+        x3: number, y3: number, x4: number, y4: number
+      ): { x: number; y: number } | null => {
+        const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        if (Math.abs(denom) < 0.001) return null;
+        
+        const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+        return {
+          x: x1 + t * (x2 - x1),
+          y: y1 + t * (y2 - y1)
+        };
       };
       
-      const trCorner = {
-        x: trMaxX + margin,
-        y: trMinY - margin
-      };
-      
-      const blCorner = {
-        x: blMinX - margin,
-        y: blMaxY + margin
-      };
-      
-      // Finder Pattern 연장선으로 BR 계산
+      // QR 코드 모서리 계산 - 모든 모서리를 교점으로 계산
+      let tlCorner = { x: 0, y: 0 };
+      let trCorner = { x: 0, y: 0 };
+      let blCorner = { x: 0, y: 0 };
       let brCorner = { x: 0, y: 0 };
       
-      // corners가 있으면 연장선 교점 계산
-      if (topRight.corners && bottomLeft.corners && 
-          topRight.corners.length === 4 && bottomLeft.corners.length === 4) {
+      if (topLeft.corners && topRight.corners && bottomLeft.corners &&
+          topLeft.corners.length === 4 && topRight.corners.length === 4 && bottomLeft.corners.length === 4) {
         
-        // Top-right의 오른쪽 변 찾기
-        const rightEdgePoints = [...topRight.corners]
-          .sort((a, b) => b.x - a.x)
-          .slice(0, 2)
-          .sort((a, b) => a.y - b.y);
+        // TL Corner: Top-left의 왼쪽 변과 위쪽 변의 교점
+        const tlLeftEdge = [...topLeft.corners].sort((a, b) => a.x - b.x).slice(0, 2).sort((a, b) => a.y - b.y);
+        const tlTopEdge = [...topLeft.corners].sort((a, b) => a.y - b.y).slice(0, 2).sort((a, b) => a.x - b.x);
         
-        // Bottom-left의 아래쪽 변 찾기
-        const bottomEdgePoints = [...bottomLeft.corners]
-          .sort((a, b) => b.y - a.y)
-          .slice(0, 2)
-          .sort((a, b) => a.x - b.x);
+        const tlIntersection = calculateIntersection(
+          tlLeftEdge[0].x, tlLeftEdge[0].y, tlLeftEdge[1].x, tlLeftEdge[1].y,
+          tlTopEdge[0].x, tlTopEdge[0].y, tlTopEdge[1].x, tlTopEdge[1].y
+        );
+        if (tlIntersection) tlCorner = tlIntersection;
         
-        // 직선 교점 계산
-        const x1 = rightEdgePoints[0].x, y1 = rightEdgePoints[0].y;
-        const x2 = rightEdgePoints[1].x, y2 = rightEdgePoints[1].y;
-        const x3 = bottomEdgePoints[0].x, y3 = bottomEdgePoints[0].y;
-        const x4 = bottomEdgePoints[1].x, y4 = bottomEdgePoints[1].y;
+        // TR Corner: Top-right의 오른쪽 변과 위쪽 변의 교점
+        const trRightEdge = [...topRight.corners].sort((a, b) => b.x - a.x).slice(0, 2).sort((a, b) => a.y - b.y);
+        const trTopEdge = [...topRight.corners].sort((a, b) => a.y - b.y).slice(0, 2).sort((a, b) => a.x - b.x);
         
-        const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-        if (Math.abs(denom) > 0.001) {
-          const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
-          // BR 방향으로 padding 추가
-          const padding = moduleSize * 1.0;
-          brCorner = {
-            x: x1 + t * (x2 - x1) + padding,
-            y: y1 + t * (y2 - y1) + padding
-          };
-        } else {
-          // 평행선인 경우 기본값
-          brCorner = {
-            x: blCorner.x + (trCorner.x - tlCorner.x),
-            y: trCorner.y + (blCorner.y - tlCorner.y)
-          };
-        }
+        const trIntersection = calculateIntersection(
+          trRightEdge[0].x, trRightEdge[0].y, trRightEdge[1].x, trRightEdge[1].y,
+          trTopEdge[0].x, trTopEdge[0].y, trTopEdge[1].x, trTopEdge[1].y
+        );
+        if (trIntersection) trCorner = trIntersection;
+        
+        // BL Corner: Bottom-left의 왼쪽 변과 아래쪽 변의 교점
+        const blLeftEdge = [...bottomLeft.corners].sort((a, b) => a.x - b.x).slice(0, 2).sort((a, b) => a.y - b.y);
+        const blBottomEdge = [...bottomLeft.corners].sort((a, b) => b.y - a.y).slice(0, 2).sort((a, b) => a.x - b.x);
+        
+        const blIntersection = calculateIntersection(
+          blLeftEdge[0].x, blLeftEdge[0].y, blLeftEdge[1].x, blLeftEdge[1].y,
+          blBottomEdge[0].x, blBottomEdge[0].y, blBottomEdge[1].x, blBottomEdge[1].y
+        );
+        if (blIntersection) blCorner = blIntersection;
+        
+        // BR Corner: Top-right의 오른쪽 변과 Bottom-left의 아래쪽 변의 연장선 교점
+        const brIntersection = calculateIntersection(
+          trRightEdge[0].x, trRightEdge[0].y, trRightEdge[1].x, trRightEdge[1].y,
+          blBottomEdge[0].x, blBottomEdge[0].y, blBottomEdge[1].x, blBottomEdge[1].y
+        );
+        if (brIntersection) brCorner = brIntersection;
       } else {
-        // corners 정보가 없으면 기본값
+        // corners 정보가 없으면 기본값 사용
+        const tlMinX = getExtremePoint(topLeft, 'min', 'x');
+        const tlMinY = getExtremePoint(topLeft, 'min', 'y');
+        const trMaxX = getExtremePoint(topRight, 'max', 'x');
+        const trMinY = getExtremePoint(topRight, 'min', 'y');
+        const blMinX = getExtremePoint(bottomLeft, 'min', 'x');
+        const blMaxY = getExtremePoint(bottomLeft, 'max', 'y');
+        
+        tlCorner = { x: tlMinX, y: tlMinY };
+        trCorner = { x: trMaxX, y: trMinY };
+        blCorner = { x: blMinX, y: blMaxY };
         brCorner = {
           x: blCorner.x + (trCorner.x - tlCorner.x),
           y: trCorner.y + (blCorner.y - tlCorner.y)
         };
       }
       
-      // QR 코드 전체 범위 그리기
+      // 대각선의 교점(중심점) 계산
+      const center = calculateIntersection(
+        tlCorner.x, tlCorner.y, brCorner.x, brCorner.y,  // TL-BR 대각선
+        trCorner.x, trCorner.y, blCorner.x, blCorner.y   // TR-BL 대각선
+      ) || {
+        x: (tlCorner.x + trCorner.x + blCorner.x + brCorner.x) / 4,
+        y: (tlCorner.y + trCorner.y + blCorner.y + brCorner.y) / 4
+      };
+      
+      // 중심점 기준으로 패딩 적용 (5% 확대)
+      const paddingScale = 1.05;
+      const paddedTL = {
+        x: center.x + (tlCorner.x - center.x) * paddingScale,
+        y: center.y + (tlCorner.y - center.y) * paddingScale
+      };
+      const paddedTR = {
+        x: center.x + (trCorner.x - center.x) * paddingScale,
+        y: center.y + (trCorner.y - center.y) * paddingScale
+      };
+      const paddedBL = {
+        x: center.x + (blCorner.x - center.x) * paddingScale,
+        y: center.y + (blCorner.y - center.y) * paddingScale
+      };
+      const paddedBR = {
+        x: center.x + (brCorner.x - center.x) * paddingScale,
+        y: center.y + (brCorner.y - center.y) * paddingScale
+      };
+      
+      // QR 코드 전체 범위 그리기 (패딩 적용된 좌표 사용)
       ctx.strokeStyle = '#00FF00'; // 녹색
       ctx.lineWidth = 3;
       ctx.setLineDash([5, 5]); // 점선
       
       ctx.beginPath();
-      ctx.moveTo(tlCorner.x, tlCorner.y);
-      ctx.lineTo(trCorner.x, trCorner.y);
-      ctx.lineTo(brCorner.x, brCorner.y);
-      ctx.lineTo(blCorner.x, blCorner.y);
+      ctx.moveTo(paddedTL.x, paddedTL.y);
+      ctx.lineTo(paddedTR.x, paddedTR.y);
+      ctx.lineTo(paddedBR.x, paddedBR.y);
+      ctx.lineTo(paddedBL.x, paddedBL.y);
       ctx.closePath();
       ctx.stroke();
       
@@ -150,10 +180,10 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
         ctx.fillStyle = '#00FF00';
       };
       
-      drawCornerDot(tlCorner, 'TL');
-      drawCornerDot(trCorner, 'TR');
-      drawCornerDot(blCorner, 'BL');
-      drawCornerDot(brCorner, 'BR');
+      drawCornerDot(paddedTL, 'TL');
+      drawCornerDot(paddedTR, 'TR');
+      drawCornerDot(paddedBL, 'BL');
+      drawCornerDot(paddedBR, 'BR');
       
       // 디버깅 정보 표시
       ctx.fillStyle = '#000000';

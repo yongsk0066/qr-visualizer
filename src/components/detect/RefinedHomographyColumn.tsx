@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import type { HomographyResult, FinderDetectionResult, BinarizationResult } from '../../qr-decode/types';
 import { runFinderDetection } from '../../qr-decode/detect/detector/finderDetection';
-import { runHomography } from '../../qr-decode/detect/detector/homography';
+import { runHomography, applyHomography } from '../../qr-decode/detect/detector/homography';
 import { detectFindersDirectly } from '../../qr-decode/detect/detector/directFinderDetection';
 
 interface RefinedHomographyColumnProps {
   homography: HomographyResult | null;
   homographyImage: ImageData | null;
-  onRefinedHomography?: (homography: HomographyResult) => void;
+  onRefinedHomography?: (homography: HomographyResult, refinedImage: ImageData) => void;
 }
 
 export function RefinedHomographyColumn({ 
@@ -18,17 +18,23 @@ export function RefinedHomographyColumn({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [refinedFinderDetection, setRefinedFinderDetection] = useState<FinderDetectionResult | null>(null);
   const [refinedHomography, setRefinedHomography] = useState<HomographyResult | null>(null);
+  const [refinedImage, setRefinedImage] = useState<ImageData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
   const paddingRef = useRef(0);
+  const lastProcessedImageRef = useRef<ImageData | null>(null);
 
   useEffect(() => {
     const refineHomography = async () => {
-      console.log('RefinedHomographyColumn - inputs:', { homographyImage, homography });
       if (!homographyImage || !homography) return;
       
+      // 이미 처리 중이거나 같은 이미지를 처리했으면 스킵
+      if (isProcessing) return;
+      if (lastProcessedImageRef.current === homographyImage) return;
+      
+      lastProcessedImageRef.current = homographyImage;
+      
       setIsProcessing(true);
-      console.log('Starting refinement process...');
       
       try {
         // Step 1: Add padding to the image
@@ -49,7 +55,6 @@ export function RefinedHomographyColumn({
         refinedBinarization.binary.fill(255);
         
         // Convert ImageData to binary array with padding
-        console.log('Converting ImageData to binary with padding...');
         
         for (let y = 0; y < homographyImage.height; y++) {
           for (let x = 0; x < homographyImage.width; x++) {
@@ -60,16 +65,8 @@ export function RefinedHomographyColumn({
         }
         
         // 이진 이미지 확인
-        console.log('Binary image stats:', {
-          width: refinedBinarization.width,
-          height: refinedBinarization.height,
-          totalPixels: refinedBinarization.binary.length,
-          blackPixels: refinedBinarization.binary.filter(v => v === 0).length,
-          whitePixels: refinedBinarization.binary.filter(v => v === 255).length
-        });
         
         // Step 2: Run finder detection on rectified image
-        console.log('Running finder detection on rectified image...');
         
         // 먼저 직접 검출 시도
         let finderResult = detectFindersDirectly(
@@ -129,23 +126,29 @@ export function RefinedHomographyColumn({
             adjustedFinderResult,
             homographyImage.width,
             homographyImage.height,
-            originalBinary
+            originalBinary,
+            false  // 패딩 없이
           );
           
           if (refined) {
             setRefinedHomography(refined);
-            onRefinedHomography?.(refined);
+            
+            // Apply refined homography to create final image
+            const finalImage = applyHomography(homographyImage, refined);
+            setRefinedImage(finalImage);
+            
+            onRefinedHomography?.(refined, finalImage);
           }
         }
-      } catch (error) {
-        console.error('Refinement error:', error);
+      } catch {
+        // Error handling intentionally left empty
       } finally {
         setIsProcessing(false);
       }
     };
     
     refineHomography();
-  }, [homographyImage, homography, onRefinedHomography]);
+  }, [homographyImage, homography, onRefinedHomography, isProcessing]);
 
   const drawGrid = (
     ctx: CanvasRenderingContext2D, 
@@ -189,26 +192,34 @@ export function RefinedHomographyColumn({
   };
 
   useEffect(() => {
-    if (!canvasRef.current || !homographyImage) return;
+    if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas size
-    canvas.width = homographyImage.width;
-    canvas.height = homographyImage.height;
+    // Use refined image if available, otherwise use original homography image
+    const imageToDisplay = refinedImage || homographyImage;
+    if (!imageToDisplay) return;
     
-    // Draw the homography image
-    ctx.putImageData(homographyImage, 0, 0);
-    
-    // Draw grid if enabled
-    if (showGrid && refinedHomography) {
-      drawGrid(ctx, refinedHomography.qrSize, canvas.width, canvas.height);
-    }
-    
-    // Draw refined finder patterns if found
-    if (refinedFinderDetection) {
+    // Use requestAnimationFrame for smoother rendering
+    const animationId = requestAnimationFrame(() => {
+      // Set canvas size only if it changed
+      if (canvas.width !== imageToDisplay.width || canvas.height !== imageToDisplay.height) {
+        canvas.width = imageToDisplay.width;
+        canvas.height = imageToDisplay.height;
+      }
+      
+      // Draw the image
+      ctx.putImageData(imageToDisplay, 0, 0);
+      
+      // Draw grid if enabled
+      if (showGrid && refinedHomography) {
+        drawGrid(ctx, refinedHomography.qrSize, canvas.width, canvas.height);
+      }
+      
+      // Draw refined finder patterns if found - only on the original homography image
+      if (refinedFinderDetection && !refinedImage) {
       refinedFinderDetection.patterns.forEach((pattern, index) => {
       const colors = ['#FF0000', '#00FF00', '#0000FF'];
       ctx.strokeStyle = colors[index % 3];
@@ -229,8 +240,11 @@ export function RefinedHomographyColumn({
       ctx.arc(pattern.center.x, pattern.center.y, 3, 0, 2 * Math.PI);
       ctx.fill();
     });
-    }
-  }, [homographyImage, refinedFinderDetection, showGrid, refinedHomography]);
+      }
+    });
+    
+    return () => cancelAnimationFrame(animationId);
+  }, [homographyImage, refinedImage, refinedFinderDetection, showGrid, refinedHomography]);
 
   return (
     <div className="step-column">
