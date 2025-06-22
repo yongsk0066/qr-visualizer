@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import type { TriStateQR, HomographyResult } from '../../qr-decode/types';
 import { runSampling } from '../../qr-decode/detect/detector/sampling';
+import type { HomographyResult, TriStateQR } from '../../qr-decode/types';
 
 interface SamplingColumnProps {
   sampling: TriStateQR | null;
@@ -8,10 +8,13 @@ interface SamplingColumnProps {
   homographyImage?: ImageData | null;
 }
 
-export function SamplingColumn({ sampling: propSampling, homography, homographyImage }: SamplingColumnProps) {
+export function SamplingColumn({
+  sampling: propSampling,
+  homography,
+  homographyImage,
+}: SamplingColumnProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showGrid, setShowGrid] = useState(true);
-  const [showModuleValues, setShowModuleValues] = useState(false);
   const [localSampling, setLocalSampling] = useState<TriStateQR | null>(null);
 
   // homography가 변경되면 sampling 다시 실행
@@ -20,7 +23,7 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
       setLocalSampling(null);
       return;
     }
-    
+
     console.log('Re-running sampling with homography version:', homography.version);
     const newSampling = runSampling(homographyImage, homography);
     setLocalSampling(newSampling);
@@ -66,19 +69,6 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
         }
 
         ctx.fillRect(x, y, modulePixelSize, modulePixelSize);
-
-        // 모듈 값 표시 (옵션)
-        if (showModuleValues && modulePixelSize > 15) {
-          ctx.fillStyle = value === 1 ? '#000' : '#FFF';
-          ctx.font = '10px Arial';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(
-            value === -1 ? '?' : value.toString(),
-            x + modulePixelSize / 2,
-            y + modulePixelSize / 2
-          );
-        }
       }
     }
 
@@ -109,7 +99,7 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
 
       // 7x7 Finder Pattern 영역
       const finderSize = 7 * modulePixelSize;
-      
+
       // Top-left
       ctx.strokeRect(0, 0, finderSize, finderSize);
       // Top-right
@@ -120,18 +110,18 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
       // 타이밍 패턴 라인 강조
       ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
       ctx.lineWidth = 1;
-      
+
       // 수평 타이밍 패턴 (6번째 행)
       ctx.strokeRect(0, 6 * modulePixelSize, canvas.width, modulePixelSize);
       // 수직 타이밍 패턴 (6번째 열)
       ctx.strokeRect(6 * modulePixelSize, 0, modulePixelSize, canvas.height);
     }
-  }, [sampling, showGrid, showModuleValues]);
+  }, [sampling, showGrid]);
 
   return (
     <div className="step-column">
       <h3 className="step-title">Step 6: Module Sampling</h3>
-      
+
       {sampling ? (
         <div className="space-y-3">
           {/* 샘플링 통계 */}
@@ -140,24 +130,34 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
             <div className="space-y-1 text-xs">
               <div className="info-item">
                 <span className="info-label">Module Count:</span>
-                <span className="info-value">{sampling.size} × {sampling.size}</span>
+                <span className="info-value">
+                  {sampling.size} × {sampling.size}
+                </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Black Modules:</span>
                 <span className="info-value">
-                  {sampling.statistics.black} ({((sampling.statistics.black / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                  {sampling.statistics.black} (
+                  {((sampling.statistics.black / (sampling.size * sampling.size)) * 100).toFixed(1)}
+                  %)
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">White Modules:</span>
                 <span className="info-value">
-                  {sampling.statistics.white} ({((sampling.statistics.white / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                  {sampling.statistics.white} (
+                  {((sampling.statistics.white / (sampling.size * sampling.size)) * 100).toFixed(1)}
+                  %)
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Unknown Modules:</span>
                 <span className="info-value text-red-600">
-                  {sampling.statistics.unknown} ({((sampling.statistics.unknown / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                  {sampling.statistics.unknown} (
+                  {((sampling.statistics.unknown / (sampling.size * sampling.size)) * 100).toFixed(
+                    1
+                  )}
+                  %)
                 </span>
               </div>
             </div>
@@ -167,23 +167,15 @@ export function SamplingColumn({ sampling: propSampling, homography, homographyI
           <div className="visualization-section">
             <div className="flex justify-between items-center mb-2">
               <h4 className="info-title">Sampled Matrix</h4>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowGrid(!showGrid)}
-                  className="text-xs text-blue-600 hover:text-blue-700"
-                >
-                  {showGrid ? '그리드 숨기기' : '그리드 보기'}
-                </button>
-                <button
-                  onClick={() => setShowModuleValues(!showModuleValues)}
-                  className="text-xs text-blue-600 hover:text-blue-700"
-                >
-                  {showModuleValues ? '값 숨기기' : '값 보기'}
-                </button>
-              </div>
+              <button
+                onClick={() => setShowGrid(!showGrid)}
+                className="text-xs text-blue-600 hover:text-blue-700"
+              >
+                {showGrid ? '그리드 숨기기' : '그리드 보기'}
+              </button>
             </div>
             <div className="bg-gray-50 p-3 rounded">
-              <canvas 
+              <canvas
                 ref={canvasRef}
                 className="w-full h-auto border border-gray-300"
                 style={{ maxWidth: '100%', imageRendering: 'pixelated' }}

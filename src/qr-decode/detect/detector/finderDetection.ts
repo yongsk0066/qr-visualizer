@@ -399,20 +399,24 @@ function createVisualizationCanvas(
   }
   ctx.putImageData(imageData, 0, 0);
 
+  // 이미지 해상도에 비례하는 스케일 계산
+  const imageSize = Math.max(canvas.width, canvas.height);
+  const scale = imageSize / 512; // 512px 기준으로 스케일 계산
+
   // 모든 후보 패턴 표시 (회색)
   ctx.strokeStyle = '#999999';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = Math.max(1, 1 * scale);
   for (const pattern of allPatterns) {
     if (!selectedPatterns.includes(pattern)) {
-      drawPattern(ctx, pattern, false);
+      drawPattern(ctx, pattern, false, scale);
     }
   }
 
   // 선택된 패턴 강조 표시 (빨간색)
   ctx.strokeStyle = '#ff0000';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = Math.max(1, 2 * scale);
   for (const pattern of selectedPatterns) {
-    drawPattern(ctx, pattern, true);
+    drawPattern(ctx, pattern, true, scale);
   }
 
   return canvas;
@@ -421,10 +425,10 @@ function createVisualizationCanvas(
 /**
  * 패턴 그리기
  */
-function drawPattern(ctx: CanvasRenderingContext2D, pattern: FinderPattern, highlight: boolean) {
+function drawPattern(ctx: CanvasRenderingContext2D, pattern: FinderPattern, highlight: boolean, scale: number = 1) {
   // 중심점 표시
   ctx.beginPath();
-  ctx.arc(pattern.center.x, pattern.center.y, 3, 0, Math.PI * 2);
+  ctx.arc(pattern.center.x, pattern.center.y, Math.max(2, 3 * scale), 0, Math.PI * 2);
   ctx.fillStyle = highlight ? '#ff0000' : '#999999';
   ctx.fill();
 
@@ -442,7 +446,7 @@ function drawPattern(ctx: CanvasRenderingContext2D, pattern: FinderPattern, high
   // 점수 표시 (highlight인 경우만)
   if (highlight) {
     ctx.fillStyle = '#ff0000';
-    ctx.font = '12px Arial';
-    ctx.fillText(pattern.score.toFixed(1), pattern.center.x + 10, pattern.center.y - 10);
+    ctx.font = `${Math.max(10, Math.round(12 * scale))}px Arial`;
+    ctx.fillText(pattern.score.toFixed(1), pattern.center.x + 10 * scale, pattern.center.y - 10 * scale);
   }
 }

@@ -265,8 +265,11 @@ src/
 #### 🏗️ Detection Process - Implementation Status
 
 **Step 1 - Image Input** ✅
-- File upload and drag-and-drop support
-- Test image auto-loading
+- **Multiple input modes**: File upload, Camera, Virtual Camera
+- **File upload**: Drag-and-drop support with image preview
+- **Camera input**: Manual/real-time capture modes with 500ms throttling
+- **Virtual Camera**: 3D QR visualization with high-resolution capture (512/1024/2048px)
+- **Responsive UI**: Dynamic component switching based on input mode
 - Image size and metadata display
 
 **Step 2 - Grayscale Conversion** ✅
@@ -287,6 +290,8 @@ src/
 - Pattern scoring and ranking system
 - Top 3 patterns selection with position-based classification
 - Visual highlighting with color-coded markers (red, green, blue)
+- **QR boundary calculation**: Line intersection method using finder pattern edges
+- **Resolution-adaptive UI**: Line thickness and font size scale with image resolution
 
 **Step 5 - Homography Transformation** ✅
 - **Initial transformation**: Uses 3 detected Finder Patterns as anchor points
@@ -324,7 +329,11 @@ src/
 - **Components**: 
   - `src/components/encode/` - Encoding UI components
   - `src/components/detect/` - Detection UI components
-- **Global Utils**: `src/shared/` - Reusable binary and string manipulation utilities
+- **Global Utils**: `src/shared/` - Reusable utilities:
+  - Binary and string manipulation (`binary.ts`, `string.ts`)
+  - Geometry calculations (`geometry.ts`) - line intersections, scaling, distances
+  - Image processing utilities (`image.ts`) - statistics, canvas operations
+  - Array utilities (`array.ts`) - run-length encoding
 - **UI Layout**: 7-column grid with compact spacing and responsive design
 - **Testing**: 
   - **Unit Tests**: 202 comprehensive tests across all modules
