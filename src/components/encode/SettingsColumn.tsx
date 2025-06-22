@@ -40,7 +40,7 @@ export function SettingsColumn({
             value={inputData}
             onChange={(e) => setInputData(e.target.value)}
             placeholder="QR 코드로 만들 데이터를 입력하세요..."
-            className="w-full min-h-[60px] p-2 border border-gray-200 text-sm resize-none focus:outline-none focus:border-black"
+            className="w-full min-h-[150px] p-2 border border-gray-200 text-sm resize-none focus:outline-none focus:border-black"
             autoFocus
           />
         </div>
@@ -108,6 +108,7 @@ export function SettingsColumn({
         <div>
           <h3 className="text-xs font-medium text-gray-700 mb-2">샘플 데이터</h3>
           <div className="space-y-1">
+            {/* 기본 인코딩 모드 */}
             <button
               onClick={() => setInputData('123456789')}
               className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
@@ -124,7 +125,7 @@ export function SettingsColumn({
               onClick={() => setInputData('https://example.com')}
               className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
             >
-              <span className="font-medium">바이트:</span> https://example.com
+              <span className="font-medium">URL:</span> https://example.com
             </button>
             <button
               onClick={() => setInputData('안녕하세요 QR코드')}
@@ -138,6 +139,135 @@ export function SettingsColumn({
             >
               <span className="font-medium">혼합:</span> Mixed123한글
             </button>
+
+            {/* 실용적인 케이스들 */}
+            <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="text-[10px] text-gray-500 mb-1">실용 사례</div>
+
+              <button
+                onClick={() => setInputData('WIFI:T:WPA;S:MyWiFi;P:password123;H:false;;')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">Wi-Fi:</span> 네트워크 연결
+              </button>
+
+              <button
+                onClick={() =>
+                  setInputData(
+                    'BEGIN:VCARD\nVERSION:3.0\nFN:홍길동\nORG:회사명\nTEL:010-1234-5678\nEMAIL:hong@example.com\nEND:VCARD' // cspell:disable-line
+                  )
+                }
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">연락처:</span> vCard 형식
+              </button>
+
+              <button
+                onClick={() =>
+                  setInputData(
+                    'mailto:yongsk0066@gmail.com?subject=QR코드 문의&body=안녕하세요! QR 시각화 프로젝트에 대해 문의드립니다.'
+                  )
+                }
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">이메일:</span> 메일 작성
+              </button>
+
+              <button
+                onClick={() => setInputData('tel:+82-10-1234-5678')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">전화:</span> 통화 연결
+              </button>
+
+              <button
+                onClick={() =>
+                  setInputData('sms:+82-10-1234-5678:안녕하세요! QR코드로 메시지를 보냅니다.')
+                }
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">SMS:</span> 문자 메시지
+              </button>
+
+              <button
+                onClick={() => setInputData('geo:37.5665,126.9780?q=서울특별시청')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">위치:</span> 지도 좌표
+              </button>
+
+              <button
+                onClick={() => setInputData('https://github.com/yongsk0066/qr-visualizer')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">GitHub:</span> 프로젝트 링크
+              </button>
+
+              <button
+                onClick={() => {
+                  const now = new Date();
+                  const currentYear = now.getFullYear();
+                  const christmas = new Date(currentYear, 11, 25); // 12월 25일
+
+                  // 크리스마스가 지났으면 내년 크리스마스
+                  const targetChristmas =
+                    now > christmas ? new Date(currentYear + 1, 11, 25) : christmas;
+
+                  const year = targetChristmas.getFullYear();
+                  const startTime = `${year}1225T180000`; // 6:00 PM
+                  const endTime = `${year}1225T210000`; // 9:00 PM
+
+                  setInputData(
+                    `BEGIN:VEVENT\nSUMMARY:Christmas Party at Rockefeller Center\nDTSTART:${startTime}\nDTEND:${endTime}\nLOCATION:Rockefeller Center, New York\nDESCRIPTION:Join us for a magical Christmas celebration at the iconic Rockefeller Center Christmas Tree\nEND:VEVENT` // cspell:disable-line
+                  );
+                }} // cspell:disable-line
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">캘린더:</span> Christmas Party
+              </button>
+
+              <button
+                onClick={() => setInputData('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">YouTube:</span> 동영상 링크
+              </button>
+
+              <button
+                onClick={() => setInputData('market://details?id=com.android.chrome')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">앱스토어:</span> 앱 다운로드
+              </button>
+
+              <button
+                onClick={() => setInputData('fb://profile/100000000000000')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">Facebook:</span> 프로필 연결
+              </button>
+
+              <button
+                onClick={() => setInputData('instagram://user?username=yongsk0066')} // cspell:disable-line
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">Instagram:</span> 프로필 방문
+              </button>
+
+              <button
+                onClick={() => setInputData('spotify:track:2zPANzQTt5Nbkg0eBPb7HI')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">Spotify:</span> 음악 재생
+              </button>
+
+              <button
+                onClick={() => setInputData('https://maps.google.com/maps?q=37.5665,126.9780')}
+                className="w-full text-left text-xs p-1 text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              >
+                <span className="font-medium">Google Maps:</span> 위치 공유
+              </button>
+            </div>
           </div>
         </div>
       </div>
