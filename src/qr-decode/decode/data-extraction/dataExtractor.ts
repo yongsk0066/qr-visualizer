@@ -3,7 +3,6 @@
  * ISO/IEC 18004 Section 7.4
  */
 
-import { pipe } from '@mobily/ts-belt';
 import type { QRVersion } from '../../../shared/types';
 import type { 
   DataExtractionResult, 
@@ -15,7 +14,6 @@ import type {
 import { 
   codewordsToBitStream, 
   readBits, 
-  readBitString,
   getRemainingBits,
   savePosition,
   restorePosition 
@@ -85,9 +83,10 @@ const decodeSegment = (
     case 0b0010: // ALPHANUMERIC
       return decodeAlphanumeric(bitStream, characterCount);
       
-    case 0b0100: // BYTE
+    case 0b0100: { // BYTE
       const byteResult = decodeByte(bitStream, characterCount);
       return byteResult ? { data: byteResult.data, bits: byteResult.bits } : null;
+    }
       
     case 0b1000: // KANJI
       // TODO: 한자 모드 구현

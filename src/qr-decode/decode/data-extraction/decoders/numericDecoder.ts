@@ -3,9 +3,8 @@
  * ISO/IEC 18004 Section 7.4.3
  */
 
-import { pipe } from '@mobily/ts-belt';
 import type { BitStream } from '../types';
-import { readBits, readBitString } from '../utils/bitStream';
+import { readBits } from '../utils/bitStream';
 
 /**
  * 숫자 모드 디코딩

@@ -48,7 +48,6 @@ export const readBitString = (bitStream: BitStream, count: number): string | nul
   }
   
   let result = '';
-  const startPosition = bitStream.position;
   
   for (let i = 0; i < count; i++) {
     result += bitStream.bits[bitStream.position++].toString();

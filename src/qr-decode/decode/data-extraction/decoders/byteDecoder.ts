@@ -35,7 +35,7 @@ export const decodeByte = (bitStream: BitStream, count: number): { data: string;
     const data = decoder.decode(uint8Array);
     
     return { data, bits, bytes };
-  } catch (error) {
+  } catch {
     // UTF-8 디코딩 실패 시 ISO-8859-1로 폴백
     const data = bytes.map(byte => String.fromCharCode(byte)).join('');
     return { data, bits, bytes };
