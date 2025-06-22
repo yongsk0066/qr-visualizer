@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import testImage from '../assets/test_image_2.jpg';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
-import type { HomographyResult } from '../qr-decode/types';
+import type { HomographyResult, TriStateQR } from '../qr-decode/types';
 import { ProcessingWrapper } from './ProcessingWrapper';
 import { BinarizationColumn } from './detect/BinarizationColumn';
 import { FinderDetectionColumn } from './detect/FinderDetectionColumn';
@@ -12,9 +12,10 @@ import { SamplingColumn } from './detect/SamplingColumn';
 
 interface QRDetectProcessProps {
   encodedQRMatrix?: number[][] | null;
+  onTriStateMatrixGenerated?: (triStateMatrix: TriStateQR | null) => void;
 }
 
-export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
+export function QRDetectProcess({ encodedQRMatrix, onTriStateMatrixGenerated }: QRDetectProcessProps) {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<Awaited<ReturnType<typeof runDetectPipeline>> | null>(null);
@@ -47,6 +48,11 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
         const pipelineResult = await runDetectPipeline({ imageUrl });
         setResult(pipelineResult);
         lastProcessedUrlRef.current = imageUrl;
+        
+        // 초기 샘플링 결과 설정
+        if (pipelineResult.sampling) {
+          setFinalSampling(pipelineResult.sampling);
+        }
       } catch {
         // Error handling intentionally left empty
       } finally {
@@ -64,6 +70,16 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
       processImage();
     }
   }, [imageUrl]);
+
+  // 최종 sampling 결과 추적
+  const [finalSampling, setFinalSampling] = useState<TriStateQR | null>(null);
+
+  // tri-state matrix가 생성되면 상위 컴포넌트로 전달
+  useEffect(() => {
+    if (onTriStateMatrixGenerated && finalSampling) {
+      onTriStateMatrixGenerated(finalSampling);
+    }
+  }, [finalSampling, onTriStateMatrixGenerated]);
 
   return (
     <div className="steps-grid">
@@ -103,6 +119,7 @@ export function QRDetectProcess({ encodedQRMatrix }: QRDetectProcessProps) {
           sampling={result?.sampling ?? null}
           homography={refinedHomography || (result?.homography ?? null)}
           homographyImage={refinedImage || (result?.homographyImage ?? null)}
+          onSamplingComplete={setFinalSampling}
         />
       </ProcessingWrapper>
     </div>

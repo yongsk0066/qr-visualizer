@@ -2,9 +2,12 @@ import { useState } from 'react';
 import './App.css';
 import { QRDetectProcess } from './components/QRDetectProcess';
 import { QREncodingProcess } from './components/QREncodingProcess';
+import { QRDecodeProcess } from './components/QRDecodeProcess';
+import type { TriStateQR } from './qr-decode/types';
 
 function App() {
   const [encodedQRMatrix, setEncodedQRMatrix] = useState<number[][] | null>(null);
+  const [triStateMatrix, setTriStateMatrix] = useState<TriStateQR | null>(null);
 
   return (
     <div className="app">
@@ -21,8 +24,18 @@ function App() {
 
         <section>
           <h2 className="text-xl font-light mb-4">Detection Process</h2>
-          <QRDetectProcess encodedQRMatrix={encodedQRMatrix} />
+          <QRDetectProcess 
+            encodedQRMatrix={encodedQRMatrix}
+            onTriStateMatrixGenerated={setTriStateMatrix}
+          />
         </section>
+
+        {triStateMatrix && (
+          <section>
+            <h2 className="text-xl font-light mb-4">Decode Process</h2>
+            <QRDecodeProcess triStateMatrix={triStateMatrix} />
+          </section>
+        )}
       </div>
 
       <footer className="mt-8 text-center text-gray-500 text-xs">

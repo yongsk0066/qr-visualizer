@@ -6,12 +6,14 @@ interface SamplingColumnProps {
   sampling: TriStateQR | null;
   homography: HomographyResult | null;
   homographyImage?: ImageData | null;
+  onSamplingComplete?: (sampling: TriStateQR) => void;
 }
 
 export function SamplingColumn({
   sampling: propSampling,
   homography,
   homographyImage,
+  onSamplingComplete,
 }: SamplingColumnProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showGrid, setShowGrid] = useState(true);
@@ -27,7 +29,12 @@ export function SamplingColumn({
     console.log('Re-running sampling with homography version:', homography.version);
     const newSampling = runSampling(homographyImage, homography);
     setLocalSampling(newSampling);
-  }, [homography, homographyImage]);
+    
+    // 콜백 호출
+    if (newSampling && onSamplingComplete) {
+      onSamplingComplete(newSampling);
+    }
+  }, [homography, homographyImage, onSamplingComplete]);
 
   // 실제 사용할 sampling (local이 있으면 local, 없으면 prop)
   const sampling = localSampling || propSampling;

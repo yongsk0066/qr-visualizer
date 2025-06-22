@@ -149,7 +149,13 @@ src/
 │   │   ├── test-fixtures/
 │   │   │   └── index.ts             # 테스트용 데이터 생성 함수
 │   │   └── detectPipeline.ts        # Detection 파이프라인
-│   ├── decode/             # Decode Process (TODO)
+│   ├── decode/             # Decode Process
+│   │   ├── format-extraction/      # 포맷 정보 추출
+│   │   │   ├── formatExtractor.ts  # BCH 에러 정정 포함 포맷 추출
+│   │   │   ├── formatExtractor.test.ts # 7개 테스트 (BCH, 엣지케이스, ISO 준수)
+│   │   │   └── types.ts            # 포맷 관련 타입
+│   │   ├── decodePipeline.ts       # 디코드 파이프라인
+│   │   └── types.ts                # 디코드 결과 타입
 │   └── types.ts            # 디코딩 관련 타입 정의
 │
 ├── components/             # UI Components
@@ -164,17 +170,20 @@ src/
 │   │   ├── MaskingColumn.tsx       # 마스킹 시각화
 │   │   ├── FinalGenerationColumn.tsx # 최종 생성 시각화
 │   │   └── BitStreamViewer.tsx     # 비트스트림 뷰어
-│   └── detect/                      # Detection UI 컴포넌트
-│       ├── ImageInputColumn/       # 이미지 입력 (모듈화됨)
-│       │   ├── index.tsx           # 메인 컴포넌트
-│       │   ├── FileInput.tsx       # 파일 업로드
-│       │   ├── CameraInput.tsx     # 카메라 입력
-│       │   └── VirtualCameraInput.tsx # 가상 카메라
-│       ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
-│       ├── BinarizationColumn.tsx  # 이진화 시각화
-│       ├── FinderDetectionColumn.tsx # Finder 패턴 검출 시각화
-│       ├── RefinedHomographyColumn.tsx # 정제된 원근 변환 시각화
-│       └── SamplingColumn.tsx      # 모듈 샘플링 시각화
+│   ├── detect/                      # Detection UI 컴포넌트
+│   │   ├── ImageInputColumn/       # 이미지 입력 (모듈화됨)
+│   │   │   ├── index.tsx           # 메인 컴포넌트
+│   │   │   ├── FileInput.tsx       # 파일 업로드
+│   │   │   ├── CameraInput.tsx     # 카메라 입력
+│   │   │   └── VirtualCameraInput.tsx # 가상 카메라
+│   │   ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
+│   │   ├── BinarizationColumn.tsx  # 이진화 시각화
+│   │   ├── FinderDetectionColumn.tsx # Finder 패턴 검출 시각화
+│   │   ├── RefinedHomographyColumn.tsx # 정제된 원근 변환 시각화
+│   │   └── SamplingColumn.tsx      # 모듈 샘플링 시각화
+│   ├── decode/                      # Decode UI 컴포넌트
+│   │   └── FormatExtractionColumn.tsx # 포맷 정보 추출 시각화
+│   └── QRDecodeProcess.tsx          # Decode 프로세스 메인
 │
 └── shared/                 # 전역 공유 모듈
     ├── types.ts           # QR 관련 타입 정의
@@ -325,7 +334,11 @@ src/
 - **Unknown handling**: ~2.6% unknown modules for typical images
 
 **Step 7 - Data Decoding** 🏗️
-- Format information extraction (TODO)
+- Format information extraction ✅
+  - BCH(15,5) error correction for format info
+  - Dual location reading for reliability
+  - Support for unknown modules (-1)
+  - Confidence-based selection between locations
 - Data masking reversal (TODO)
 - Error correction decoding (TODO)
 - Data extraction and interpretation (TODO)
@@ -333,7 +346,7 @@ src/
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 264 tests (202 unit + 62 integration)
 - **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) in progress
-- **Total Test Coverage**: 297 tests (264 encoding + 20 detection + 13 utilities)
+- **Total Test Coverage**: 304 tests (264 encoding + 27 detection/decode + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
