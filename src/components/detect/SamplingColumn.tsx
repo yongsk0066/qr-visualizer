@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { runSampling } from '../../qr-decode/detect/detector/sampling';
+import { runSampling } from '../../qr-decode/detect/sampling/sampling';
 import type { HomographyResult, TriStateQR } from '../../qr-decode/types';
 
 interface SamplingColumnProps {

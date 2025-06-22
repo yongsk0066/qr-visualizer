@@ -1,10 +1,10 @@
 import { pipe } from '@mobily/ts-belt';
 import type { DetectPipelineResult } from '../types';
-import { runBinarization } from './detector/binarization';
-import { runFinderDetection } from './detector/finderDetection';
-import { runHomography, applyHomography } from './detector/homography';
-import { createGrayscaleResult, processImage } from './detector/imageProcessor';
-import { runSampling } from './detector/sampling';
+import { runBinarization } from './binarization/binarization';
+import { runFinderDetection } from './finder-detection/finderDetection';
+import { runHomography, applyHomography } from './homography/homography';
+import { createGrayscaleResult, processImage } from './image-processing/imageProcessor';
+import { runSampling } from './sampling/sampling';
 
 export interface DetectPipelineParams {
   imageUrl: string;

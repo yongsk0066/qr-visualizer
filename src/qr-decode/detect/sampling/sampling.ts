@@ -11,7 +11,10 @@ export const runSampling = (
   const cv = window.cv;
 
   if (!imageData || !homography) {
-    console.error('Sampling requires image data and homography result');
+    return null;
+  }
+  
+  if (!homography.qrSize || homography.qrSize <= 0) {
     return null;
   }
 

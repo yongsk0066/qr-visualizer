@@ -1,5 +1,5 @@
 import type { FinderDetectionResult, HomographyResult } from '../../types';
-import { countTimingPatternModules } from './timingPatternCounter';
+import { countTimingPatternModules } from '../finder-detection/timingPatternCounter';
 import { calculateLineIntersection } from '../../../shared/utils/geometry';
 
 
@@ -45,7 +45,7 @@ export const runHomography = (
       binarizedImage
     ) {
       // 타이밍 패턴을 사용한 정확한 모듈 수 계산
-      const timingModules = countTimingPatternModules(
+      const timingResult = countTimingPatternModules(
         binarizedImage,
         imageWidth,
         imageHeight,
@@ -54,8 +54,8 @@ export const runHomography = (
         sortedPatterns.bottomLeft
       );
 
-      if (timingModules) {
-        const timingVersion = (timingModules - 17) / 4;
+      if (timingResult) {
+        const timingVersion = timingResult.version;
 
         estimatedVersion = timingVersion;
       } else {

@@ -8,7 +8,7 @@ export function countTimingPatternModules(
   topLeftPattern: { center: { x: number; y: number }; size: number },
   topRightPattern: { center: { x: number; y: number }; size: number },
   bottomLeftPattern: { center: { x: number; y: number }; size: number }
-): number | null {
+): { moduleCount: number; version: number } {
   // Finder Pattern은 7x7 모듈이므로 중심에서 3.5 모듈 떨어진 곳이 가장자리
   const moduleSize = topLeftPattern.size / 7;
 
@@ -84,7 +84,8 @@ export function countTimingPatternModules(
     }
   }
 
-  return closestSize;
+  const version = (closestSize - 17) / 4;
+  return { moduleCount: closestSize, version };
 }
 
 /**

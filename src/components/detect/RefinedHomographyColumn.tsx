@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { detectFindersDirectly } from '../../qr-decode/detect/detector/directFinderDetection';
-import { runFinderDetection } from '../../qr-decode/detect/detector/finderDetection';
-import { applyHomography, runHomography } from '../../qr-decode/detect/detector/homography';
+import { detectFindersDirectly } from '../../qr-decode/detect/finder-detection/directFinderDetection';
+import { runFinderDetection } from '../../qr-decode/detect/finder-detection/finderDetection';
+import { applyHomography, runHomography } from '../../qr-decode/detect/homography/homography';
 import type {
   BinarizationResult,
   FinderDetectionResult,

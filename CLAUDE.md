@@ -130,14 +130,24 @@ src/
 │
 ├── qr-decode/              # QR Detection/Decoding Process
 │   ├── detect/             # Detection Process (이미지 → tri-state 행렬)
-│   │   ├── detector/
+│   │   ├── image-processing/
 │   │   │   ├── imageProcessor.ts    # 이미지 로딩, 그레이스케일 변환
+│   │   │   └── imageProcessor.test.ts # 4개 테스트
+│   │   ├── binarization/
 │   │   │   ├── binarization.ts      # Sauvola 적응 임계값 이진화
+│   │   │   └── binarization.test.ts # 7개 테스트
+│   │   ├── finder-detection/
 │   │   │   ├── finderDetection.ts   # Finder 패턴 검출 (OpenCV.js 윤곽선 기반)
-│   │   │   ├── homography.ts        # 원근 변환 및 버전 추정
 │   │   │   ├── directFinderDetection.ts # 정사각형 이미지용 직접 검출
+│   │   │   ├── directFinderDetection.test.ts # 3개 테스트
 │   │   │   ├── timingPatternCounter.ts  # 타이밍 패턴 기반 모듈 수 계산
+│   │   │   └── timingPatternCounter.test.ts # 6개 테스트
+│   │   ├── homography/
+│   │   │   └── homography.ts        # 원근 변환 및 버전 추정
+│   │   ├── sampling/
 │   │   │   └── sampling.ts          # 모듈 샘플링 및 tri-state 행렬 생성
+│   │   ├── test-fixtures/
+│   │   │   └── index.ts             # 테스트용 데이터 생성 함수
 │   │   └── detectPipeline.ts        # Detection 파이프라인
 │   ├── decode/             # Decode Process (TODO)
 │   └── types.ts            # 디코딩 관련 타입 정의
@@ -155,11 +165,14 @@ src/
 │   │   ├── FinalGenerationColumn.tsx # 최종 생성 시각화
 │   │   └── BitStreamViewer.tsx     # 비트스트림 뷰어
 │   └── detect/                      # Detection UI 컴포넌트
-│       ├── ImageInputColumn.tsx    # 이미지 업로드
+│       ├── ImageInputColumn/       # 이미지 입력 (모듈화됨)
+│       │   ├── index.tsx           # 메인 컴포넌트
+│       │   ├── FileInput.tsx       # 파일 업로드
+│       │   ├── CameraInput.tsx     # 카메라 입력
+│       │   └── VirtualCameraInput.tsx # 가상 카메라
 │       ├── GrayscaleColumn.tsx     # 그레이스케일 시각화
 │       ├── BinarizationColumn.tsx  # 이진화 시각화
 │       ├── FinderDetectionColumn.tsx # Finder 패턴 검출 시각화
-│       ├── HomographyColumn.tsx    # 원근 변환 시각화 (숨김)
 │       ├── RefinedHomographyColumn.tsx # 정제된 원근 변환 시각화
 │       └── SamplingColumn.tsx      # 모듈 샘플링 시각화
 │
@@ -318,8 +331,9 @@ src/
 - Data extraction and interpretation (TODO)
 
 #### 📊 Complete Implementation Summary:
-- **Encoding Process**: All 7 steps fully implemented with 362 tests
+- **Encoding Process**: All 7 steps fully implemented with 264 tests (202 unit + 62 integration)
 - **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) in progress
+- **Total Test Coverage**: 297 tests (264 encoding + 20 detection + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
@@ -336,7 +350,7 @@ src/
   - Array utilities (`array.ts`) - run-length encoding
 - **UI Layout**: 7-column grid with compact spacing and responsive design
 - **Testing**: 
-  - **Unit Tests**: 202 comprehensive tests across all modules
+  - **Encoding Process Tests**: 202 comprehensive tests
     - Data Analysis: 39 tests
     - Data Encoding: 21 tests (+1 capacity edge case)
     - Error Correction: 37 tests (+3 Galois Field core operations)
@@ -344,6 +358,13 @@ src/
     - Module Placement: 87 tests (+1 zigzag pattern verification)
     - Masking: 19 tests (+5 penalty calculation tests)
     - Performance: 6 tests
+  - **Detection Process Tests**: 20 comprehensive tests
+    - Image Processing: 4 tests (grayscale conversion)
+    - Binarization: 7 tests (Sauvola algorithm)
+    - Timing Pattern Counter: 6 tests (module counting)
+    - Direct Finder Detection: 3 tests (pattern matching)
+  - **Shared Utilities Tests**: 13 tests
+    - Geometry utilities: 13 tests (line intersection, scaling, etc.)
   - **Integration Tests**: 62 comprehensive pipeline tests
     - Complete QR generation across all versions (1-40)
     - Error correction level coverage (L, M, Q, H)
