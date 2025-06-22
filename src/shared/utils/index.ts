@@ -39,3 +39,10 @@ export {
   matchesPattern,
   type RunLengthSegment,
 } from './array';
+
+// Clipboard utilities
+export {
+  copyToClipboard,
+  copyHexArrayToClipboard,
+  showCopyNotification,
+} from './clipboard';

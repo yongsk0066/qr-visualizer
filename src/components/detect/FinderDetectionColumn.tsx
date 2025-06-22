@@ -207,7 +207,7 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 4: Finder Pattern Detection</h3>
+      <h2 className="font-medium mb-3">4단계: 파인더 패턴 검출</h2>
 
       <div className="space-y-3">
         {/* 검출 결과 요약 */}

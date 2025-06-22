@@ -219,7 +219,8 @@ src/
 │   │   ├── VersionExtractionColumn.tsx # 버전 정보 추출 시각화
 │   │   ├── MaskRemovalColumn.tsx    # 마스크 패턴 제거 시각화
 │   │   ├── DataReadingColumn.tsx    # 데이터 모듈 읽기 시각화
-│   │   └── ErrorCorrectionColumn.tsx # 에러 정정 시각화
+│   │   ├── ErrorCorrectionColumn.tsx # 에러 정정 시각화
+│   │   └── DataExtractionColumn.tsx # 데이터 추출 시각화
 │   └── QRDecodeProcess.tsx          # Decode 프로세스 메인
 │
 └── shared/                 # 전역 공유 모듈

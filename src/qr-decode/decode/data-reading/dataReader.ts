@@ -55,6 +55,9 @@ export const readDataModules = (
   const actualBits = bitStream.length;
   const confidence = Math.min(1, actualBits / expectedBits);
   
+  // 🔍 디버깅용 출력 비활성화 (필요시 재활성화)
+  // console.log(`\n📋 COPY THIS - Data reading result:`);
+  
   return {
     bitStream,
     totalBits: bitStream.length,

@@ -60,7 +60,7 @@ export function GrayscaleColumn({ grayscale }: GrayscaleColumnProps) {
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 2: Grayscale</h3>
+      <h2 className="font-medium mb-3">2단계: 그레이스케일 변환</h2>
       
       {grayscale ? (
         <div className="space-y-3">

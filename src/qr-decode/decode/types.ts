@@ -3,6 +3,7 @@ import type { VersionInfoResult } from './version-extraction/types';
 import type { MaskRemovalResult } from './mask-removal/types';
 import type { DataReadingResult } from './data-reading/types';
 import type { ErrorCorrectionResult } from './error-correction/types';
+import type { DataExtractionResult } from './data-extraction/types';
 
 export interface DecodePipelineResult {
   formatInfo: FormatInfoResult | null;
@@ -10,6 +11,7 @@ export interface DecodePipelineResult {
   maskRemoval: MaskRemovalResult | null;
   dataReading: DataReadingResult | null;
   errorCorrection: ErrorCorrectionResult | null;
+  dataExtraction: DataExtractionResult | null;
   unmaskedMatrix: (0 | 1)[][] | null;
   rawBitStream: string | null;
   codewords: CodewordBlocks | null;

@@ -3,31 +3,61 @@ import { evaluatePolynomial, calculateErrorEvaluatorPolynomial } from '../utils/
 
 /**
  * Forney 알고리즘으로 에러 값 계산
+ * ISO/IEC 18004 표준에 맞는 개선된 구현
  */
 export const calculateErrorMagnitudes = (
   syndromes: number[],
   errorLocator: number[],
   errorPositions: number[]
 ): number[] => {
+  if (errorPositions.length === 0) {
+    return [];
+  }
+  
   // 에러 평가 다항식 Ω(x) = S(x) * Λ(x) mod x^(2t)
   const omega = calculateErrorEvaluatorPolynomial(syndromes, errorLocator);
-  
-  // 에러 위치 다항식의 도함수 Λ'(x)
-  const derivative = calculateDerivative(errorLocator);
   
   const errorMagnitudes: number[] = [];
   
   for (const position of errorPositions) {
+    // α^(-i) 계산
     const alphaInv = GaloisField256.getExp((255 - position) % 255);
     
-    // 에러 값 = -Ω(α^(-i)) / Λ'(α^(-i))
+    // Ω(α^(-i)) 계산
     const omegaValue = evaluatePolynomial(omega, alphaInv);
-    const derivativeValue = evaluatePolynomial(derivative, alphaInv);
     
-    if (derivativeValue === 0) {
-      throw new Error('에러 위치 다항식의 도함수가 0입니다');
+    // Λ'(α^(-i)) 계산 (Forney's formula)
+    let derivativeValue = 0;
+    for (let j = 1; j < errorLocator.length; j += 2) {
+      // GF(2)에서 형식적 도함수: 홀수 차수만 남음
+      const term = GaloisField256.multiply(
+        errorLocator[j], 
+        GaloisField256.getExp((j * (255 - position)) % 255)
+      );
+      derivativeValue ^= term;
     }
     
+    if (derivativeValue === 0) {
+      // 도함수가 0이면 다른 방법 시도: 직접 계산
+      derivativeValue = 1;
+      for (let k = 0; k < errorPositions.length; k++) {
+        if (k !== errorPositions.indexOf(position)) {
+          const otherPos = errorPositions[k];
+          const alphaOther = GaloisField256.getExp((255 - otherPos) % 255);
+          const diff = alphaInv ^ alphaOther; // GF에서 차이는 XOR
+          if (diff !== 0) {
+            derivativeValue = GaloisField256.multiply(derivativeValue, diff);
+          }
+        }
+      }
+    }
+    
+    if (derivativeValue === 0) {
+      throw new Error(`Forney 알고리즘 실패: 위치 ${position}에서 도함수가 0`);
+    }
+    
+    // 에러 값 = Ω(α^(-i)) / Λ'(α^(-i))
+    // QR 코드에서는 음수 부호가 필요 없음 (GF(2)에서 -1 = 1)
     const errorValue = GaloisField256.divide(omegaValue, derivativeValue);
     
     errorMagnitudes.push(errorValue);
@@ -36,21 +66,3 @@ export const calculateErrorMagnitudes = (
   return errorMagnitudes;
 };
 
-/**
- * 다항식의 도함수 계산 (형식적 도함수)
- */
-const calculateDerivative = (polynomial: number[]): number[] => {
-  const derivative: number[] = [];
-  
-  // f'(x) = sum(i * a_i * x^(i-1))
-  // GF(256)에서 i가 홀수일 때만 계수가 남음
-  for (let i = 1; i < polynomial.length; i++) {
-    if (i % 2 === 1) {
-      derivative.push(polynomial[i]);
-    } else {
-      derivative.push(0);
-    }
-  }
-  
-  return derivative;
-};

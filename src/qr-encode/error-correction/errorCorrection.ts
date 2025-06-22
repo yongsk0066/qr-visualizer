@@ -88,6 +88,9 @@ export const runErrorCorrection = (
   // 4. 잔여 비트 정보 추가 (실제 비트는 Step 4에서 처리)
   const remainderBits = REMAINDER_BITS[version - 1];
   
+  // 🔍 디버깅용 출력 비활성화 (필요시 재활성화)  
+  // console.log(`\n📋 COPY THIS - QR Encoding result:`);
+  
   return {
     dataCodewords,
     ecCodewords: ecResult.ecBlocks.flat(),

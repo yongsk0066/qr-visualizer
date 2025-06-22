@@ -8,7 +8,8 @@ QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하�
 
 ### 주요 기능
 - **Encoding Process**: QR 코드 생성 과정 7단계 시각화
-- **Detection Process**: QR 코드 이미지 인식 과정 7단계 시각화 (개발 중)
+- **Detection Process**: QR 코드 이미지 인식 과정 6단계 시각화
+- **Decode Process**: QR 코드 데이터 디코딩 과정 6단계 시각화
 
 ## 🚀 기술 스택
 
@@ -16,7 +17,7 @@ QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하�
 - **Build Tool**: Vite with experimental React Compiler
 - **Styling**: Tailwind CSS 4.1.8
 - **Package Manager**: Yarn Berry (4.9.2)
-- **Testing**: Vitest 3.2.2 (317개 테스트)
+- **Testing**: Vitest 3.2.2 (380개 테스트)
 - **Utilities**: @mobily/ts-belt (함수형 프로그래밍)
 - **Computer Vision**: OpenCV.js (QR 검출 알고리즘)
 
@@ -44,13 +45,19 @@ src/
 │   ├── decode/            # Decode Process (tri-state → 데이터)
 │   │   ├── format-extraction/    # 포맷 정보 추출
 │   │   ├── version-extraction/   # 버전 정보 추출
+│   │   ├── mask-removal/         # 마스크 패턴 제거
+│   │   ├── data-reading/         # 데이터 모듈 읽기
+│   │   ├── error-correction/     # Reed-Solomon 에러 정정
+│   │   ├── data-extraction/      # 데이터 추출 및 디코딩
 │   │   └── decodePipeline.ts     # Decode 파이프라인
 │   └── types.ts           # 디코딩 관련 타입
 ├── components/            # UI 컴포넌트
 │   ├── QREncodingProcess.tsx
 │   ├── QRDetectProcess.tsx
+│   ├── QRDecodeProcess.tsx
 │   ├── encode/            # Encoding UI 컴포넌트
-│   └── detect/            # Detection UI 컴포넌트
+│   ├── detect/            # Detection UI 컴포넌트
+│   └── decode/            # Decode UI 컴포넌트
 └── shared/               # 공통 모듈 (타입, 상수, 유틸리티, 훅)
 ```
 
@@ -96,7 +103,7 @@ yarn preview
 
 ## 🧪 테스트 현황
 
-총 **317개** 테스트로 모든 QR 로직을 검증:
+총 **380개** 테스트로 모든 QR 로직을 검증:
 
 ### 인코딩 테스트 (264개)
 - 39개 데이터 분석 테스트
@@ -108,13 +115,17 @@ yarn preview
 - 6개 성능 테스트
 - 62개 통합 테스트
 
-### 디코딩 테스트 (40개)
+### 디코딩 테스트 (103개)
 - 4개 이미지 처리 테스트
 - 7개 이진화 테스트
 - 6개 타이밍 패턴 테스트
 - 3개 직접 Finder 검출 테스트
 - 7개 포맷 정보 추출 테스트
 - 13개 버전 정보 추출 테스트
+- 6개 마스크 패턴 제거 테스트
+- 15개 데이터 모듈 읽기 테스트
+- 34개 Reed-Solomon 에러 정정 테스트
+- 8개 데이터 추출 테스트
 
 ### 유틸리티 테스트 (13개)
 - 기하학 유틸리티 테스트
@@ -131,33 +142,44 @@ yarn preview
 6. 마스킹 패턴 적용
 7. 포맷/버전 정보 추가
 
-### 🏗️ Detection Process (구현 중)
-- ✅ Step 1: 이미지 입력 (파일 업로드, 카메라, 가상 카메라)
-- ✅ Step 2: 그레이스케일 변환 (ITU-R BT.709 표준)
-- ✅ Step 3: 이진화 (Sauvola 적응 임계값)
-- ✅ Step 4: Finder 패턴 검출 (OpenCV.js 윤곽선 기반)
-- ✅ Step 5: 원근 변환 (Homography with refinement)
-- ✅ Step 6: 모듈 샘플링 (tri-state 행렬 생성)
+### ✅ Detection Process (완료)
+모든 6단계 완전 구현:
+1. 이미지 입력 (파일 업로드, 카메라, 가상 카메라)
+2. 그레이스케일 변환 (ITU-R BT.709 표준)
+3. 이진화 (Sauvola 적응 임계값)
+4. Finder 패턴 검출 (OpenCV.js 윤곽선 기반)
+5. 원근 변환 (Homography with refinement)
+6. 모듈 샘플링 (tri-state 행렬 생성)
 
-### 🏗️ Decode Process (부분 구현)
-- ✅ 포맷 정보 추출 (BCH 에러 정정 포함)
-- ✅ 버전 정보 추출 (v7+ QR 코드)
-- ⏳ 마스크 패턴 제거
-- ⏳ 데이터 모듈 읽기
-- ⏳ Reed-Solomon 에러 정정
-- ⏳ 데이터 디코딩
+### ✅ Decode Process (완료)
+모든 6단계 완전 구현:
+1. 포맷 정보 추출 (BCH 에러 정정 포함)
+2. 버전 정보 추출 (v7+ QR 코드)
+3. 마스크 패턴 제거 (8가지 패턴)
+4. 데이터 모듈 읽기 (지그재그 패턴)
+5. Reed-Solomon 에러 정정 (위치 매핑 수정)
+6. 데이터 추출 (다중 모드 지원)
 
 ## 🆕 향후 추가 예정 기능
 
-- **Decode Process**: Tri-state 행렬에서 원본 데이터 복원
 - **한글(Kanji) 모드 지원**: 현재 미구현된 한글 인코딩 모드 추가
+- **ECI 모드 지원**: Extended Channel Interpretation 모드
 - **Micro QR 코드**: 작은 크기의 QR 코드 형식 지원
-- **실시간 카메라 입력**: 웹캠을 통한 실시간 QR 인식
+- **자동 모드 감지**: 카메라 모드에서 자동 QR 코드 감지 및 디코딩
 - **다국어 지원**: UI 및 설명 다국어화
+- **QR 코드 생성 다운로드**: SVG/PNG 형식으로 QR 코드 다운로드
 
 ## 📄 라이선스
 
 MIT License
+
+## 🎯 교육적 목표
+
+이 프로젝트는 다음을 목표로 합니다:
+- QR 코드의 내부 구조와 동작 원리 이해
+- ISO/IEC 18004 표준의 실제 구현 방법 학습
+- 컴퓨터 비전과 오류 정정 알고리즘 체험
+- 단계별 시각화를 통한 직관적 학습
 
 ---
 

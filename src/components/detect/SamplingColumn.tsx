@@ -127,7 +127,7 @@ export function SamplingColumn({
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 6: Module Sampling</h3>
+      <h2 className="font-medium mb-3">6단계: 모듈 샘플링</h2>
 
       {sampling ? (
         <div className="space-y-3">

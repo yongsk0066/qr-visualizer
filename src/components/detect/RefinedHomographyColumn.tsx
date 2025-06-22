@@ -251,7 +251,7 @@ export function RefinedHomographyColumn({
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 5: Homography Transform</h3>
+      <h2 className="font-medium mb-3">5단계: 원근 변환</h2>
 
       {isProcessing ? (
         <div className="text-gray-500 text-sm">Refining...</div>

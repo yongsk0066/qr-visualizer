@@ -8,12 +8,15 @@
   display: grid;
   grid-template-columns: repeat(7, minmax(400px, 1fr));
   gap: 1.5rem;
-  min-height: calc(100vh - 4rem);
 }
 
 .step-column {
   border-right: 1px solid #e5e5e5;
   padding-right: 1.5rem;
+  max-height: 1200px;
+  min-height: 1200px;
+  overflow-y: auto;
+  position: relative;
 }
 
 .step-column:last-child {
@@ -21,3 +24,13 @@
   padding-right: 0;
 }
 
+/* Sticky header for step columns */
+.step-column > h2 {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e5e5;
+}

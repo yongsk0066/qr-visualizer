@@ -5,6 +5,20 @@ import { extractVersionInfo } from './version-extraction/versionExtractor';
 import { removeMask } from './mask-removal/maskRemover';
 import { readDataModules } from './data-reading/dataReader';
 import { correctErrors } from './error-correction/errorCorrector';
+import { extractData } from './data-extraction/dataExtractor';
+
+/**
+ * 모드 번호를 이름으로 변환
+ */
+const getModeName = (mode: number): string => {
+  switch (mode) {
+    case 0b0001: return 'numeric';
+    case 0b0010: return 'alphanumeric';
+    case 0b0100: return 'byte';
+    case 0b1000: return 'kanji';
+    default: return 'byte'; // 기본값
+  }
+};
 
 /**
  * QR 디코드 파이프라인
@@ -19,6 +33,7 @@ export const runDecodePipeline = async (
     maskRemoval: null,
     dataReading: null,
     errorCorrection: null,
+    dataExtraction: null,
     unmaskedMatrix: null,
     rawBitStream: null,
     codewords: null,
@@ -93,10 +108,31 @@ export const runDecodePipeline = async (
       }
     }
     
-    // TODO: Step 6: 데이터 디코딩
-
-    // 임시로 더미 메시지 반환
-    result.decodedMessage = "디코딩 구현 중...";
+    // Step 6: 데이터 추출
+    // 에러 정정 실패해도 데이터 추출 시도 (정정 시도된 데이터 사용)
+    if (result.errorCorrection) {
+      try {
+        // 항상 correctedDataCodewords 사용 (정정 성공/실패 관계없이)
+        const dataExtraction = extractData(
+          result.errorCorrection.correctedDataCodewords,
+          versionInfo.version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+        );
+        result.dataExtraction = dataExtraction;
+        
+        // 디코딩된 메시지 설정
+        if (dataExtraction.isValid) {
+          result.decodedMessage = dataExtraction.decodedText;
+          result.segments = dataExtraction.segments.map(seg => ({
+            mode: getModeName(seg.mode) as 'numeric' | 'alphanumeric' | 'byte' | 'kanji',
+            data: seg.data,
+            characterCount: seg.characterCount,
+            bitLength: seg.endBit - seg.startBit
+          }));
+        }
+      } catch (error) {
+        console.error('Data extraction failed:', error);
+      }
+    }
 
   } catch (error) {
     result.error = {

@@ -66,7 +66,7 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 3: Binarization</h3>
+      <h2 className="font-medium mb-3">3단계: 이진화</h2>
       
       {binarization ? (
         <div className="space-y-3">

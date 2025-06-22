@@ -51,7 +51,7 @@ export function ImageInputColumn({
 
   return (
     <div className="step-column">
-      <h3 className="step-title">Step 1: Image Input</h3>
+      <h2 className="font-medium mb-3">1단계: 이미지 입력</h2>
 
       {/* 입력 모드 선택 버튼 */}
       <div className="mb-4 flex gap-2">

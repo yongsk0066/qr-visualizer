@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { DataReadingResult } from '../../qr-decode/decode/data-reading/types';
+import { copyHexArrayToClipboard, showCopyNotification } from '../../shared/utils';
 
 interface DataReadingColumnProps {
   dataReadingResult: DataReadingResult | null;
@@ -88,6 +89,8 @@ export function DataReadingColumn({
   unmaskedMatrix,
   dataModules 
 }: DataReadingColumnProps) {
+  const [isCopying, setIsCopying] = useState(false);
+  
   const scale = useMemo(() => {
     if (!unmaskedMatrix) return 4;
     const size = unmaskedMatrix.length;
@@ -96,6 +99,16 @@ export function DataReadingColumn({
     if (size <= 125) return 3;
     return 2;
   }, [unmaskedMatrix]);
+  
+  const handleCopyCodewords = async () => {
+    if (!dataReadingResult || isCopying) return;
+    
+    setIsCopying(true);
+    const success = await copyHexArrayToClipboard(dataReadingResult.codewords);
+    showCopyNotification(success);
+    
+    setTimeout(() => setIsCopying(false), 1000);
+  };
 
   if (!dataReadingResult || !unmaskedMatrix || !dataModules) {
     return (
@@ -207,7 +220,21 @@ export function DataReadingColumn({
 
         {/* 코드워드 시각화 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">전체 코드워드</div>
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-xs font-medium">전체 코드워드</div>
+            <button
+              onClick={handleCopyCodewords}
+              disabled={isCopying}
+              className={`text-xs px-2 py-1 rounded transition-colors ${
+                isCopying 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+              }`}
+              title="코드워드를 클립보드에 복사"
+            >
+              {isCopying ? '✓ 복사됨' : '📋 복사'}
+            </button>
+          </div>
           <div className="text-[10px] text-gray-600 mb-2">
             총 {codewords.length}개 = 데이터 {dataCodewordCount}개 + 에러 정정 {errorCorrectionCodewordCount}개
           </div>

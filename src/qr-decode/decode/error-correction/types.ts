@@ -45,6 +45,15 @@ export interface BlockCorrectionResult {
   
   /** 신드롬이 0인지 (에러 없음) */
   hasNoError: boolean;
+  
+  /** 실패 이유 (실패한 경우) */
+  failureReason?: string;
+  
+  /** 검출된 에러 수 */
+  detectedErrors?: number;
+  
+  /** 최대 정정 가능한 에러 수 */
+  maxCorrectableErrors?: number;
 }
 
 /**
