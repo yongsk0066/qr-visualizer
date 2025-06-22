@@ -4,7 +4,6 @@
 export function countTimingPatternModules(
   binary: Uint8Array,
   width: number,
-  height: number,
   topLeftPattern: { center: { x: number; y: number }; size: number },
   topRightPattern: { center: { x: number; y: number }; size: number },
   bottomLeftPattern: { center: { x: number; y: number }; size: number }

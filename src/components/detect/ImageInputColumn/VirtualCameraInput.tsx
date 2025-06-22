@@ -148,6 +148,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 300, height: 300 });
   const [captureResolution, setCaptureResolution] = useState(1024); // 캡처 해상도
+  const [hasInitialCapture, setHasInitialCapture] = useState(false);
 
   // 컨테이너 크기에 맞춰 Canvas 크기 조정
   useEffect(() => {
@@ -163,6 +164,30 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
+
+  // 초기 자동 캡처
+  useEffect(() => {
+    if (!hasInitialCapture && matrix && matrix.length > 0) {
+      // Scene이 렌더링될 시간을 주기 위해 지연
+      const timer = setTimeout(() => {
+        const { captureHighRes } = (window as unknown as { 
+          virtualCameraGL?: { 
+            gl: unknown; 
+            scene: unknown; 
+            camera: unknown;
+            captureHighRes?: () => void;
+          } 
+        }).virtualCameraGL || {};
+        
+        if (captureHighRes) {
+          captureHighRes();
+          setHasInitialCapture(true);
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [matrix, hasInitialCapture]);
 
   const handleManualCapture = useCallback(() => {
     const { captureHighRes } = (window as unknown as { 

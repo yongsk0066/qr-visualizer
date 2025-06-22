@@ -48,7 +48,6 @@ export const runHomography = (
       const timingResult = countTimingPatternModules(
         binarizedImage,
         imageWidth,
-        imageHeight,
         sortedPatterns.topLeft,
         sortedPatterns.topRight,
         sortedPatterns.bottomLeft

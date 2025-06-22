@@ -1,5 +1,4 @@
 import type { FormatInfoResult } from './format-extraction/types';
-import type { ErrorCorrectionLevel } from '../../shared/types';
 
 export interface DecodePipelineResult {
   formatInfo: FormatInfoResult | null;
@@ -41,5 +40,5 @@ export interface DecodedSegment {
 export interface DecodeError {
   step: string;
   message: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }

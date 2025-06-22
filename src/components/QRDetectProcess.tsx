@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import testImage from '../assets/test_image_2.jpg';
 import { runDetectPipeline } from '../qr-decode/detect/detectPipeline';
 import type { HomographyResult, TriStateQR } from '../qr-decode/types';
 import { ProcessingWrapper } from './ProcessingWrapper';
@@ -23,10 +22,6 @@ export function QRDetectProcess({ encodedQRMatrix, onTriStateMatrixGenerated }: 
   const [refinedImage, setRefinedImage] = useState<ImageData | null>(null);
   const processingRef = useRef(false);
   const lastProcessedUrlRef = useRef<string>('');
-
-  useEffect(() => {
-    setImageUrl(testImage);
-  }, []);
 
   useEffect(() => {
     const processImage = async () => {

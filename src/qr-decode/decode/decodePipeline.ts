@@ -45,7 +45,11 @@ export const runDecodePipeline = async (
     result.error = {
       step: 'decode',
       message: error instanceof Error ? error.message : '알 수 없는 에러',
-      details: error,
+      details: error instanceof Error ? {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      } : { error: String(error) },
     };
   }
 
