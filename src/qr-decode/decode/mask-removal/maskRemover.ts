@@ -7,6 +7,7 @@ import type { TriStateQR } from '../../types';
 import type { ErrorCorrectionLevel } from '../../../shared/types';
 import type { MaskRemovalResult, MaskPattern } from './types';
 import { MASK_PATTERNS } from '../../../qr-encode/masking/maskPatterns';
+import { ALIGNMENT_PATTERN_POSITIONS } from '../../../shared/constants';
 
 type ModuleType = 'finder' | 'separator' | 'timing' | 'alignment' | 'format' | 'version' | 'dark' | 'data';
 
@@ -261,45 +262,11 @@ const applyMaskRemoval = (
 
 /**
  * 정렬 패턴 위치 계산
+ * 모든 QR 버전 (1-40) 지원
  */
 const getAlignmentPatternPositions = (version: number): number[] => {
-  if (version === 1) return [];
-  
-  // ISO/IEC 18004 Annex E
-  const alignmentPatternBasePositions: Record<number, number[]> = {
-    2: [6, 18],
-    3: [6, 22],
-    4: [6, 26],
-    5: [6, 30],
-    6: [6, 34],
-    7: [6, 22, 38],
-    8: [6, 24, 42],
-    9: [6, 26, 46],
-    10: [6, 28, 50],
-    // ... 더 많은 버전은 필요시 추가
-  };
-  
-  // 기본 패턴이 정의되어 있으면 사용
-  if (alignmentPatternBasePositions[version]) {
-    return alignmentPatternBasePositions[version];
-  }
-  
-  // 그렇지 않으면 계산
-  const positions: number[] = [];
-  const moduleCount = 21 + (version - 1) * 4;
-  const interval = Math.floor((moduleCount - 13) / (Math.ceil(version / 7) + 1));
-  
-  let pos = 6;
-  positions.push(pos);
-  
-  while (pos + interval < moduleCount - 6) {
-    pos += interval;
-    positions.push(pos);
-  }
-  
-  positions.push(moduleCount - 7);
-  
-  return positions;
+  // shared constants에서 가져온 데이터 사용
+  return ALIGNMENT_PATTERN_POSITIONS[version] || [];
 };
 
 /**

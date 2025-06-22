@@ -440,6 +440,7 @@ This project follows specific coding practices to maintain consistency and reada
 9. **Immutable Data**: Prefer immutable data structures and pure functions
 10. **Testing**: Write comprehensive tests for all QR logic functions (362 tests total)
 11. **ISO Compliance**: Follow ISO/IEC 18004 standard with detailed comments referencing specific sections
+12. **Full Version Support**: All implementations MUST support all QR versions (1-40) without exceptions. Use shared constants for version-specific data
 
 ## Development Workflow
 
