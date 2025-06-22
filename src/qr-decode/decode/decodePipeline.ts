@@ -52,17 +52,17 @@ export const runDecodePipeline = async (
 
     // Step 2: 버전 정보 추출 (v7+)
     const versionInfo = extractVersionInfo(triStateQR);
-    if (!versionInfo) {
-      throw new Error('버전 정보를 추출할 수 없습니다');
-    }
     result.versionInfo = versionInfo;
+    
+    // 버전 결정: versionInfo가 있으면 사용, 없으면 매트릭스 크기로 계산
+    const version = versionInfo?.version || Math.floor((triStateQR.size - 17) / 4);
     
     // Step 3: 마스크 패턴 제거
     const maskRemovalResult = removeMask(
       triStateQR,
       formatInfo.maskPattern,
       formatInfo.errorLevel,
-      versionInfo.version
+      version
     );
     result.maskRemoval = maskRemovalResult;
     
@@ -71,7 +71,7 @@ export const runDecodePipeline = async (
       const dataReadingResult = readDataModules(
         maskRemovalResult.unmaskedMatrix,
         maskRemovalResult.dataModules,
-        versionInfo.version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40,
+        version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40,
         formatInfo.errorLevel
       );
       result.dataReading = dataReadingResult;
@@ -88,7 +88,7 @@ export const runDecodePipeline = async (
       try {
         const errorCorrection = correctErrors(
           result.dataReading.codewords,
-          versionInfo.version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40,
+          version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40,
           formatInfo.errorLevel
         );
         result.errorCorrection = errorCorrection;
@@ -115,7 +115,7 @@ export const runDecodePipeline = async (
         // 항상 correctedDataCodewords 사용 (정정 성공/실패 관계없이)
         const dataExtraction = extractData(
           result.errorCorrection.correctedDataCodewords,
-          versionInfo.version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
+          version as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40
         );
         result.dataExtraction = dataExtraction;
         
