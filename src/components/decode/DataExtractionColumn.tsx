@@ -12,11 +12,22 @@ export function DataExtractionColumn({
   correctedDataCodewords,
   errorCorrectionFailed,
 }: DataExtractionColumnProps) {
+  // 데이터가 없을 때의 기본 UI
   if (!dataExtractionResult || !correctedDataCodewords) {
     return (
       <div className="step-column">
         <h2 className="font-medium mb-3">6단계: 데이터 추출</h2>
-        <div className="text-gray-500 text-sm">데이터 추출을 기다리는 중...</div>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            에러 정정된 코드워드에서 원본 데이터를 추출합니다
+          </p>
+          
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">📤</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 데이터 추출이 시작됩니다</div>
+          </div>
+        </div>
       </div>
     );
   }

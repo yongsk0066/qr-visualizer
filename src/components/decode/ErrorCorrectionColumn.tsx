@@ -41,7 +41,14 @@ export function ErrorCorrectionColumn({
           Reed-Solomon 에러 정정 알고리즘으로 손상된 데이터를 복구합니다
         </p>
 
-        {/* 전체 결과 요약 */}
+        {!errorCorrectionResult || !codewords ? (
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🔧</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 에러 정정이 시작됩니다</div>
+          </div>
+        ) : (
+          <>
+            {/* 전체 결과 요약 */}
         <div className="p-3 bg-gray-50 rounded">
           <div className="text-xs font-medium mb-2">정정 결과</div>
           <div className="space-y-1 text-xs">
@@ -316,6 +323,8 @@ export function ErrorCorrectionColumn({
             <div>• 정정 후 검증을 통해 성공 여부 확인</div>
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

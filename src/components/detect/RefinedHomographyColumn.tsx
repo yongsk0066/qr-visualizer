@@ -254,60 +254,83 @@ export function RefinedHomographyColumn({
       <h2 className="font-medium mb-3">5단계: 원근 변환</h2>
 
       {isProcessing ? (
-        <div className="text-gray-500 text-sm">Refining...</div>
+        <div className="text-gray-500 text-sm">변환 중...</div>
       ) : homographyImage ? (
-        <div className="space-y-3">
-          {/* 변환 정보 */}
-          <div className="info-section">
-            <h4 className="info-title">Transform Info</h4>
-            <div className="space-y-1 text-xs">
-              <div className="info-item">
-                <span className="info-label">Detected Version:</span>
-                <span className="info-value">
-                  Version {refinedHomography?.version || homography?.version}
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Module Count:</span>
-                <span className="info-value">
-                  {refinedHomography?.qrSize || homography?.qrSize} ×{' '}
-                  {refinedHomography?.qrSize || homography?.qrSize}
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Output Size:</span>
-                <span className="info-value">
-                  {homographyImage.width} × {homographyImage.height}px
-                </span>
-              </div>
-            </div>
-          </div>
-
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다
+          </p>
           {/* 변환된 이미지 */}
-          <div className="visualization-section">
+          <div className="p-3 bg-gray-50 rounded">
             <div className="flex justify-between items-center mb-2">
-              <h4 className="info-title">Rectified QR Code</h4>
+              <div className="text-xs font-medium">정사각형으로 변환된 QR 코드</div>
               <button
                 onClick={() => setShowGrid(!showGrid)}
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                {showGrid ? '그리드 숨기기' : '그리드 보기'}
+                {showGrid ? '▼ 그리드 숨기기' : '▶ 그리드 보기'}
               </button>
             </div>
-            <div className="bg-gray-50 p-3 rounded">
-              <canvas
-                ref={canvasRef}
-                className="w-full h-auto border border-gray-300"
-                style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
-              />
+            <canvas
+              ref={canvasRef}
+              className="w-full h-auto border border-gray-200"
+              style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
+            />
+            {showGrid && (
+              <div className="mt-2 text-[11px] text-gray-600">
+                <div>• 녹색 그리드: 모듈 경계선</div>
+                <div>• 빨간색 테두리: 파인더 패턴 영역</div>
+              </div>
+            )}
+          </div>
+
+          {/* 변환 정보 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">변환 정보</div>
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="text-center">
+                <div className="text-gray-600">검출된 버전</div>
+                <div className="font-mono font-semibold">
+                  v{refinedHomography?.version || homography?.version}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-600">모듈 수</div>
+                <div className="font-mono font-semibold">
+                  {refinedHomography?.qrSize || homography?.qrSize}×{refinedHomography?.qrSize || homography?.qrSize}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-600">출력 크기</div>
+                <div className="font-mono font-semibold">
+                  {homographyImage.width}×{homographyImage.height}px
+                </div>
+              </div>
             </div>
           </div>
 
+          {/* 코너 좌표 */}
+          {refinedHomography && (
+            <div className="p-3 bg-gray-50 rounded">
+              <div className="text-xs font-medium mb-2">코너 지점</div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {['왼쪽 상단', '오른쪽 상단', '오른쪽 하단', '왼쪽 하단'].map((label, idx) => (
+                  <div key={idx} className="p-2 bg-white rounded border border-gray-200">
+                    <div className="text-gray-600 text-[11px]">{label}:</div>
+                    <div className="font-mono">
+                      ({refinedHomography.corners[idx].x.toFixed(0)}, {refinedHomography.corners[idx].y.toFixed(0)})
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 변환 행렬 */}
           {refinedHomography && (
-            <div className="info-section">
-              <h4 className="info-title">Homography Matrix</h4>
-              <div className="text-xs font-mono bg-gray-100 p-2 rounded overflow-x-auto">
+            <div className="p-3 bg-gray-50 rounded">
+              <div className="text-xs font-medium mb-2">원근 변환 행렬 (3×3)</div>
+              <div className="text-xs font-mono bg-white p-2 rounded border border-gray-200 overflow-x-auto">
                 <table className="w-full">
                   <tbody>
                     {[0, 1, 2].map((row) => (
@@ -325,26 +348,20 @@ export function RefinedHomographyColumn({
             </div>
           )}
 
-          {/* 코너 좌표 */}
-          {refinedHomography && (
-            <div className="info-section">
-              <h4 className="info-title">Corner Points</h4>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {['Top-left', 'Top-right', 'Bottom-right', 'Bottom-left'].map((label, idx) => (
-                  <div key={idx} className="bg-gray-50 p-2 rounded">
-                    <div className="font-medium">{label}:</div>
-                    <div className="text-gray-600">
-                      ({refinedHomography.corners[idx].x.toFixed(1)},{' '}
-                      {refinedHomography.corners[idx].y.toFixed(1)})
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* 설명 */}
+          <div className="p-2 bg-blue-50 rounded text-xs">
+            <div className="font-medium mb-1">원근 변환 프로세스</div>
+            <div className="space-y-0.5 text-gray-700">
+              <div>• 3개 파인더 패턴을 기준점으로 사용</div>
+              <div>• 4번째 모서리는 선 교차로 계산</div>
+              <div>• 타이밍 패턴 분석으로 정확한 버전 검출</div>
+              <div>• 정사각형 이미지로 정규화 (512×512px)</div>
+              <div>• 재검출로 정밀도 향상</div>
             </div>
-          )}
+          </div>
         </div>
       ) : (
-        <div className="text-gray-500 text-sm">Waiting for homography result...</div>
+        <div className="text-gray-500 text-sm">대기 중...</div>
       )}
     </div>
   );

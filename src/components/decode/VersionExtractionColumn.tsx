@@ -209,13 +209,18 @@ export const VersionExtractionColumn = ({
     <div className="step-column">
       <h2 className="font-medium mb-3">2단계: 버전 정보 추출</h2>
       
-      {!triStateMatrix ? (
-        <div className="text-gray-500 text-sm">버전 정보 추출을 기다리는 중...</div>
-      ) : (
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600">
-            QR 코드의 버전 정보를 추출합니다 (v7 이상에만 존재)
-          </p>
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          QR 코드의 버전 정보를 추출합니다 (버전 7 이상)
+        </p>
+
+        {!triStateMatrix ? (
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">📊</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 버전 정보가 표시됩니다</div>
+          </div>
+        ) : (
+          <>
 
           {/* tri-state 매트릭스 시각화 */}
           {estimatedVersion && estimatedVersion >= 7 && (
@@ -423,8 +428,9 @@ export const VersionExtractionColumn = ({
               </div>
             </div>
           </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

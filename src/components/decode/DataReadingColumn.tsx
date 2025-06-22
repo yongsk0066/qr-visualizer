@@ -156,7 +156,14 @@ export function DataReadingColumn({
           지그재그 패턴으로 데이터 모듈을 읽어 비트스트림을 생성합니다
         </p>
 
-        {/* 3개 컬럼 매트릭스 시각화 */}
+        {!dataReadingResult || !unmaskedMatrix || !dataModules ? (
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">📖</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 데이터 읽기가 시작됩니다</div>
+          </div>
+        ) : (
+          <>
+            {/* 3개 컬럼 매트릭스 시각화 */}
         <div className="overflow-x-auto">
           <div className="flex gap-4 min-w-max justify-center">
             {/* 전체 매트릭스 */}
@@ -306,6 +313,8 @@ export function DataReadingColumn({
             </div>
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

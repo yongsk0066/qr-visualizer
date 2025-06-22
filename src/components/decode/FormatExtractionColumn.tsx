@@ -94,13 +94,18 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
     <div className="step-column">
       <h2 className="font-medium mb-3">1단계: 포맷 정보 추출</h2>
       
-      {!formatInfo || !triStateMatrix ? (
-        <div className="text-gray-500 text-sm">포맷 정보 추출을 기다리는 중...</div>
-      ) : (
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600">
-            QR 코드의 포맷 정보(에러 정정 레벨, 마스크 패턴)를 추출합니다
-          </p>
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          QR 코드의 포맷 정보(에러 정정 레벨, 마스크 패턴)를 추출합니다
+        </p>
+
+        {!formatInfo || !triStateMatrix ? (
+          <div className="p-8 bg-gray-50 rounded text-center">
+            <div className="text-gray-400 text-3xl mb-2">🔍</div>
+            <div className="text-gray-500 text-sm">QR 코드를 감지하면 포맷 정보가 표시됩니다</div>
+          </div>
+        ) : (
+          <>
 
           {/* tri-state 매트릭스 시각화 */}
           <div className="flex flex-col items-center">
@@ -260,8 +265,9 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
               </div>
             </div>
           </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

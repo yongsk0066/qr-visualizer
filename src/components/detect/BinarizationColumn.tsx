@@ -48,8 +48,14 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
 
     // 임계값 맵 시각화
     const imageData = ctx.createImageData(width, height);
-    const min = Math.min(...threshold);
-    const max = Math.max(...threshold);
+    
+    // 큰 배열에서 min/max 찾기 (spread operator 대신 reduce 사용)
+    let min = threshold[0];
+    let max = threshold[0];
+    for (let i = 1; i < threshold.length; i++) {
+      if (threshold[i] < min) min = threshold[i];
+      if (threshold[i] > max) max = threshold[i];
+    }
     const range = max - min;
 
     for (let i = 0; i < threshold.length; i++) {
@@ -69,40 +75,90 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
       <h2 className="font-medium mb-3">3단계: 이진화</h2>
       
       {binarization ? (
-        <div className="space-y-3">
-          <div className="bg-gray-50 p-3 rounded">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            그레이스케일 이미지를 흑백으로 변환하여 모듈을 명확히 구분합니다
+          </p>
+
+          {/* 이진화 결과 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">이진화 결과</div>
             <canvas 
               ref={binaryCanvasRef} 
-              className="w-full h-auto"
+              className="w-full h-auto border border-gray-200"
               style={{ imageRendering: 'pixelated' }}
             />
+            <div className="text-xs text-gray-500 mt-2">
+              Sauvola 적응형 임계값 이진화 적용
+            </div>
           </div>
           
+          {/* 임계값 맵 시각화 */}
           <div>
             <button
               onClick={() => setShowThreshold(!showThreshold)}
               className="text-xs text-blue-600 hover:text-blue-700 mb-2"
             >
-              {showThreshold ? '임계값 맵 숨기기' : '임계값 맵 보기'}
+              {showThreshold ? '▼ 임계값 맵 숨기기' : '▶ 임계값 맵 보기'}
             </button>
             
             {showThreshold && (
-              <div className="bg-gray-50 p-3 rounded">
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="text-xs font-medium mb-2">적응형 임계값 맵</div>
                 <canvas 
                   ref={thresholdCanvasRef}
-                  className="w-full h-auto"
+                  className="w-full h-auto border border-gray-200"
                   style={{ imageRendering: 'pixelated' }}
                 />
+                <div className="text-xs text-gray-500 mt-2">
+                  각 픽셀별 로컬 임계값 시각화 (밝을수록 높은 임계값)
+                </div>
               </div>
             )}
           </div>
           
-          <div className="text-xs space-y-1">
-            <p>Sauvola 파라미터:</p>
-            <p className="pl-2">• 윈도우 크기: {binarization.parameters.windowSize}px</p>
-            <p className="pl-2">• k 값: {binarization.parameters.k}</p>
-            <p>검은 픽셀: {binarization.binary.filter(v => v === 255).length.toLocaleString()}</p>
-            <p>흰 픽셀: {binarization.binary.filter(v => v === 0).length.toLocaleString()}</p>
+          {/* 파라미터 및 통계 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">이진화 정보</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-[11px] text-gray-600 mb-1">Sauvola 파라미터</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">윈도우 크기:</span>
+                    <span className="font-mono">{binarization.parameters.windowSize}px</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">k 값:</span>
+                    <span className="font-mono">{binarization.parameters.k}</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] text-gray-600 mb-1">픽셀 통계</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">검은 픽셀:</span>
+                    <span className="font-mono">{binarization.binary.filter(v => v === 255).length.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">흰 픽셀:</span>
+                    <span className="font-mono">{binarization.binary.filter(v => v === 0).length.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 설명 */}
+          <div className="p-2 bg-blue-50 rounded text-xs">
+            <div className="font-medium mb-1">Sauvola 적응형 이진화</div>
+            <div className="space-y-0.5 text-gray-700">
+              <div>• 로컬 윈도우 기반 동적 임계값 결정</div>
+              <div>• 조명 변화에 강건한 이진화 방법</div>
+              <div>• T = μ × (1 + k × (σ/R - 1)) 공식 사용</div>
+              <div>• 적분 이미지로 O(1) 시간에 통계 계산</div>
+            </div>
           </div>
         </div>
       ) : (

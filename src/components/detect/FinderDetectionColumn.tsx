@@ -209,77 +209,90 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
     <div className="step-column">
       <h2 className="font-medium mb-3">4단계: 파인더 패턴 검출</h2>
 
-      <div className="space-y-3">
-        {/* 검출 결과 요약 */}
-        <div className="info-section">
-          <h4 className="info-title">Detection Results</h4>
-          {finderDetection ? (
-            <div className="space-y-2">
-              <div className="info-item">
-                <span className="info-label">Candidates Found:</span>
-                <span className="info-value">{finderDetection.candidates.length}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Selected Patterns:</span>
-                <span className="info-value">{finderDetection.patterns.length}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Confidence:</span>
-                <span className="info-value">{(finderDetection.confidence * 100).toFixed(1)}%</span>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500">Processing...</p>
-          )}
-        </div>
-
-        {/* 시각화 캔버스 */}
-        <div className="visualization-section">
-          <h4 className="info-title">Pattern Visualization</h4>
-          <div className="canvas-container">
+      {finderDetection ? (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            OpenCV.js를 사용하여 QR 코드의 3개 파인더 패턴을 검출합니다
+          </p>
+          {/* 시각화 캔버스 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">패턴 검출 결과</div>
             <canvas
               ref={canvasRef}
-              className="w-full h-auto border border-gray-300 rounded"
+              className="w-full h-auto border border-gray-200"
               style={{ maxHeight: '400px', objectFit: 'contain' }}
             />
-          </div>
-          {finderDetection && (
-            <div className="mt-2 text-xs text-gray-600">
-              <p>• Gray boxes: Candidate patterns</p>
-              <p>• Red boxes: Selected finder patterns</p>
-              <p>• Numbers: Pattern quality scores</p>
-              <p>• Green dashed box: Estimated QR code boundary</p>
-              <p>• Green dots: Corner points (TL, TR, BL, BR)</p>
+            <div className="mt-2 space-y-0.5 text-[11px] text-gray-600">
+              <div>• 회색 박스: 후보 패턴</div>
+              <div>• 빨간색 박스: 선택된 파인더 패턴</div>
+              <div>• 숫자: 패턴 품질 점수</div>
+              <div>• 녹색 점선: 추정된 QR 코드 경계</div>
+              <div>• 녹색 점: 모서리 지점 (TL, TR, BL, BR)</div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* 선택된 패턴 상세 정보 */}
-        {finderDetection && finderDetection.patterns.length > 0 && (
-          <div className="info-section">
-            <h4 className="info-title">Selected Patterns</h4>
-            <div className="space-y-2">
-              {finderDetection.patterns.map((pattern, index) => (
-                <div key={index} className="pattern-info">
-                  <div className="text-sm font-medium">Pattern {index + 1}</div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-gray-600">Center:</span> ({pattern.center.x.toFixed(1)},{' '}
-                      {pattern.center.y.toFixed(1)})
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Size:</span> {pattern.size.toFixed(1)}px
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Score:</span> {pattern.score.toFixed(1)}
+          {/* 검출 통계 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">검출 정보</div>
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="text-center">
+                <div className="text-gray-600">후보 패턴</div>
+                <div className="font-mono font-semibold">{finderDetection.candidates.length}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-600">선택된 패턴</div>
+                <div className="font-mono font-semibold">{finderDetection.patterns.length}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-600">신뢰도</div>
+                <div className="font-mono font-semibold">{(finderDetection.confidence * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 선택된 패턴 상세 정보 */}
+          {finderDetection.patterns.length > 0 && (
+            <div className="p-3 bg-gray-50 rounded">
+              <div className="text-xs font-medium mb-2">선택된 패턴 상세</div>
+              <div className="space-y-2">
+                {finderDetection.patterns.map((pattern, index) => (
+                  <div key={index} className="p-2 bg-white rounded border border-gray-200">
+                    <div className="text-xs font-medium mb-1">패턴 {index + 1}</div>
+                    <div className="grid grid-cols-3 gap-2 text-[11px]">
+                      <div>
+                        <span className="text-gray-600">중심:</span>
+                        <div className="font-mono">({pattern.center.x.toFixed(0)}, {pattern.center.y.toFixed(0)})</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">크기:</span>
+                        <div className="font-mono">{pattern.size.toFixed(1)}px</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">점수:</span>
+                        <div className="font-mono">{pattern.score.toFixed(1)}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 설명 */}
+          <div className="p-2 bg-blue-50 rounded text-xs">
+            <div className="font-medium mb-1">파인더 패턴 검출 알고리즘</div>
+            <div className="space-y-0.5 text-gray-700">
+              <div>• 윤곽선 검출로 사각형 패턴 찾기</div>
+              <div>• 중첩된 사각형 구조 확인 (1:1:3:1:1 비율)</div>
+              <div>• 패턴 품질 점수 계산 및 순위 매기기</div>
+              <div>• 상위 3개 패턴을 파인더로 선택</div>
+              <div>• 교점 계산으로 정확한 QR 경계 추정</div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <p className="text-gray-500 text-sm">대기 중...</p>
+      )}
     </div>
   );
 }

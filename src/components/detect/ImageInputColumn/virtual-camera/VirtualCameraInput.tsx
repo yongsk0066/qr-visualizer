@@ -68,88 +68,98 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
   }, []);
 
   return (
-    <div className="mb-4 space-y-3">
-      <div className="info-section">
-        <h4 className="info-title">3D QR Code</h4>
-        <div className="space-y-1 text-xs">
-          <div className="info-item">
-            <span className="info-label">Control:</span>
-            <span className="info-value">Drag to rotate, scroll to zoom</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Capture Mode:</span>
-            <span className="info-value">{isCapturing ? 'Real-time (500ms)' : 'Manual'}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Capture Resolution:</span>
-            <select 
-              value={captureResolution}
-              onChange={(e) => setCaptureResolution(Number(e.target.value))}
-              className="text-xs border rounded px-1 py-0.5"
-            >
-              {CAPTURE_RESOLUTIONS.map(res => (
-                <option key={res} value={res}>{res}×{res}</option>
-              ))}
-            </select>
-          </div>
-          <div className="info-item">
-            <span className="info-label">토마토 던짐:</span>
-            <span className="info-value">{tomatoCount}개</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">얼룩 개수:</span>
-            <span className="info-value">{damageSpots.length}개 (에러 검출 테스트용)</span>
-          </div>
-        </div>
-      </div>
-      
-      <div ref={containerRef} className="bg-gray-50 p-3 rounded relative">
-        <div 
-          style={{ 
-            width: `${dimensions.width}px`, 
-            height: `${dimensions.height}px`,
-            margin: '0 auto'
-          }}
-        >
-          <Canvas
-            gl={{ preserveDrawingBuffer: true, antialias: false }}
-            camera={{ position: CAMERA_POSITION as [number, number, number], fov: CAMERA_FOV }}
-            dpr={[1, 2]}
+    <div className="space-y-3">
+      {/* 3D 뷰 */}
+      <div ref={containerRef} className="p-3 bg-gray-50 rounded">
+        <div className="text-xs font-medium mb-2">3D QR 코드 뷰</div>
+        <div className="relative">
+          <div 
+            style={{ 
+              width: `${dimensions.width}px`, 
+              height: `${dimensions.height}px`,
+              margin: '0 auto'
+            }}
           >
-            <Scene 
-              ref={sceneRef}
-              matrix={matrix} 
-              onCapture={onImageCapture} 
-              isCapturing={isCapturing}
-              captureSize={captureResolution}
-              shouldThrowTomato={shouldThrowTomato}
-              onTomatoThrown={handleTomatoThrown}
-              damageSpots={damageSpots}
-              onDamageUpdate={setDamageSpots}
-            />
-          </Canvas>
-        </div>
-        {isCapturing && (
-          <div className="absolute top-2 right-2 flex items-center gap-2">
-            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
-              실시간 캡처 중
-            </span>
+            <Canvas
+              gl={{ preserveDrawingBuffer: true, antialias: false }}
+              camera={{ position: CAMERA_POSITION as [number, number, number], fov: CAMERA_FOV }}
+              dpr={[1, 2]}
+            >
+              <Scene 
+                ref={sceneRef}
+                matrix={matrix} 
+                onCapture={onImageCapture} 
+                isCapturing={isCapturing}
+                captureSize={captureResolution}
+                shouldThrowTomato={shouldThrowTomato}
+                onTomatoThrown={handleTomatoThrown}
+                damageSpots={damageSpots}
+                onDamageUpdate={setDamageSpots}
+              />
+            </Canvas>
           </div>
-        )}
+          {isCapturing && (
+            <div className="absolute top-2 right-2 flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <span className="text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
+                실시간 캡처 중
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-      
+
+      {/* 가상 카메라 정보 */}
+      <div className="p-3 bg-gray-50 rounded">
+        <div className="text-xs font-medium mb-2">가상 카메라 설정</div>
+        <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <div className="text-gray-600">캡처 모드</div>
+              <div className="font-mono font-semibold">
+                {isCapturing ? '실시간 (500ms)' : '수동'}
+              </div>
+            </div>
+            <div>
+              <div className="text-gray-600">캡처 해상도</div>
+              <select 
+                value={captureResolution}
+                onChange={(e) => setCaptureResolution(Number(e.target.value))}
+                className="text-xs border border-gray-300 rounded px-1 py-0.5 bg-white"
+              >
+                {CAPTURE_RESOLUTIONS.map(res => (
+                  <option key={res} value={res}>{res}×{res}px</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="border-t pt-2">
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <div className="text-gray-600">토마토 던짐</div>
+                <div className="font-mono font-semibold">{tomatoCount}개</div>
+              </div>
+              <div>
+                <div className="text-gray-600">얼룩 개수</div>
+                <div className="font-mono font-semibold">{damageSpots.length}개</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 컨트롤 버튼 */}
       <div className="space-y-2">
         <div className="flex gap-2">
           <button
             onClick={handleManualCapture}
-            className="flex-1 px-3 py-2 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="flex-1 px-3 py-2 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           >
-            캡처
+            수동 캡처
           </button>
           <button
             onClick={() => setIsCapturing(!isCapturing)}
-            className={`flex-1 px-3 py-2 text-xs rounded ${
+            className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${
               isCapturing
                 ? 'bg-red-500 text-white hover:bg-red-600'
                 : 'bg-green-500 text-white hover:bg-green-600'
@@ -183,6 +193,17 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
           >
             🧽 초기화
           </button>
+        </div>
+      </div>
+
+      {/* 가상 카메라 사용 설명 */}
+      <div className="p-2 bg-blue-50 rounded text-xs">
+        <div className="font-medium mb-1">가상 카메라 기능</div>
+        <div className="space-y-0.5 text-gray-700">
+          <div>• 마우스 드래그: 3D QR 코드 회전</div>
+          <div>• 마우스 휠: 확대/축소</div>
+          <div>• 토마토 던지기: 에러 정정 테스트용 손상 생성</div>
+          <div>• 해상도 선택: 고해상도 캡처 가능 (512px ~ 2048px)</div>
         </div>
       </div>
     </div>

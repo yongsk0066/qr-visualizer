@@ -130,93 +130,108 @@ export function SamplingColumn({
       <h2 className="font-medium mb-3">6단계: 모듈 샘플링</h2>
 
       {sampling ? (
-        <div className="space-y-3">
-          {/* 샘플링 통계 */}
-          <div className="info-section">
-            <h4 className="info-title">Sampling Statistics</h4>
-            <div className="space-y-1 text-xs">
-              <div className="info-item">
-                <span className="info-label">Module Count:</span>
-                <span className="info-value">
-                  {sampling.size} × {sampling.size}
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Black Modules:</span>
-                <span className="info-value">
-                  {sampling.statistics.black} (
-                  {((sampling.statistics.black / (sampling.size * sampling.size)) * 100).toFixed(1)}
-                  %)
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">White Modules:</span>
-                <span className="info-value">
-                  {sampling.statistics.white} (
-                  {((sampling.statistics.white / (sampling.size * sampling.size)) * 100).toFixed(1)}
-                  %)
-                </span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Unknown Modules:</span>
-                <span className="info-value text-red-600">
-                  {sampling.statistics.unknown} (
-                  {((sampling.statistics.unknown / (sampling.size * sampling.size)) * 100).toFixed(
-                    1
-                  )}
-                  %)
-                </span>
-              </div>
-            </div>
-          </div>
-
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            정사각형 QR 코드에서 각 모듈의 중심을 샘플링하여 tri-state 행렬로 변환합니다
+          </p>
           {/* 샘플링 결과 시각화 */}
-          <div className="visualization-section">
+          <div className="p-3 bg-gray-50 rounded">
             <div className="flex justify-between items-center mb-2">
-              <h4 className="info-title">Sampled Matrix</h4>
+              <div className="text-xs font-medium">샘플링된 행렬</div>
               <button
                 onClick={() => setShowGrid(!showGrid)}
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                {showGrid ? '그리드 숨기기' : '그리드 보기'}
+                {showGrid ? '▼ 그리드 숨기기' : '▶ 그리드 보기'}
               </button>
             </div>
-            <div className="bg-gray-50 p-3 rounded">
-              <canvas
-                ref={canvasRef}
-                className="w-full h-auto border border-gray-300"
-                style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
-              />
+            <canvas
+              ref={canvasRef}
+              className="w-full h-auto border border-gray-200"
+              style={{ maxWidth: '100%', imageRendering: 'pixelated' }}
+            />
+            {showGrid && (
+              <div className="mt-2 space-y-0.5 text-[11px] text-gray-600">
+                <div>• 파란색 테두리: 파인더 패턴 영역</div>
+                <div>• 녹색 선: 타이밍 패턴 행/열</div>
+                <div>• 빨간색 모듈: 불확실한 분류</div>
+              </div>
+            )}
+          </div>
+
+          {/* 샘플링 통계 */}
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">샘플링 통계</div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="text-[11px] text-gray-600 mb-1">모듈 크기</div>
+                <div className="text-xs font-mono font-semibold">
+                  {sampling.size} × {sampling.size}
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] text-gray-600 mb-1">전체 모듈 수</div>
+                <div className="text-xs font-mono font-semibold">
+                  {(sampling.size * sampling.size).toLocaleString()}개
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-600">검은 모듈 (1):</span>
+                <span className="font-mono">
+                  {sampling.statistics.black.toLocaleString()} ({((sampling.statistics.black / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">흰 모듈 (0):</span>
+                <span className="font-mono">
+                  {sampling.statistics.white.toLocaleString()} ({((sampling.statistics.white / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">미확인 모듈 (-1):</span>
+                <span className="font-mono text-red-600">
+                  {sampling.statistics.unknown.toLocaleString()} ({((sampling.statistics.unknown / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
+                </span>
+              </div>
             </div>
           </div>
 
           {/* 범례 */}
-          <div className="info-section">
-            <h4 className="info-title">Legend</h4>
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">모듈 색상 범례</div>
             <div className="grid grid-cols-3 gap-2 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-black border"></div>
-                <span>Black (1)</span>
+                <div className="w-4 h-4 bg-black border border-gray-300"></div>
+                <span>검은색 (1)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-white border"></div>
-                <span>White (0)</span>
+                <div className="w-4 h-4 bg-white border border-gray-300"></div>
+                <span>흰색 (0)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-red-500 border"></div>
-                <span>Unknown (-1)</span>
+                <div className="w-4 h-4 bg-red-500 border border-gray-300"></div>
+                <span>미확인 (-1)</span>
               </div>
             </div>
-            <div className="mt-2 text-xs text-gray-600">
-              <p>• Blue boxes: Finder Pattern areas</p>
-              <p>• Green lines: Timing pattern rows/columns</p>
-              <p>• Red modules: Uncertain classification</p>
+          </div>
+
+          {/* 설명 */}
+          <div className="p-2 bg-blue-50 rounded text-xs">
+            <div className="font-medium mb-1">모듈 샘플링 프로세스</div>
+            <div className="space-y-0.5 text-gray-700">
+              <div>• 각 모듈의 중심 지점에서 픽셀 값 샘플링</div>
+              <div>• 적응형 임계값으로 흑백 모듈 분류</div>
+              <div>• QR 표준: 검은 모듈 = 1, 흰 모듈 = 0</div>
+              <div>• 불확실한 경우 -1로 표시 (디코딩 시 처리)</div>
+              <div>• tri-state 행렬로 디코딩 준비 완료</div>
             </div>
           </div>
         </div>
       ) : (
         <div className="text-gray-500 text-sm">
-          {homography ? '샘플링 중...' : 'Homography 변환이 필요합니다'}
+          {homography ? '샘플링 중...' : '원근 변환이 필요합니다'}
         </div>
       )}
     </div>

@@ -53,99 +53,122 @@ export function ImageInputColumn({
     <div className="step-column">
       <h2 className="font-medium mb-3">1단계: 이미지 입력</h2>
 
-      {/* 입력 모드 선택 버튼 */}
-      <div className="mb-4 flex gap-2">
-        <button
-          onClick={() => handleModeChange('file')}
-          className={`flex-1 px-3 py-2 text-xs rounded ${
-            inputMode === 'file'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          파일 업로드
-        </button>
-        <button
-          onClick={() => handleModeChange('camera')}
-          className={`flex-1 px-3 py-2 text-xs rounded ${
-            inputMode === 'camera'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          카메라
-        </button>
-        {encodedQRMatrix && (
-          <button
-            onClick={() => handleModeChange('virtual')}
-            className={`flex-1 px-3 py-2 text-xs rounded ${
-              inputMode === 'virtual'
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            가상 카메라
-          </button>
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          QR 코드 이미지를 업로드하거나 카메라로 캐팁합니다
+        </p>
+
+        {/* 입력 모드 선택 버튼 */}
+        <div className="p-3 bg-gray-50 rounded">
+          <div className="text-xs font-medium mb-2">입력 방법 선택</div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleModeChange('file')}
+              className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${
+                inputMode === 'file'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+              }`}
+            >
+              파일 업로드
+            </button>
+            <button
+              onClick={() => handleModeChange('camera')}
+              className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${
+                inputMode === 'camera'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+              }`}
+            >
+              카메라
+            </button>
+            {encodedQRMatrix && (
+              <button
+                onClick={() => handleModeChange('virtual')}
+                className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${
+                  inputMode === 'virtual'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                }`}
+              >
+                가상 카메라
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 파일 업로드 UI */}
+        {inputMode === 'file' && <FileInput onImageSelect={setImageUrl} />}
+
+        {/* 카메라 UI */}
+        {inputMode === 'camera' && (
+          <CameraInput
+            isActive={isCameraActive}
+            onImageCapture={setImageUrl}
+            onStop={handleCameraStop}
+          />
         )}
-      </div>
 
-      {/* 파일 업로드 UI */}
-      {inputMode === 'file' && <FileInput onImageSelect={setImageUrl} />}
-
-      {/* 카메라 UI */}
-      {inputMode === 'camera' && (
-        <CameraInput
-          isActive={isCameraActive}
-          onImageCapture={setImageUrl}
-          onStop={handleCameraStop}
-        />
-      )}
-
-      {/* Virtual Camera UI */}
-      {inputMode === 'virtual' && encodedQRMatrix && (
-        <Suspense
-          fallback={
-            <div className="bg-gray-50 p-3 rounded">
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-2"></div>
-                  <p className="text-sm text-gray-600">가상 카메라 로딩 중...</p>
+        {/* Virtual Camera UI */}
+        {inputMode === 'virtual' && encodedQRMatrix && (
+          <Suspense
+            fallback={
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-2"></div>
+                    <p className="text-sm text-gray-600">가상 카메라 로딩 중...</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          }
-        >
-          <VirtualCameraInput matrix={encodedQRMatrix} onImageCapture={setImageUrl} />
-        </Suspense>
-      )}
+            }
+          >
+            <VirtualCameraInput matrix={encodedQRMatrix} onImageCapture={setImageUrl} />
+          </Suspense>
+        )}
 
-      {/* 결과 이미지 표시 (파일 모드에서만) */}
-      {imageUrl && inputMode === 'file' && (
-        <div className="space-y-3">
-          <div className="bg-gray-50 p-3 rounded">
-            <img src={imageUrl} alt="Input QR Code" className="w-full h-auto rounded" />
+        {/* 결과 이미지 표시 (파일 모드에서만) */}
+        {imageUrl && inputMode === 'file' && (
+          <div className="space-y-3">
+            <div className="p-3 bg-gray-50 rounded">
+              <div className="text-xs font-medium mb-2">업로드된 이미지</div>
+              <img src={imageUrl} alt="Input QR Code" className="w-full h-auto rounded border border-gray-200" />
+              {imageProcessing && (
+                <div className="mt-2 text-xs text-gray-500">
+                  크기: {imageProcessing.width} × {imageProcessing.height}px
+                </div>
+              )}
+            </div>
           </div>
+        )}
 
-          {imageProcessing && (
-            <div className="text-xs space-y-1">
-              <p>
-                크기: {imageProcessing.width} × {imageProcessing.height}px
-              </p>
-              <p>상태: {isProcessing ? '처리 중...' : '처리 완료'}</p>
+        {/* 카메라/가상카메라 모드에서의 처리 상태 */}
+        {(inputMode === 'camera' || inputMode === 'virtual') && imageProcessing && (
+          <div className="p-3 bg-gray-50 rounded">
+            <div className="text-xs font-medium mb-2">처리 상태</div>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-600">프레임 크기:</span>
+                <span className="font-mono">{imageProcessing.width} × {imageProcessing.height}px</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">상태:</span>
+                <span className="font-mono">{isProcessing ? '분석 중...' : '실시간 모니터링 중'}</span>
+              </div>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* 카메라/가상카메라 모드에서의 처리 상태 */}
-      {(inputMode === 'camera' || inputMode === 'virtual') && imageProcessing && (
-        <div className="text-xs space-y-1 mt-3">
-          <p>
-            프레임 크기: {imageProcessing.width} × {imageProcessing.height}px
-          </p>
-          <p>상태: {isProcessing ? '분석 중...' : '대기 중'}</p>
+        {/* 설명 */}
+        <div className="p-2 bg-blue-50 rounded text-xs">
+          <div className="font-medium mb-1">입력 방법</div>
+          <div className="space-y-0.5 text-gray-700">
+            <div>• 파일 업로드: 드래그 앤 드롭 또는 클릭하여 선택</div>
+            <div>• 카메라: 수동/자동 모드로 실시간 캐팁</div>
+            <div>• 가상 카메라: 3D QR 코드를 다양한 각도에서 테스트</div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
