@@ -1,8 +1,12 @@
-# QR Visualizer <img src="src/assets/mascot.gif" width="32" height="32" align="right">
+# QR Visualizer
 
-QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하는 React 웹 애플리케이션입니다.
-
-🔗 **[Live Demo](https://yongsk0066.github.io/qr-visualizer/)**
+<div align="center">
+  <img src="src/assets/mascot.gif" width="120" height="120" alt="QR Visualizer Mascot">
+  
+  QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하는 React 웹 애플리케이션입니다.
+  
+  🔗 **[Live Demo](https://yongsk0066.github.io/qr-visualizer/)**
+</div>
 
 ## 📋 프로젝트 개요
 
