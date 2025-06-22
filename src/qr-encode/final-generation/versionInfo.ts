@@ -51,8 +51,8 @@ export const generateVersionInfo = (version: QRVersion): number | null => {
  */
 export const versionInfoToBits = (versionInfo: number): number[] => {
   const bits: number[] = [];
-  // LSB가 0번 위치가 되도록 i=0부터 17까지
-  for (let i = 0; i <= 17; i++) {
+  // MSB first로 변경 - ISO/IEC 18004 표준에 따름
+  for (let i = 17; i >= 0; i--) {
     bits.push((versionInfo >> i) & 1);
   }
   return bits;

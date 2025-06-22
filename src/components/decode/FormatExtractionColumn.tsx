@@ -34,21 +34,21 @@ const TriStateMatrix = ({ matrix, size, scale = 4, highlightFormat = false }: Tr
       
       if (isFormatLocation1) {
         if (value === -1) return '#fbbf24'; // 노란색 (unknown)
-        if (value === 0) return '#dc2626';  // 빨간색 (검은 모듈)
+        if (value === 1) return '#dc2626';  // 빨간색 (검은 모듈)
         return '#fecaca';                    // 연한 빨간색 (흰 모듈)
       }
       
       if (isFormatLocation2) {
         if (value === -1) return '#f59e0b'; // 주황색 (unknown)
-        if (value === 0) return '#7c3aed';  // 보라색 (검은 모듈)
+        if (value === 1) return '#7c3aed';  // 보라색 (검은 모듈)
         return '#ddd6fe';                    // 연한 보라색 (흰 모듈)
       }
     }
     
     // 일반 모듈 색상
     if (value === -1) return '#e5e7eb'; // 회색 (unknown)
-    if (value === 0) return '#000';      // 검은색 (0)
-    return '#fff';                       // 흰색 (1)
+    if (value === 1) return '#000';      // 검은색 (1)
+    return '#fff';                       // 흰색 (0)
   };
 
   return (

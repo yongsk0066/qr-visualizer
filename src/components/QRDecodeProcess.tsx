@@ -4,6 +4,7 @@ import type { DecodePipelineResult } from '../qr-decode/decode/types';
 import { runDecodePipeline } from '../qr-decode/decode/decodePipeline';
 import { ProcessingWrapper } from './ProcessingWrapper';
 import { FormatExtractionColumn } from './decode/FormatExtractionColumn';
+import { VersionExtractionColumn } from './decode/VersionExtractionColumn';
 
 interface QRDecodeProcessProps {
   triStateMatrix: TriStateQR | null;
@@ -44,15 +45,22 @@ export function QRDecodeProcess({ triStateMatrix }: QRDecodeProcessProps) {
         />
       </ProcessingWrapper>
       
+      <ProcessingWrapper isProcessing={isProcessing}>
+        <VersionExtractionColumn 
+          versionInfo={decodeResult?.versionInfo ?? null}
+          triStateMatrix={triStateMatrix}
+        />
+      </ProcessingWrapper>
+      
       {/* TODO: 나머지 단계들 */}
       <div className="step-column">
         <h2 className="font-medium mb-3">다음 단계</h2>
         <div className="text-gray-500 text-sm">
           <div className="space-y-2">
-            <div>• 2단계: 마스크 패턴 제거</div>
-            <div>• 3단계: 데이터 모듈 읽기</div>
-            <div>• 4단계: 에러 정정</div>
-            <div>• 5단계: 데이터 디코딩</div>
+            <div>• 3단계: 마스크 패턴 제거</div>
+            <div>• 4단계: 데이터 모듈 읽기</div>
+            <div>• 5단계: 에러 정정</div>
+            <div>• 6단계: 데이터 디코딩</div>
           </div>
           <div className="mt-4 p-2 bg-blue-50 rounded">
             <div className="text-blue-700 text-xs">구현 진행 중...</div>

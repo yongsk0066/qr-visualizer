@@ -1,4 +1,5 @@
 import type { FormatInfoResult } from './format-extraction/types';
+import type { VersionInfoResult } from './version-extraction/types';
 
 export interface DecodePipelineResult {
   formatInfo: FormatInfoResult | null;
@@ -10,12 +11,6 @@ export interface DecodePipelineResult {
   segments: DecodedSegment[] | null;
   decodedMessage: string | null;
   error?: DecodeError;
-}
-
-export interface VersionInfoResult {
-  version: number;
-  isValid: boolean;
-  confidence: number;
 }
 
 export interface CodewordBlocks {

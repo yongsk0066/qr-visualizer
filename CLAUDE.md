@@ -327,7 +327,8 @@ src/
 
 **Step 6 - Module Sampling** ✅
 - **Grid-based sampling**: Samples center of each module based on QR version
-- **Tri-state classification**: Black (0), White (1), Unknown (-1) values
+- **Tri-state classification**: Black (1), White (0), Unknown (-1) values
+- **QR standard compliance**: Black modules = 1, White modules = 0
 - **Adaptive thresholding**: Uses local brightness for robust classification
 - **Sampling statistics**: Displays percentages of each module type
 - **Visual feedback**: Color-coded matrix with grid overlay toggle
@@ -339,14 +340,23 @@ src/
   - Dual location reading for reliability
   - Support for unknown modules (-1)
   - Confidence-based selection between locations
+- Version information extraction ✅
+  - BCH(18,6) error correction for version info (v7+)
+  - Dual location reading (6×3 left-bottom, 3×6 top-right)
+  - MSB first bit ordering (ISO/IEC 18004 compliant)
+  - Unknown module handling with confidence scoring
+  - Visual extraction process with bit-by-bit display
 - Data masking reversal (TODO)
 - Error correction decoding (TODO)
 - Data extraction and interpretation (TODO)
 
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 264 tests (202 unit + 62 integration)
-- **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) in progress
-- **Total Test Coverage**: 304 tests (264 encoding + 27 detection/decode + 13 utilities)
+- **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) partially complete
+  - Format extraction ✅
+  - Version extraction ✅
+  - Remaining decode steps in progress
+- **Total Test Coverage**: 317 tests (264 encoding + 40 detection/decode + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline

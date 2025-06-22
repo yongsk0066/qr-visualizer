@@ -53,8 +53,8 @@ export interface TriStateQR {
   matrix: (-1 | 0 | 1)[][]; // tri-state 행렬
   finder: [Point, Point, Point]; // 디버깅용
   statistics: {
-    black: number; // 0의 개수
-    white: number; // 1의 개수
+    black: number; // 1의 개수
+    white: number; // 0의 개수
     unknown: number; // -1의 개수
   };
 }

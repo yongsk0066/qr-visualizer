@@ -64,10 +64,10 @@ export function SamplingColumn({
 
         // 모듈 색상
         switch (value) {
-          case 0: // Black
+          case 1: // Black = 1
             ctx.fillStyle = '#000000';
             break;
-          case 1: // White
+          case 0: // White = 0
             ctx.fillStyle = '#FFFFFF';
             break;
           case -1: // Unknown
@@ -196,11 +196,11 @@ export function SamplingColumn({
             <div className="grid grid-cols-3 gap-2 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-black border"></div>
-                <span>Black (0)</span>
+                <span>Black (1)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-white border"></div>
-                <span>White (1)</span>
+                <span>White (0)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-red-500 border"></div>

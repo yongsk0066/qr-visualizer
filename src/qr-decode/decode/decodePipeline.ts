@@ -1,6 +1,7 @@
 import type { TriStateQR } from '../types';
 import type { DecodePipelineResult } from './types';
 import { extractFormatInfo } from './format-extraction/formatExtractor';
+import { extractVersionInfo } from './version-extraction/versionExtractor';
 
 /**
  * QR 디코드 파이프라인
@@ -28,7 +29,12 @@ export const runDecodePipeline = async (
     }
     result.formatInfo = formatInfo;
 
-    // TODO: Step 2: 버전 정보 추출 (v7+)
+    // Step 2: 버전 정보 추출 (v7+)
+    const versionInfo = extractVersionInfo(triStateQR);
+    if (!versionInfo) {
+      throw new Error('버전 정보를 추출할 수 없습니다');
+    }
+    result.versionInfo = versionInfo;
     
     // TODO: Step 3: 마스크 패턴 제거
     

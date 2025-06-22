@@ -16,8 +16,9 @@ QR 코드 생성 및 디코딩 과정을 단계별로 시각화하여 교육하�
 - **Build Tool**: Vite with experimental React Compiler
 - **Styling**: Tailwind CSS 4.1.8
 - **Package Manager**: Yarn Berry (4.9.2)
-- **Testing**: Vitest 3.2.2 (362개 테스트)
+- **Testing**: Vitest 3.2.2 (317개 테스트)
 - **Utilities**: @mobily/ts-belt (함수형 프로그래밍)
+- **Computer Vision**: OpenCV.js (QR 검출 알고리즘)
 
 ## 📁 프로젝트 구조
 
@@ -33,9 +34,17 @@ src/
 │   ├── final-generation/  # 7단계: 최종 QR 생성
 │   └── qrPipeline.ts      # 전체 파이프라인 통합
 ├── qr-decode/             # QR 코드 디코딩 로직
-│   ├── detect/            # Detection Process
-│   │   ├── detector/      # 이미지 처리 알고리즘
-│   │   └── detectPipeline.ts
+│   ├── detect/            # Detection Process (이미지 → tri-state 행렬)
+│   │   ├── image-processing/  # 이미지 처리
+│   │   ├── binarization/      # 이진화
+│   │   ├── finder-detection/  # Finder 패턴 검출
+│   │   ├── homography/        # 원근 변환
+│   │   ├── sampling/          # 모듈 샘플링
+│   │   └── detectPipeline.ts  # Detection 파이프라인
+│   ├── decode/            # Decode Process (tri-state → 데이터)
+│   │   ├── format-extraction/    # 포맷 정보 추출
+│   │   ├── version-extraction/   # 버전 정보 추출
+│   │   └── decodePipeline.ts     # Decode 파이프라인
 │   └── types.ts           # 디코딩 관련 타입
 ├── components/            # UI 컴포넌트
 │   ├── QREncodingProcess.tsx
@@ -87,35 +96,56 @@ yarn preview
 
 ## 🧪 테스트 현황
 
-총 **362개** 테스트로 모든 QR 로직을 검증:
+총 **317개** 테스트로 모든 QR 로직을 검증:
 
-### 단위 테스트 (230개)
-
+### 인코딩 테스트 (264개)
 - 39개 데이터 분석 테스트
 - 21개 데이터 인코딩 테스트
 - 37개 에러 정정 테스트
 - 10개 메시지 구성 테스트
-- 77개 모듈 배치 테스트 (8개 세부 단계별, BCH 유틸리티 포함)
-- 27개 마스킹 패턴 및 패널티 테스트
+- 87개 모듈 배치 테스트
+- 19개 마스킹 패턴 테스트
 - 6개 성능 테스트
+- 62개 통합 테스트
 
-### 통합 테스트 (132개)
+### 디코딩 테스트 (40개)
+- 4개 이미지 처리 테스트
+- 7개 이진화 테스트
+- 6개 타이밍 패턴 테스트
+- 3개 직접 Finder 검출 테스트
+- 7개 포맷 정보 추출 테스트
+- 13개 버전 정보 추출 테스트
 
-- 전체 QR 파이프라인 테스트
-- 버전 1-40 전체 커버리지
-- 에러 정정 레벨 (L, M, Q, H) 검증
-- ISO/IEC 18004 표준 예제 검증
+### 유틸리티 테스트 (13개)
+- 기하학 유틸리티 테스트
 
-## 🏗️ 현재 개발 중
+## 🏗️ 구현 현황
 
-### Detection Process (구현 중)
-- ✅ Step 1: 이미지 입력 (파일 업로드, 드래그앤드롭, 샘플 이미지 자동 로드)
-- ✅ Step 2: 그레이스케일 변환 (ITU-R BT.709 표준, 히스토그램 시각화)
-- ✅ Step 3: 이진화 (Sauvola 적응 임계값, 적분 이미지 최적화)
-- ✅ Step 4: Finder 패턴 검출 (라인 스캔 알고리즘, 개선된 3점 선택)
-- ⏳ Step 5: 원근 변환 (Homography)
-- ⏳ Step 6: 모듈 샘플링
-- ⏳ Step 7: Tri-state 행렬 생성
+### ✅ Encoding Process (완료)
+모든 7단계 완전 구현:
+1. 데이터 분석 및 모드 선택
+2. 데이터 인코딩 (비트 스트림 생성)
+3. Reed-Solomon 에러 정정
+4. 최종 메시지 구성
+5. 모듈 배치 (8개 세부 단계)
+6. 마스킹 패턴 적용
+7. 포맷/버전 정보 추가
+
+### 🏗️ Detection Process (구현 중)
+- ✅ Step 1: 이미지 입력 (파일 업로드, 카메라, 가상 카메라)
+- ✅ Step 2: 그레이스케일 변환 (ITU-R BT.709 표준)
+- ✅ Step 3: 이진화 (Sauvola 적응 임계값)
+- ✅ Step 4: Finder 패턴 검출 (OpenCV.js 윤곽선 기반)
+- ✅ Step 5: 원근 변환 (Homography with refinement)
+- ✅ Step 6: 모듈 샘플링 (tri-state 행렬 생성)
+
+### 🏗️ Decode Process (부분 구현)
+- ✅ 포맷 정보 추출 (BCH 에러 정정 포함)
+- ✅ 버전 정보 추출 (v7+ QR 코드)
+- ⏳ 마스크 패턴 제거
+- ⏳ 데이터 모듈 읽기
+- ⏳ Reed-Solomon 에러 정정
+- ⏳ 데이터 디코딩
 
 ## 🆕 향후 추가 예정 기능
 

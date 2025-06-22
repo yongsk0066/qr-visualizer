@@ -2,7 +2,7 @@ import type { HomographyResult, TriStateQR } from '../../types';
 
 /**
  * Homography 변환된 이미지에서 모듈을 샘플링하여 tri-state 행렬 생성
- * 각 모듈을 black(0), white(1), unknown(-1)로 분류
+ * 각 모듈을 black(1), white(0), unknown(-1)로 분류
  */
 export const runSampling = (
   imageData: ImageData,
@@ -72,10 +72,10 @@ export const runSampling = (
           const threshold = 128;
 
           if (avgValue < threshold - 20) {
-            matrix[row][col] = 0; // Black
+            matrix[row][col] = 1; // Black = 1
             blackCount++;
           } else if (avgValue > threshold + 20) {
-            matrix[row][col] = 1; // White
+            matrix[row][col] = 0; // White = 0
             whiteCount++;
           } else {
             matrix[row][col] = -1; // Unknown
