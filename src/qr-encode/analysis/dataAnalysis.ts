@@ -68,18 +68,20 @@ const calculateDataBits = (data: string, mode: QRMode): number => {
       return Math.floor(length / 3) * 10 + (length % 3 === 2 ? 7 : length % 3 === 1 ? 4 : 0);
     case 'alphanumeric':
       return Math.floor(length / 2) * 11 + (length % 2) * 6;
-    case 'byte':
+    case 'byte': {
       // UTF-8 바이트 길이 사용
       const encoder = new TextEncoder();
       const bytes = encoder.encode(data);
       return bytes.length * 8;
+    }
     case 'kanji':
       return length * 13;
-    default:
+    default: {
       // 기본값도 UTF-8 바이트 길이 사용
       const defaultEncoder = new TextEncoder();
       const defaultBytes = defaultEncoder.encode(data);
       return defaultBytes.length * 8;
+    }
   }
 };
 
