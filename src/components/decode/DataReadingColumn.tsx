@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { DataReadingResult } from '../../qr-decode/decode/data-reading/types';
-import { bitStreamToHex } from '../../qr-decode/decode/data-reading/dataReader';
 
 interface DataReadingColumnProps {
   dataReadingResult: DataReadingResult | null;
@@ -122,9 +121,6 @@ export function DataReadingColumn({
   for (let i = 0; i < bitStream.length; i += 8) {
     bitGroups.push(bitStream.slice(i, i + 8));
   }
-
-  // 16진수 변환
-  const hexString = bitStreamToHex(bitStream);
 
   // 8가지 색상 (무지개색)
   const byteColors = [

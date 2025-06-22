@@ -2,12 +2,14 @@ import type { FormatInfoResult } from './format-extraction/types';
 import type { VersionInfoResult } from './version-extraction/types';
 import type { MaskRemovalResult } from './mask-removal/types';
 import type { DataReadingResult } from './data-reading/types';
+import type { ErrorCorrectionResult } from './error-correction/types';
 
 export interface DecodePipelineResult {
   formatInfo: FormatInfoResult | null;
   versionInfo: VersionInfoResult | null;
   maskRemoval: MaskRemovalResult | null;
   dataReading: DataReadingResult | null;
+  errorCorrection: ErrorCorrectionResult | null;
   unmaskedMatrix: (0 | 1)[][] | null;
   rawBitStream: string | null;
   codewords: CodewordBlocks | null;

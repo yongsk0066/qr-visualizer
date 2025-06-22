@@ -170,6 +170,23 @@ src/
 │   │   │       ├── zigzagPattern.ts       # 지그재그 패턴 생성
 │   │   │       ├── zigzagPattern.test.ts  # 6개 테스트
 │   │   │       └── codewordInfo.ts        # 코드워드 정보 유틸리티
+│   │   ├── error-correction/       # 에러 정정
+│   │   │   ├── types.ts            # 에러 정정 타입 정의
+│   │   │   ├── errorCorrector.ts   # 메인 에러 정정 로직
+│   │   │   ├── errorCorrector.test.ts # 8개 메인 로직 테스트
+│   │   │   ├── deinterleaver/
+│   │   │   │   ├── deinterleaver.ts       # 디인터리빙 로직
+│   │   │   │   └── deinterleaver.test.ts  # 5개 디인터리빙 테스트
+│   │   │   ├── reed-solomon/
+│   │   │   │   ├── syndrome.ts            # 신드롬 계산
+│   │   │   │   ├── syndrome.test.ts       # 7개 신드롬 테스트
+│   │   │   │   ├── berlekampMassey.ts     # Berlekamp-Massey 알고리즘
+│   │   │   │   ├── berlekampMassey.test.ts # 8개 BM 알고리즘 테스트
+│   │   │   │   ├── errorEvaluator.ts      # Forney 알고리즘 에러 값 계산
+│   │   │   │   └── errorEvaluator.test.ts # 6개 에러 값 테스트
+│   │   │   └── utils/
+│   │   │       ├── galoisField.ts         # GF(256) 연산 재사용
+│   │   │       └── polynomial.ts          # 다항식 연산
 │   │   ├── decodePipeline.ts       # 디코드 파이프라인
 │   │   └── types.ts                # 디코드 결과 타입
 │   └── types.ts            # 디코딩 관련 타입 정의
@@ -201,7 +218,8 @@ src/
 │   │   ├── FormatExtractionColumn.tsx # 포맷 정보 추출 시각화
 │   │   ├── VersionExtractionColumn.tsx # 버전 정보 추출 시각화
 │   │   ├── MaskRemovalColumn.tsx    # 마스크 패턴 제거 시각화
-│   │   └── DataReadingColumn.tsx    # 데이터 모듈 읽기 시각화
+│   │   ├── DataReadingColumn.tsx    # 데이터 모듈 읽기 시각화
+│   │   └── ErrorCorrectionColumn.tsx # 에러 정정 시각화
 │   └── QRDecodeProcess.tsx          # Decode 프로세스 메인
 │
 └── shared/                 # 전역 공유 모듈
@@ -379,18 +397,29 @@ src/
   - Rainbow-colored byte blocks for reading order clarity
   - Confidence calculation with detailed explanation
   - Full interleaved codeword display without scrolling
-- Error correction decoding (TODO)
+- Error correction decoding ✅
+  - Reed-Solomon error correction algorithm implementation
+  - Deinterleaving of codeword blocks following ISO/IEC 18004 Section 7.5.2
+  - Syndrome calculation with GF(256) Galois field operations
+  - Berlekamp-Massey algorithm for error locator polynomial
+  - Chien search for error position finding
+  - Forney algorithm for error magnitude calculation
+  - Block-wise error correction with verification
+  - Visual block status display with syndrome visualization
+  - Confidence calculation based on successful block corrections
+  - Support for all QR versions and error correction levels
 - Data extraction and interpretation (TODO)
 
 #### 📊 Complete Implementation Summary:
 - **Encoding Process**: All 7 steps fully implemented with 264 tests (202 unit + 62 integration)
-- **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) partially complete
+- **Detection Process**: Steps 1-6 implemented, Step 7 (decoding) in progress
   - Format extraction ✅
   - Version extraction ✅
   - Mask pattern removal ✅
   - Data module reading ✅
-  - Remaining decode steps in progress
-- **Total Test Coverage**: 338 tests (264 encoding + 61 detection/decode + 13 utilities)
+  - Error correction decoding ✅
+  - Data interpretation in progress
+- **Total Test Coverage**: 372 tests (264 encoding + 61 detection + 34 error correction + 13 utilities)
 
 #### 🏗 Application Structure:
 - **Encoding Pipeline**: `src/qr-encode/qrPipeline.ts` - Centralized encoding pipeline
@@ -420,11 +449,12 @@ src/
     - Binarization: 7 tests (Sauvola algorithm)
     - Timing Pattern Counter: 6 tests (module counting)
     - Direct Finder Detection: 3 tests (pattern matching)
-  - **Decode Process Tests**: 41 comprehensive tests
+  - **Decode Process Tests**: 75 comprehensive tests
     - Format Extraction: 7 tests (BCH error correction, edge cases)
     - Version Extraction: 13 tests (BCH error correction, dual location)
     - Mask Removal: 6 tests (all patterns, module classification)
     - Data Reading: 15 tests (zigzag pattern, codeword conversion, all versions)
+    - Error Correction: 34 tests (deinterleaving, Reed-Solomon algorithms, block processing)
   - **Shared Utilities Tests**: 13 tests
     - Geometry utilities: 13 tests (line intersection, scaling, etc.)
   - **Integration Tests**: 62 comprehensive pipeline tests

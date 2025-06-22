@@ -52,4 +52,33 @@ export class GaloisField256 {
     this.ensureInitialized();
     return this.expTable![i % 255];
   }
+  
+  /**
+   * 로그 테이블 접근 (log_α(x))
+   */
+  static getLog(x: number): number {
+    if (x === 0) throw new Error('log(0) is undefined');
+    this.ensureInitialized();
+    return this.logTable![x];
+  }
+  
+  /**
+   * 갈루아 필드에서 나눗셈
+   */
+  static divide(a: number, b: number): number {
+    if (b === 0) throw new Error('Division by zero');
+    if (a === 0) return 0;
+    
+    this.ensureInitialized();
+    return this.expTable![(this.logTable![a] - this.logTable![b] + 255) % 255];
+  }
+  
+  /**
+   * 갈루아 필드에서 역원 계산
+   */
+  static inverse(a: number): number {
+    if (a === 0) throw new Error('0 has no inverse');
+    this.ensureInitialized();
+    return this.expTable![(255 - this.logTable![a]) % 255];
+  }
 }

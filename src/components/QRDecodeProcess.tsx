@@ -7,6 +7,7 @@ import { FormatExtractionColumn } from './decode/FormatExtractionColumn';
 import { VersionExtractionColumn } from './decode/VersionExtractionColumn';
 import { MaskRemovalColumn } from './decode/MaskRemovalColumn';
 import { DataReadingColumn } from './decode/DataReadingColumn';
+import { ErrorCorrectionColumn } from './decode/ErrorCorrectionColumn';
 
 interface QRDecodeProcessProps {
   triStateMatrix: TriStateQR | null;
@@ -69,12 +70,18 @@ export function QRDecodeProcess({ triStateMatrix }: QRDecodeProcessProps) {
         />
       </ProcessingWrapper>
       
+      <ProcessingWrapper isProcessing={isProcessing}>
+        <ErrorCorrectionColumn 
+          errorCorrectionResult={decodeResult?.errorCorrection ?? null}
+          codewords={decodeResult?.dataReading?.codewords ?? null}
+        />
+      </ProcessingWrapper>
+      
       {/* TODO: 나머지 단계들 */}
       <div className="step-column">
         <h2 className="font-medium mb-3">다음 단계</h2>
         <div className="text-gray-500 text-sm">
           <div className="space-y-2">
-            <div>• 5단계: 에러 정정</div>
             <div>• 6단계: 데이터 디코딩</div>
           </div>
           <div className="mt-4 p-2 bg-blue-50 rounded">
