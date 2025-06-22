@@ -1,32 +1,11 @@
 import { pipe } from '@mobily/ts-belt';
 import type { ImageProcessingResult, GrayscaleResult } from '../../types';
+import { loadImageToCanvas as loadImageUtil, calculateStatistics as calculateStatsUtil } from '../../../shared/utils/image';
 
-// Canvas에서 이미지 데이터 추출
+// Canvas에서 이미지 데이터 추출 (기존 코드와의 호환성 유지)
 export const loadImageToCanvas = async (imageUrl: string): Promise<ImageData> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous'; // CORS 이슈 해결
-    
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        reject(new Error('Failed to get 2D context'));
-        return;
-      }
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, img.width, img.height);
-      resolve(imageData);
-    };
-    
-    img.onerror = () => {
-      reject(new Error('Failed to load image'));
-    };
-    
-    img.src = imageUrl;
-  });
+  const result = await loadImageUtil(imageUrl);
+  return result.ctx.getImageData(0, 0, result.width, result.height);
 };
 
 // 이미지를 그레이스케일로 변환
@@ -47,26 +26,9 @@ export const convertToGrayscale = (imageData: ImageData): Uint8Array => {
   return grayscale;
 };
 
-// 그레이스케일 통계 계산
+// 그레이스케일 통계 계산 (기존 코드와의 호환성 유지)
 export const calculateStatistics = (grayscale: Uint8Array) => {
-  const histogram = new Array(256).fill(0);
-  let min = 255;
-  let max = 0;
-  let sum = 0;
-  
-  for (const value of grayscale) {
-    histogram[value]++;
-    min = Math.min(min, value);
-    max = Math.max(max, value);
-    sum += value;
-  }
-  
-  return {
-    min,
-    max,
-    mean: sum / grayscale.length,
-    histogram
-  };
+  return calculateStatsUtil(Array.from(grayscale));
 };
 
 // 이미지 처리 파이프라인

@@ -1,5 +1,6 @@
 import type { BinarizationResult, FinderDetectionResult, FinderPattern } from '../../types';
 import type { OpenCVMat, OpenCVMatVector } from '../../../types/opencv';
+import { distance } from '../../../shared/utils/geometry';
 
 // OpenCV.js 초기화 확인
 let cvReady = false;
@@ -337,12 +338,6 @@ function selectBestThreePatterns(patterns: FinderPattern[]): FinderPattern[] {
   return selected;
 }
 
-/**
- * 두 점 사이의 거리 계산
- */
-function distance(p1: { x: number; y: number }, p2: { x: number; y: number }): number {
-  return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
-}
 
 /**
  * 세 패턴이 유효한 삼각형을 형성하는지 확인

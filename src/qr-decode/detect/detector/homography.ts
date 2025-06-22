@@ -1,32 +1,7 @@
 import type { FinderDetectionResult, HomographyResult } from '../../types';
 import { countTimingPatternModules } from './timingPatternCounter';
+import { calculateLineIntersection } from '../../../shared/utils/geometry';
 
-/**
- * 두 직선의 교점 계산
- */
-function calculateLineIntersection(
-  line1: { p1: { x: number; y: number }; p2: { x: number; y: number } },
-  line2: { p1: { x: number; y: number }; p2: { x: number; y: number } }
-): { x: number; y: number } | null {
-  const x1 = line1.p1.x,
-    y1 = line1.p1.y;
-  const x2 = line1.p2.x,
-    y2 = line1.p2.y;
-  const x3 = line2.p1.x,
-    y3 = line2.p1.y;
-  const x4 = line2.p2.x,
-    y4 = line2.p2.y;
-
-  const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-  if (Math.abs(denom) < 0.001) return null; // 평행선
-
-  const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
-
-  return {
-    x: x1 + t * (x2 - x1),
-    y: y1 + t * (y2 - y1),
-  };
-}
 
 /**
  * Homography 변환을 계산하여 QR 코드를 정면에서 본 것처럼 변환
