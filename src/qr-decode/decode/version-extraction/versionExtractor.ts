@@ -20,8 +20,8 @@ export const extractVersionInfo = (triStateQR: TriStateQR): VersionInfoResult | 
 
   // 버전 6 이하는 버전 정보가 없음
   // 크기로 버전 추정: version = (size - 17) / 4
-  const estimatedVersion = (size - 17) / 4;
-  if (estimatedVersion <= 6) {
+  const estimatedVersion = Math.floor((size - 17) / 4);
+  if (estimatedVersion < 7) {
     return null; // 버전 정보 영역이 없음
   }
 

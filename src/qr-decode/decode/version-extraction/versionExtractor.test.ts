@@ -275,8 +275,8 @@ function createMatrixWithDifferentVersionInfo(
 
 function toBinaryArray(value: number, length: number): (0|1)[] {
   const result: (0|1)[] = [];
-  // MSB first로 변경 (encode와 동일하게)
-  for (let i = length - 1; i >= 0; i--) {
+  // LSB first로 변경 (encode와 동일하게)
+  for (let i = 0; i < length; i++) {
     result.push(((value >> i) & 1) as 0 | 1);
   }
   return result;
