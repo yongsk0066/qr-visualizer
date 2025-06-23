@@ -1,0 +1,11 @@
+{
+  "name": "qr-visualizer-scripts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate-og": "node generate-og-simple.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.2"
+  }
+}
