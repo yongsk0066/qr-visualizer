@@ -130,13 +130,20 @@
   },
   "messageConstruction": {
     "waitingForData": "비트스트림 생성을 위한 데이터를 기다리는 중...",
+    "combiningData": "데이터와 에러 정정 코드를 결합하여 최종 비트스트림을 생성합니다",
+    "willDisplayAfterEC": "에러 정정이 완료되면 최종 비트스트림이 표시됩니다",
     "constructingBitstream": "인터리빙된 코드워드를 최종 비트스트림으로 변환합니다",
     "bitstreamInfo": "비트스트림 정보",
-    "totalBits": "전체 비트",
+    "totalBits": "총 비트 수",
+    "dataBits": "데이터 비트",
+    "ecBits": "에러 정정 비트",
+    "remainderBits": "잔여 비트",
     "dataSection": "데이터 부분",
     "ecSection": "에러 정정",
     "remainder": "나머지",
-    "finalBitstream": "최종 비트스트림"
+    "finalBitstream": "최종 비트스트림",
+    "legend": "범례",
+    "nextStep": "다음: 모듈 배치 및 마스킹"
   },
   "modulePlacement": {
     "waitingForData": "모듈 배치를 위한 데이터를 기다리는 중...",
@@ -150,7 +157,24 @@
     "alignmentPatterns": "5. 얼라인먼트 패턴",
     "formatVersion": "6. 포맷/버전 영역",
     "zigzagPattern": "6a. 지그재그 패턴",
-    "dataPlacement": "7. 데이터 배치"
+    "dataPlacement": "7. 데이터 배치",
+    "addedModules": "모듈",
+    "stepCompleted": "5단계 완성",
+    "finalPlacementComplete": "최종 모듈 배치 완료",
+    "blackWhiteVersion": "흑백 버전",
+    "moduleType": "모듈 타입",
+    "moduleTypes": {
+      "finder": "파인더",
+      "separator": "분리자",
+      "timing": "타이밍",
+      "alignment": "얼라인먼트",
+      "format": "포맷",
+      "version": "버전",
+      "zigzag": "지그재그",
+      "data": "데이터",
+      "empty": "빈 공간"
+    },
+    "eightBitBlocks": "8비트 블록 (무지개 색상)"
   },
   "masking": {
     "waitingForData": "마스킹을 위한 매트릭스 데이터를 기다리는 중...",

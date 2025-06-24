@@ -130,13 +130,20 @@
   },
   "messageConstruction": {
     "waitingForData": "Waiting for data to generate bitstream...",
+    "combiningData": "Combining data and error correction codes to generate final bitstream",
+    "willDisplayAfterEC": "Final bitstream will be displayed after error correction",
     "constructingBitstream": "Converting interleaved codewords to final bitstream",
     "bitstreamInfo": "Bitstream info",
     "totalBits": "Total bits",
+    "dataBits": "Data bits",
+    "ecBits": "Error correction bits",
+    "remainderBits": "Remainder bits",
     "dataSection": "Data section",
     "ecSection": "Error correction",
     "remainder": "Remainder",
-    "finalBitstream": "Final bitstream"
+    "finalBitstream": "Final bitstream",
+    "legend": "Legend",
+    "nextStep": "Next: Module placement and masking"
   },
   "modulePlacement": {
     "waitingForData": "Waiting for data to place modules...",
@@ -150,7 +157,24 @@
     "alignmentPatterns": "5. Alignment patterns",
     "formatVersion": "6. Format/Version areas",
     "zigzagPattern": "6a. Zigzag pattern",
-    "dataPlacement": "7. Data placement"
+    "dataPlacement": "7. Data placement",
+    "addedModules": "modules",
+    "stepCompleted": "Step 5 completed",
+    "finalPlacementComplete": "Final module placement complete",
+    "blackWhiteVersion": "Black & white version",
+    "moduleType": "Module types",
+    "moduleTypes": {
+      "finder": "Finder",
+      "separator": "Separator",
+      "timing": "Timing",
+      "alignment": "Alignment",
+      "format": "Format",
+      "version": "Version",
+      "zigzag": "Zigzag",
+      "data": "Data",
+      "empty": "Empty"
+    },
+    "eightBitBlocks": "8-bit blocks (rainbow colors)"
   },
   "masking": {
     "waitingForData": "Waiting for matrix data to apply masking...",
