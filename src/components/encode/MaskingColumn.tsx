@@ -269,16 +269,16 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
         <div className="font-medium mb-1">{t('masking.evaluationSteps.title')}</div>
         <div className="space-y-1">
           <div>
-            <strong>{t('masking.fullPattern')}:</strong> 전체 매트릭스에 수학적 패턴 적용
+            <strong>{t('masking.fullPattern')}:</strong> {t('masking.evaluationSteps.fullPatternDesc')}
           </div>
           <div>
-            <strong>{t('masking.encodingRegionOnly')}:</strong> 데이터 영역에만 패턴 필터링
+            <strong>{t('masking.encodingRegionOnly')}:</strong> {t('masking.evaluationSteps.encodingRegionDesc')}
           </div>
           <div>
-            <strong>{t('masking.xorResult')}:</strong> 원본 QR과 마스크를 XOR한 최종 결과
+            <strong>{t('masking.xorResult')}:</strong> {t('masking.evaluationSteps.xorResultDesc')}
           </div>
           <div>
-            <strong>{t('masking.penaltyScore')}:</strong> ISO/IEC 18004 기준 4가지 평가 항목
+            <strong>{t('masking.penaltyScore')}:</strong> {t('masking.evaluationSteps.penaltyScoreDesc')}
           </div>
         </div>
         <div className="mt-2 space-y-1">
@@ -299,7 +299,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
         </div>
         <div className="mt-2 p-1 bg-green-100 rounded">
           <div className="text-green-700 font-medium">
-            ⭐ 가장 낮은 총 {t('masking.penaltyScore')}를 가진 패턴이 선택됩니다
+            {t('masking.evaluationSteps.bestPatternNote')}
           </div>
         </div>
       </div>

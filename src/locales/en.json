@@ -174,7 +174,41 @@
       "data": "Data",
       "empty": "Empty"
     },
-    "eightBitBlocks": "8-bit blocks (rainbow colors)"
+    "eightBitBlocks": "8-bit blocks (rainbow colors)",
+    "steps": {
+      "emptyMatrix": {
+        "name": "5-1: Empty Matrix",
+        "description": "{{size}}×{{size}} empty matrix initialization"
+      },
+      "finderPatterns": {
+        "name": "5-2: Finder Patterns",
+        "description": "Place 3 finder patterns (7×7)"
+      },
+      "separators": {
+        "name": "5-3: Separators",
+        "description": "Place separators around finder patterns"
+      },
+      "timingPatterns": {
+        "name": "5-4: Timing Patterns",
+        "description": "Place alternating timing patterns on row 6/col 6"
+      },
+      "alignmentPatterns": {
+        "name": "5-5: Alignment Patterns",
+        "description": "Place {{count}} alignment patterns (5×5)"
+      },
+      "formatInfo": {
+        "name": "5-6: Format Info",
+        "description": "Format info (15 bits×2) + dark module{{versionInfo}}"
+      },
+      "zigzagPattern": {
+        "name": "5-6A: Zigzag Pattern",
+        "description": "Zigzag pattern for 8-bit blocks ({{totalBlocks}} blocks)"
+      },
+      "dataPlacement": {
+        "name": "5-7: Data Placement",
+        "description": "Place {{placedBits}} data bits in zigzag + initialize remaining area"
+      }
+    }
   },
   "masking": {
     "waitingForData": "Waiting for matrix data to apply masking...",
@@ -198,7 +232,11 @@
       "step2": "2×2 same-color blocks",
       "step3": "1:1:3:1:1 finder pattern similarity",
       "step4": "Dark module ratio (deviation from 50%)",
-      "bestPatternNote": "⭐ Pattern with lowest total penalty score is selected"
+      "bestPatternNote": "⭐ Pattern with lowest total penalty score is selected",
+      "fullPatternDesc": "Apply mathematical pattern to entire matrix",
+      "encodingRegionDesc": "Filter pattern to data area only",
+      "xorResultDesc": "Final result of XOR between original QR and mask",
+      "penaltyScoreDesc": "4 evaluation criteria per ISO/IEC 18004"
     }
   },
   "finalGeneration": {
@@ -295,19 +333,6 @@
     "sauvolaStep3": "Using formula T = μ × (1 + k × (σ/R - 1))",
     "sauvolaStep4": "Calculate statistics in O(1) time using integral images",
     "noImageDescription": "Binarization will be displayed when grayscale conversion is complete"
-  },
-  "finderDetection": {
-    "detectingPatterns": "Detecting contours in binarized image to find finder patterns",
-    "patternPositions": "Finder pattern positions",
-    "contourScans": " scans",
-    "refinedHomography": "Refined homography"
-  },
-  "sampling": {
-    "gridToggle": "Toggle grid pattern",
-    "statistics": "Statistics",
-    "black": "Black",
-    "white": "White",
-    "unknown": "Unknown"
   },
   "formatExtraction": {
     "location": "Location",
@@ -685,6 +710,11 @@
       "step4": "4. Calculate pattern scores and select top 3",
       "step5": "5. Position-based pattern classification (top-left, top-right, bottom-left)"
     },
+    "algorithmStep1": "Detect contours in binarized image",
+    "algorithmStep2": "Filter square contours",
+    "algorithmStep3": "Analyze nested contour structure (1:1:3:1:1 ratio)",
+    "algorithmStep4": "Calculate pattern scores and select top 3",
+    "algorithmStep5": "Position-based pattern classification (top-left, top-right, bottom-left)"},
     "legend": {
       "finderContour": "Finder contour",
       "squareContour": "Square contour",
@@ -692,6 +722,18 @@
       "selectedPattern": "Selected pattern",
       "patternCenter": "Pattern center"
     },
+    "description": "Using OpenCV.js to detect 3 finder patterns in QR code",
+    "patternDetectionResult": "Pattern detection result",
+    "grayBox": "Gray boxes: All contours",
+    "redBox": "Red boxes: Finder pattern candidates",
+    "numbers": "Numbers: Finder pattern scores",
+    "greenDashedLine": "Green dashed line: Estimated QR code boundary",
+    "greenDots": "Green dots: QR code corners (TL, TR, BL, BR)",
+    "candidatePatterns": "Candidate patterns",
+    "selectedPatterns": "Selected patterns",
+    "waitingForBinarization": "Finder pattern detection will be displayed when binarization is complete",
+    "moduleSize": "Module size",
+    "estimated": "Estimated",
     "details": {
       "imageSize": "Image size",
       "contoursFound": "Contours found",
@@ -702,8 +744,7 @@
       "score": "Score",
       "position": "Position",
       "squareContours": "Square contours"
-    }
-  },
+    },
   "sampling": {
     "gridToggle": "Toggle grid pattern",
     "statistics": "Statistics",

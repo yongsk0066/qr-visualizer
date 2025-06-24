@@ -195,14 +195,14 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
       // 디버깅 정보 표시
       ctx.fillStyle = '#000000';
       ctx.font = `${fontSize}px Arial`;
-      ctx.fillText(`Module size: ${moduleSize.toFixed(2)}px`, 10 * scale, 20 * scale);
+      ctx.fillText(`${t('finderDetection.moduleSize')}: ${moduleSize.toFixed(2)}px`, 10 * scale, 20 * scale);
 
       const estimatedModules = Math.round(
         Math.sqrt(Math.pow(trCorner.x - tlCorner.x, 2) + Math.pow(blCorner.y - tlCorner.y, 2)) /
           moduleSize
       );
       const estimatedVersion = Math.round((estimatedModules - 17) / 4);
-      ctx.fillText(`Estimated: ${estimatedModules} modules (v${estimatedVersion})`, 10 * scale, 40 * scale);
+      ctx.fillText(`${t('finderDetection.estimated')}: ${estimatedModules} ${t('common.modules')} (v${estimatedVersion})`, 10 * scale, 40 * scale);
     }
   }, [finderDetection]);
 
