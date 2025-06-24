@@ -275,7 +275,26 @@
   },
   "binarization": {
     "threshold": "Threshold",
-    "showThresholdMap": "Show threshold map"
+    "showThresholdMap": "▶ Show threshold map",
+    "hideThresholdMap": "▼ Hide threshold map",
+    "description": "Convert grayscale image to black and white to clearly distinguish modules",
+    "binarizationResult": "Binarization result",
+    "sauvolaApplied": "Sauvola adaptive threshold binarization applied",
+    "adaptiveThresholdMap": "Adaptive threshold map",
+    "thresholdVisualization": "Local threshold visualization per pixel (brighter means higher threshold)",
+    "binarizationInfo": "Binarization info",
+    "sauvolaParameters": "Sauvola parameters",
+    "windowSize": "Window size",
+    "kValue": "k value",
+    "pixelStatistics": "Pixel statistics",
+    "blackPixels": "Black pixels",
+    "whitePixels": "White pixels",
+    "sauvolaTitle": "Sauvola adaptive binarization",
+    "sauvolaStep1": "Dynamic threshold determination based on local window",
+    "sauvolaStep2": "Binarization method robust to illumination changes",
+    "sauvolaStep3": "Using formula T = μ × (1 + k × (σ/R - 1))",
+    "sauvolaStep4": "Calculate statistics in O(1) time using integral images",
+    "noImageDescription": "Binarization will be displayed when grayscale conversion is complete"
   },
   "finderDetection": {
     "detectingPatterns": "Detecting contours in binarized image to find finder patterns",

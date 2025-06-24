@@ -281,7 +281,26 @@
   },
   "binarization": {
     "threshold": "임계값",
-    "showThresholdMap": "임계값 맵 표시"
+    "showThresholdMap": "▶ 임계값 맵 보기",
+    "hideThresholdMap": "▼ 임계값 맵 숨기기",
+    "description": "그레이스케일 이미지를 흑백으로 변환하여 모듈을 명확히 구분합니다",
+    "binarizationResult": "이진화 결과",
+    "sauvolaApplied": "Sauvola 적응형 임계값 이진화 적용",
+    "adaptiveThresholdMap": "적응형 임계값 맵",
+    "thresholdVisualization": "각 픽셀별 로컨 임계값 시각화 (밝을수록 높은 임계값)",
+    "binarizationInfo": "이진화 정보",
+    "sauvolaParameters": "Sauvola 파라미터",
+    "windowSize": "윈도우 크기",
+    "kValue": "k 값",
+    "pixelStatistics": "픽셀 통계",
+    "blackPixels": "검은 픽셀",
+    "whitePixels": "흰 픽셀",
+    "sauvolaTitle": "Sauvola 적응형 이진화",
+    "sauvolaStep1": "로컨 윈도우 기반 동적 임계값 결정",
+    "sauvolaStep2": "조명 변화에 강건한 이진화 방법",
+    "sauvolaStep3": "T = μ × (1 + k × (σ/R - 1)) 공식 사용",
+    "sauvolaStep4": "적분 이미지로 O(1) 시간에 통계 계산",
+    "noImageDescription": "그레이스케일 변환이 완료되면 이진화가 표시됩니다"
   },
   "finderDetection": {
     "detectingPatterns": "파인더 패턴을 찾기 위해 이진화된 이미지에서 윤곽선을 검출합니다",
