@@ -250,7 +250,11 @@
     "pattern": "Pattern",
     "version": "Version",
     "unknown": "Unknown",
-    "count": ""
+    "count": "",
+    "unit": "",
+    "loading": "Loading",
+    "size": "Size",
+    "status": "Status"
   },
   "grayscale": {
     "noImage": "No image",
@@ -453,6 +457,12 @@
     },
     "rsPosition": "RS position:"
   },
+  "fileInput": {
+    "selectFile": "Select file",
+    "clickOrDrag": "Click or drag image to upload",
+    "supportedFormats": "Supports PNG, JPG, JPEG, GIF image files",
+    "useTestImage": "Use test image"
+  },
   "ui": {
     "dragDropImage": "Drag and drop image here",
     "or": "or",
@@ -493,7 +503,9 @@
     "completed": "Completed",
     "loading": "Loading...",
     "error": "Error",
-    "complete": "Complete"
+    "complete": "Complete",
+    "size": "Size",
+    "status": "Status"
   },
   "modulePlacement": {
     "waitingForData": "Waiting for data to place modules...",
@@ -690,19 +702,46 @@
       "fileUpload": "Select or drag and drop an image file to upload",
       "camera": "Capture in real-time using webcam",
       "virtualCamera": "Capture QR code in 3D virtual environment"
-    }
+    },
+    "fileUpload": "File upload",
+    "camera": "Camera",
+    "virtualCamera": "Virtual camera",
+    "uploadedImage": "Uploaded image",
+    "processingStatus": "Processing status",
+    "frameSize": "Frame size",
+    "analyzing": "Analyzing...",
+    "monitoring": "Monitoring",
+    "inputMethods": "Input methods",
+    "fileUploadDesc": "File upload: Select or drag image file to upload",
+    "cameraDesc": "Camera: Real-time capture using webcam",
+    "virtualCameraDesc": "Virtual camera: Capture QR code in 3D virtual environment",
+    "virtualCameraLoading": "Loading virtual camera..."
   },
   "virtualCamera": {
     "3dView": "3D QR Code View",
+    "capturing": "Real-time capturing",
     "realtimeCapturing": "Real-time capturing",
     "settings": "Virtual Camera Settings",
     "realtimeInterval": "Real-time (500ms)",
     "throwTomato": "Throw tomato",
+    "tomatoesThrown": "Tomatoes thrown",
+    "damageSpots": "Damage spots",
+    "captureMode": "Capture mode",
+    "captureResolution": "Capture resolution",
+    "realtime": "Real-time",
+    "manual": "Manual",
+    "manualCapture": "Manual capture",
+    "stopRealtime": "Stop real-time",
+    "startRealtime": "Start real-time",
     "damageCount": "Damage count",
     "throwing": "🍅 Throwing...",
     "throwTomatoBtn": "🍅 Throw Tomato",
     "reset": "🧽 Reset",
     "features": "Virtual Camera Features",
+    "featureDrag": "Render QR code in 3D environment",
+    "featureZoom": "Change viewpoint with mouse/touch",
+    "featureTomato": "Simulate QR code damage with tomatoes",
+    "featureResolution": "Selectable capture resolution",
     "featuresList": {
       "3d": "• Render QR code in 3D environment",
       "interaction": "• Change viewpoint with mouse/touch",
@@ -720,6 +759,24 @@
       "realtime": "• Real-time: Auto-capture every 500ms",
       "close": "• Close camera to finish"
     }
+  },
+  "camera": {
+    "accessError": "Camera access permission is required.",
+    "cameraView": "Camera View",
+    "capturing": "Capturing",
+    "cameraInfo": "Camera Info",
+    "resolution": "Resolution",
+    "captureMode": "Capture mode",
+    "realtime": "Real-time",
+    "manual": "Manual",
+    "manualCapture": "Manual capture",
+    "stopRealtime": "Stop real-time",
+    "startRealtime": "Start real-time",
+    "stopCamera": "Close camera",
+    "captureMethod": "Camera Capture Method",
+    "manualCaptureDesc": "Manual: Click capture button at desired moment",
+    "realtimeModeDesc": "Real-time: Auto-capture every 500ms",
+    "positionTip": "Position QR code in the center of the screen"
   },
   "dataExtraction": {
     "extractingData": "Extracting original data from error-corrected codewords",

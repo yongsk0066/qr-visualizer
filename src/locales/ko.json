@@ -463,6 +463,12 @@
     },
     "rsPosition": "RS position:"
   },
+  "fileInput": {
+    "selectFile": "파일 선택",
+    "clickOrDrag": "클릭하거나 이미지를 드래그하여 업로드",
+    "supportedFormats": "PNG, JPG, JPEG, GIF 등 이미지 파일 지원",
+    "useTestImage": "테스트 이미지 사용"
+  },
   "ui": {
     "dragDropImage": "이미지를 여기에 드래그하세요",
     "or": "또는",
@@ -503,7 +509,9 @@
     "completed": "완성",
     "loading": "불러오는 중...",
     "error": "오류",
-    "complete": "완료"
+    "complete": "완료",
+    "size": "크기",
+    "status": "상태"
   },
   "modulePlacement": {
     "waitingForData": "모듈 배치를 위한 데이터를 기다리는 중...",
@@ -701,19 +709,46 @@
       "fileUpload": "이미지 파일을 선택하거나 드래그하여 업로드",
       "camera": "웹캠을 사용하여 실시간 캡처",
       "virtualCamera": "3D 가상 환경에서 QR 코드 캡처"
-    }
+    },
+    "fileUpload": "파일 업로드",
+    "camera": "카메라",
+    "virtualCamera": "가상 카메라",
+    "uploadedImage": "업로드된 이미지",
+    "processingStatus": "처리 상태",
+    "frameSize": "프레임 크기",
+    "analyzing": "분석 중...",
+    "monitoring": "모니터링 중",
+    "inputMethods": "입력 방법",
+    "fileUploadDesc": "파일 업로드: 이미지 파일을 선택하거나 드래그하여 업로드",
+    "cameraDesc": "카메라: 웹캠을 사용하여 실시간 캡처",
+    "virtualCameraDesc": "가상 카메라: 3D 가상 환경에서 QR 코드 캡처",
+    "virtualCameraLoading": "가상 카메라 로딩 중..."
   },
   "virtualCamera": {
     "3dView": "3D QR 코드 뷰",
+    "capturing": "실시간 캡처 중",
     "realtimeCapturing": "실시간 캡처 중",
     "settings": "가상 카메라 설정",
     "realtimeInterval": "실시간 (500ms)",
-    "throwTomato": "토마토 던짐",
+    "throwTomato": "토마토 던지기",
+    "tomatoesThrown": "던진 토마토",
+    "damageSpots": "손상 위치",
+    "captureMode": "캡처 모드",
+    "captureResolution": "캡처 해상도",
+    "realtime": "실시간",
+    "manual": "수동",
+    "manualCapture": "수동 캡처",
+    "stopRealtime": "실시간 정지",
+    "startRealtime": "실시간 시작",
     "damageCount": "얼룩 개수",
     "throwing": "🍅 던지는 중...",
     "throwTomatoBtn": "🍅 토마토 던지기",
     "reset": "🧽 초기화",
     "features": "가상 카메라 기능",
+    "featureDrag": "3D 환경에서 QR 코드 렌더링",
+    "featureZoom": "마우스/터치로 시점 변경",
+    "featureTomato": "토마토로 QR 코드 손상 시뮬레이션",
+    "featureResolution": "캡처 해상도 선택 가능",
     "featuresList": {
       "3d": "• 3D 환경에서 QR 코드 렌더링",
       "interaction": "• 마우스/터치로 시점 변경",
@@ -731,6 +766,24 @@
       "realtime": "• 실시간: 500ms마다 자동 캡처",
       "close": "• 카메라 닫기로 종료"
     }
+  },
+  "camera": {
+    "accessError": "카메라 접근 권한이 필요합니다.",
+    "cameraView": "카메라 화면",
+    "capturing": "캡처 중",
+    "cameraInfo": "카메라 정보",
+    "resolution": "해상도",
+    "captureMode": "캡처 모드",
+    "realtime": "실시간",
+    "manual": "수동",
+    "manualCapture": "수동 캡처",
+    "stopRealtime": "실시간 정지",
+    "startRealtime": "실시간 시작",
+    "stopCamera": "카메라 닫기",
+    "captureMethod": "카메라 캡처 방법",
+    "manualCaptureDesc": "수동: 원하는 시점에 캡처 버튼 클릭",
+    "realtimeModeDesc": "실시간: 500ms마다 자동 캡처",
+    "positionTip": "QR 코드가 화면 중앙에 오도록 조정하세요"
   },
   "dataExtraction": {
     "extractingData": "에러 정정된 코드워드에서 원본 데이터를 추출합니다",
