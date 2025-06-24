@@ -258,7 +258,20 @@
   },
   "grayscale": {
     "noImage": "No image",
-    "histogram": "Histogram"
+    "histogram": "Histogram",
+    "description": "Convert color image to grayscale to prepare for QR code processing",
+    "conversionResult": "Conversion result",
+    "brightnessHistogram": "Brightness distribution histogram",
+    "pixelDistribution": "Pixel distribution in range 0 (black) ~ 255 (white)",
+    "pixelStatistics": "Pixel statistics",
+    "minValue": "Min value",
+    "meanValue": "Mean value",
+    "maxValue": "Max value",
+    "conversionTitle": "Grayscale conversion",
+    "conversionStep1": "Using ITU-R BT.709 standard weights",
+    "conversionStep2": "Y = 0.299R + 0.587G + 0.114B",
+    "conversionStep3": "Conversion reflecting human visual characteristics",
+    "noImageDescription": "Grayscale conversion will be displayed when an image is selected"
   },
   "binarization": {
     "threshold": "Threshold",

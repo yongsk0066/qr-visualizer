@@ -264,7 +264,20 @@
   },
   "grayscale": {
     "noImage": "이미지가 없습니다",
-    "histogram": "히스토그램"
+    "histogram": "히스토그램",
+    "description": "커러 이미지를 흑백으로 변환하여 QR 코드 처리를 준비합니다",
+    "conversionResult": "변환 결과",
+    "brightnessHistogram": "밝기 분포 히스토그램",
+    "pixelDistribution": "0 (검정) ~ 255 (흰색) 범위의 픽셀 분포",
+    "pixelStatistics": "픽셀 통계",
+    "minValue": "최소값",
+    "meanValue": "평균값",
+    "maxValue": "최대값",
+    "conversionTitle": "그레이스케일 변환",
+    "conversionStep1": "ITU-R BT.709 표준 가중치 사용",
+    "conversionStep2": "Y = 0.299R + 0.587G + 0.114B",
+    "conversionStep3": "인간의 시각 특성을 반영한 변환",
+    "noImageDescription": "이미지를 선택하면 그레이스케일 변환이 표시됩니다"
   },
   "binarization": {
     "threshold": "임계값",
