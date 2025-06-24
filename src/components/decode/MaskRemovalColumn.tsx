@@ -145,30 +145,30 @@ export function MaskRemovalColumn({
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          데이터 영역에 적용된 마스크 패턴을 제거합니다
+          {t('maskRemoval.removingMask')}
         </p>
 
         {!maskRemovalResult || !triStateMatrix || !beforeMatrix || !maskVisualizationMatrix ? (
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🎭</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 마스크 패턴이 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('maskRemoval.willDisplayWhenDetected')}</div>
           </div>
         ) : (
           <>
             {/* 마스크 패턴 정보 */}
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">마스크 패턴 정보</div>
+              <div className="text-xs font-medium mb-2">{t('maskRemoval.maskPatternInfo')}</div>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">패턴 번호:</span>
-                  <span className="font-mono font-semibold">패턴 {maskRemovalResult.maskPattern}</span>
+                  <span className="text-gray-600">{t('maskRemoval.patternNumber')}</span>
+                  <span className="font-mono font-semibold">{t('maskRemoval.pattern')} {maskRemovalResult.maskPattern}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">데이터 모듈 수:</span>
+                  <span className="text-gray-600">{t('maskRemoval.dataModuleCount')}</span>
                   <span className="font-mono">{maskRemovalResult.dataModuleCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">마스크 적용된 모듈:</span>
+                  <span className="text-gray-600">{t('maskRemoval.maskedModules')}</span>
                   <span className="font-mono">{maskRemovalResult.maskedModules}</span>
                 </div>
               </div>
@@ -180,7 +180,7 @@ export function MaskRemovalColumn({
               <div className="flex gap-4 min-w-max justify-center">
                 {/* 원본 (마스크 제거 전) */}
                 <div className="flex flex-col items-center">
-                  <div className="text-xs font-medium mb-2">마스크 제거 전</div>
+                  <div className="text-xs font-medium mb-2">{t('maskRemoval.beforeMaskRemoval')}</div>
                   {beforeMatrix ? (
                     <Matrix
                       matrix={beforeMatrix}
@@ -190,14 +190,14 @@ export function MaskRemovalColumn({
                     />
                   ) : (
                     <div className="border border-gray-200 p-4 text-xs text-gray-500">
-                      원본 매트릭스 로딩 중...
+                      {t('maskRemoval.loadingMatrix')}
                     </div>
                   )}
                 </div>
 
                 {/* 마스크 패턴 */}
                 <div className="flex flex-col items-center">
-                  <div className="text-xs font-medium mb-2">× 마스크 패턴 {maskRemovalResult.maskPattern}</div>
+                  <div className="text-xs font-medium mb-2">× {t('maskRemoval.maskPattern')} {maskRemovalResult.maskPattern}</div>
                   {maskVisualizationMatrix ? (
                     <Matrix
                       matrix={maskVisualizationMatrix}
@@ -209,14 +209,14 @@ export function MaskRemovalColumn({
                     />
                   ) : (
                     <div className="border border-gray-200 p-4 text-xs text-gray-500">
-                      마스크 패턴 시각화 불가
+                      {t('maskRemoval.cannotVisualize')}
                     </div>
                   )}
                 </div>
 
                 {/* 결과 (마스크 제거 후) */}
                 <div className="flex flex-col items-center">
-                  <div className="text-xs font-medium mb-2">= 마스크 제거 후</div>
+                  <div className="text-xs font-medium mb-2">= {t('maskRemoval.afterMaskRemoval')}</div>
                   <Matrix
                     matrix={maskRemovalResult.unmaskedMatrix}
                     size={triStateMatrix.size}
@@ -230,10 +230,10 @@ export function MaskRemovalColumn({
             {/* 통계 정보 */}
             <div className="space-y-3">
               <div className="p-3 bg-gray-50 rounded">
-                <div className="text-xs font-medium mb-2">처리 통계</div>
+                <div className="text-xs font-medium mb-2">{t('maskRemoval.processingStatistics')}</div>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <div className="text-gray-600">마스크 적용률</div>
+                    <div className="text-gray-600">{t('maskRemoval.maskApplicationRate')}</div>
                     <div className="font-mono font-semibold">
                       {(() => {
                         const maskedCount = maskRemovalResult.maskedModules.flat().filter(m => m).length;
@@ -244,7 +244,7 @@ export function MaskRemovalColumn({
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-600">신뢰도</div>
+                    <div className="text-gray-600">{t('maskRemoval.confidence')}</div>
                     <div className="font-mono font-semibold">
                       {(maskRemovalResult.confidence * 100).toFixed(0)}%
                     </div>
@@ -252,7 +252,7 @@ export function MaskRemovalColumn({
                 </div>
                 {maskRemovalResult.unknownModuleCount > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Unknown 모듈:</span>
+                    <span className="text-gray-600">{t('maskRemoval.unknownModules')}</span>
                     <span className="font-mono text-orange-600">
                       {maskRemovalResult.unknownModuleCount}
                     </span>
@@ -268,35 +268,35 @@ export function MaskRemovalColumn({
 
               {/* 범례 */}
               <div className="p-2 bg-gray-50 rounded text-xs">
-                <div className="font-medium mb-1">색상 범례</div>
+                <div className="font-medium mb-1">{t('maskRemoval.colorLegend')}</div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 bg-blue-500"></div>
-                    <span>마스크 적용 데이터</span>
+                    <span>{t('maskRemoval.maskedData')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 bg-gray-300"></div>
-                    <span>마스크 미적용 데이터</span>
+                    <span>{t('maskRemoval.unmaskedData')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 bg-white border border-gray-300"></div>
-                    <span>기능 패턴</span>
+                    <span>{t('maskRemoval.functionPatterns')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 bg-black"></div>
-                    <span>검은 모듈</span>
+                    <span>{t('maskRemoval.blackModule')}</span>
                   </div>
                 </div>
               </div>
 
               {/* 설명 */}
               <div className="p-2 bg-blue-50 rounded text-xs">
-                <div className="font-medium mb-1">마스크 제거 과정</div>
+                <div className="font-medium mb-1">{t('maskRemoval.maskRemovalProcess')}</div>
                 <div className="space-y-0.5 text-gray-700">
-                  <div>• 포맷 정보에서 추출한 마스크 패턴 번호 사용</div>
-                  <div>• 데이터 모듈에만 마스크 패턴 적용 (기능 패턴 제외)</div>
-                  <div>• 마스크 위치에서 XOR 연산으로 원본 데이터 복원</div>
-                  <div>• Unknown 모듈은 흰색(0)으로 가정</div>
+                  <div>{t('maskRemoval.processStep1')}</div>
+                  <div>{t('maskRemoval.processStep2')}</div>
+                  <div>{t('maskRemoval.processStep3')}</div>
+                  <div>{t('maskRemoval.processStep4')}</div>
                 </div>
               </div>
             </div>
