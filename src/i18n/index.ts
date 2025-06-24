@@ -60,10 +60,21 @@ export function t(key: string): string {
   
   // Fallback to Korean if English translation is missing
   const fallback = getNestedValue(translations.ko, key);
-  if (fallback) return fallback;
+  if (fallback) {
+    // Log warning in development if current language translation is missing
+    if (import.meta.env.DEV && currentLanguage !== 'ko') {
+      console.warn(`Missing ${currentLanguage} translation for key: ${key}`);
+    }
+    return fallback;
+  }
   
-  // Return key if no translation found
-  return key;
+  // Log error in development if no translation found at all
+  if (import.meta.env.DEV) {
+    console.error(`Missing translation for key: ${key}`);
+  }
+  
+  // Return key with visual indicator in development
+  return import.meta.env.DEV ? `⚠️ ${key}` : key;
 }
 
 // Get current language

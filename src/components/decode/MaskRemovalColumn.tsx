@@ -259,7 +259,7 @@ export function MaskRemovalColumn({
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600">신뢰도:</span>
+                  <span className="text-gray-600">{t('common.confidence')}:</span>
                   <span className="font-mono font-semibold">
                     {(maskRemovalResult.confidence * 100).toFixed(0)}%
                   </span>
