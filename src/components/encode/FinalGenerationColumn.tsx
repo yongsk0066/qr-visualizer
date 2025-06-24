@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { FinalQRResult } from '../../qr-encode/final-generation/finalGeneration';
+import { t } from '../../lang';
 
 interface FinalGenerationColumnProps {
   finalGeneration: FinalQRResult | null;
@@ -144,7 +145,7 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
   if (!finalGeneration) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">7단계: 최종 생성</h2>
+        <h2 className="font-medium mb-3">{t('7단계: 최종 생성', 'Step 7: Final Generation')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -165,7 +166,7 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">7단계: 최종 생성</h2>
+      <h2 className="font-medium mb-3">{t('7단계: 최종 생성', 'Step 7: Final Generation')}</h2>
       <p className="text-sm text-gray-600 mb-4">
         완성된 QR 코드 (포맷/버전 정보 포함)
       </p>

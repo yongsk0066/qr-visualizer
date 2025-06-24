@@ -5,6 +5,7 @@ import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDecodeProcess } from './components/QRDecodeProcess';
 import type { TriStateQR } from './qr-decode/types';
 import mascot from './assets/mascot.gif';
+import { t } from './lang';
 
 function App() {
   const [encodedQRMatrix, setEncodedQRMatrix] = useState<number[][] | null>(null);
@@ -13,15 +14,17 @@ function App() {
   return (
     <div className="app">
       <header className="mb-8 flex items-center gap-4">
-        <img 
-          src={mascot} 
-          alt="QR Visualizer 마스코트" 
+        <img
+          src={mascot}
+          alt={t('QR Visualizer 마스코트', 'QR Visualizer mascot')}
           className="w-16 h-16 object-contain"
-          title="안녕하세요! QR 코드를 함께 배워봐요 👋"
+          title={t('안녕하세요! QR 코드를 함께 배워봐요 👋', 'Hello! Let\'s learn QR codes together 👋')}
         />
         <div>
           <h1 className="text-3xl font-light tracking-wide mb-1">QR Visualizer</h1>
-          <p className="text-gray-600 text-sm">QR 코드 생성 과정 학습</p>
+          <p className="text-gray-600 text-sm">
+            {t('QR 코드 생성 과정 학습', 'Learn how QR codes are generated')}
+          </p>
         </div>
       </header>
 

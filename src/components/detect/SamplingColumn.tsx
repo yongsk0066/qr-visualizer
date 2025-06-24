@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { runSampling } from '../../qr-decode/detect/sampling/sampling';
 import type { HomographyResult, TriStateQR } from '../../qr-decode/types';
+import { t } from '../../lang';
 
 interface SamplingColumnProps {
   sampling: TriStateQR | null;
@@ -127,7 +128,7 @@ export function SamplingColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 모듈 샘플링</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 모듈 샘플링', 'Step 6: Module Sampling')}</h2>
 
       {sampling ? (
         <div className="space-y-4">

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import type { MaskRemovalResult } from '../../qr-decode/decode/mask-removal/types';
 import type { TriStateQR } from '../../qr-decode/types';
 import { MASK_PATTERNS, type MaskPattern } from '../../qr-encode/masking/maskPatterns';
+import { t } from '../../lang';
 
 interface MaskRemovalColumnProps {
   maskRemovalResult: MaskRemovalResult | null;
@@ -140,7 +141,7 @@ export function MaskRemovalColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">3단계: 마스크 패턴 제거</h2>
+      <h2 className="font-medium mb-3">{t('3단계: 마스크 패턴 제거', 'Step 3: Mask Removal')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">

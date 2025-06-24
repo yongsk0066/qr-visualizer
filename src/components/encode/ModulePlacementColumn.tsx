@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../../shared/types';
+import { t } from '../../lang';
 
 interface ModulePlacementColumnProps {
   modulePlacement: ModulePlacementData | null;
@@ -116,7 +117,7 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
   if (!modulePlacement) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+        <h2 className="font-medium mb-3">{t('5단계: 모듈 배치', 'Step 5: Module Placement')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -134,7 +135,7 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+      <h2 className="font-medium mb-3">{t('5단계: 모듈 배치', 'Step 5: Module Placement')}</h2>
       <p className="text-sm text-gray-600 mb-4">
         {modulePlacement.size}×{modulePlacement.size} 매트릭스 | 
         데이터 모듈: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}

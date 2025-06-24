@@ -1,4 +1,5 @@
 import type { ErrorCorrectionResult } from '../../qr-decode/decode/error-correction/types';
+import { t } from '../../lang';
 
 interface ErrorCorrectionColumnProps {
   errorCorrectionResult: ErrorCorrectionResult | null;
@@ -12,7 +13,7 @@ export function ErrorCorrectionColumn({
   if (!errorCorrectionResult || !codewords) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">5단계: 에러 정정</h2>
+        <h2 className="font-medium mb-3">{t('5단계: 에러 정정', 'Step 5: Error Correction')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -44,7 +45,7 @@ export function ErrorCorrectionColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 에러 정정</h2>
+      <h2 className="font-medium mb-3">{t('5단계: 에러 정정', 'Step 5: Error Correction')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">

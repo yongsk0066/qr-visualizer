@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../../shared/types';
+import { t } from '../../lang';
 import {
   generateAllMaskMatrices,
   generateAllEncodingMaskMatrices,
@@ -145,7 +146,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   if (!modulePlacement || !modulePlacement.subSteps || modulePlacement.subSteps.length === 0) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 마스킹</h2>
+        <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -166,7 +167,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   if (!finalStep || !finalStep.matrix) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 마스킹</h2>
+        <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
         <div className="text-gray-500 text-sm">매트릭스 데이터를 불러오는 중...</div>
       </div>
     );
@@ -189,7 +190,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 마스킹</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
       <p className="text-sm text-gray-600 mb-4">8가지 마스크 패턴 평가 및 최적 패턴 선택</p>
 
       <div className="space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-auto">

@@ -1,5 +1,6 @@
 import type { MessageConstructionResult } from '../../qr-encode/message-construction/messageConstruction';
 import { formatBitString } from '../../qr-encode/message-construction/messageConstruction';
+import { t } from '../../lang';
 
 interface MessageConstructionColumnProps {
   result: MessageConstructionResult | null;
@@ -9,7 +10,7 @@ export function MessageConstructionColumn({ result }: MessageConstructionColumnP
   if (!result) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">4단계: 최종 비트스트림</h2>
+        <h2 className="font-medium mb-3">{t('4단계: 최종 비트스트림', 'Step 4: Message Construction')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -58,7 +59,7 @@ export function MessageConstructionColumn({ result }: MessageConstructionColumnP
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">4단계: 최종 비트스트림</h2>
+      <h2 className="font-medium mb-3">{t('4단계: 최종 비트스트림', 'Step 4: Message Construction')}</h2>
 
       <div className="space-y-4">
         {/* 비트스트림 정보 */}

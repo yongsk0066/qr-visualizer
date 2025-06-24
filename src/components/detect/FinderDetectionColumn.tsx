@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { FinderDetectionResult } from '../../qr-decode/types';
+import { t } from '../../lang';
 import {
   calculateCenter,
   calculateLineIntersection,
@@ -207,7 +208,7 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">4단계: 파인더 패턴 검출</h2>
+      <h2 className="font-medium mb-3">{t('4단계: 파인더 패턴 검출', 'Step 4: Finder Pattern Detection')}</h2>
 
       {finderDetection ? (
         <div className="space-y-4">

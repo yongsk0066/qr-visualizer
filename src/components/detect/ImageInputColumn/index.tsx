@@ -2,6 +2,7 @@ import { Suspense, lazy, useState } from 'react';
 import type { ImageProcessingResult } from '../../../qr-decode/types';
 import { CameraInput } from './CameraInput';
 import { FileInput } from './FileInput';
+import { t } from '../../lang';
 
 // VirtualCameraInput를 lazy load
 const VirtualCameraInput = lazy(() =>
@@ -51,11 +52,11 @@ export function ImageInputColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">1단계: 이미지 입력</h2>
+      <h2 className="font-medium mb-3">{t('1단계: 이미지 입력', 'Step 1: Image Input')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          QR 코드 이미지를 업로드하거나 카메라로 캐팁합니다
+          {t('QR 코드 이미지를 업로드하거나 카메라로 캡처합니다', 'Upload a QR image or capture from camera')}
         </p>
 
         {/* 입력 모드 선택 버튼 */}

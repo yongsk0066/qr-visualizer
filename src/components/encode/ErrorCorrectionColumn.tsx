@@ -1,4 +1,5 @@
 import type { ErrorCorrectionData } from '../../shared/types';
+import { t } from '../../lang';
 
 interface ErrorCorrectionColumnProps {
   errorCorrection: ErrorCorrectionData | null;
@@ -8,7 +9,7 @@ export function ErrorCorrectionColumn({ errorCorrection }: ErrorCorrectionColumn
   if (!errorCorrection) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">3단계: 에러 정정</h2>
+        <h2 className="font-medium mb-3">{t('3단계: 에러 정정', 'Step 3: Error Correction')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -52,7 +53,7 @@ export function ErrorCorrectionColumn({ errorCorrection }: ErrorCorrectionColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">3단계: 에러 정정</h2>
+      <h2 className="font-medium mb-3">{t('3단계: 에러 정정', 'Step 3: Error Correction')}</h2>
 
       <div className="space-y-4">
         {/* 데이터 코드워드 */}

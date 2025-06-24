@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { DataExtractionResult } from '../../qr-decode/decode/data-extraction/types';
+import { t } from '../../lang';
 
 interface DataExtractionColumnProps {
   dataExtractionResult: DataExtractionResult | null;
@@ -16,7 +17,7 @@ export function DataExtractionColumn({
   if (!dataExtractionResult || !correctedDataCodewords) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 데이터 추출</h2>
+        <h2 className="font-medium mb-3">{t('6단계: 데이터 추출', 'Step 6: Data Extraction')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -73,7 +74,7 @@ export function DataExtractionColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 데이터 추출</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 데이터 추출', 'Step 6: Data Extraction')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">

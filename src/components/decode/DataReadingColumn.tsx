@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { DataReadingResult } from '../../qr-decode/decode/data-reading/types';
+import { t } from '../../lang';
 import { copyHexArrayToClipboard, showCopyNotification } from '../../shared/utils';
 
 interface DataReadingColumnProps {
@@ -113,7 +114,7 @@ export function DataReadingColumn({
   if (!dataReadingResult || !unmaskedMatrix || !dataModules) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">4단계: 데이터 모듈 읽기</h2>
+        <h2 className="font-medium mb-3">{t('4단계: 데이터 모듈 읽기', 'Step 4: Data Reading')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
@@ -159,7 +160,7 @@ export function DataReadingColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">4단계: 데이터 모듈 읽기</h2>
+      <h2 className="font-medium mb-3">{t('4단계: 데이터 모듈 읽기', 'Step 4: Data Reading')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
