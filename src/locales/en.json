@@ -1,0 +1,477 @@
+{
+  "app": {
+    "mascotAlt": "QR Visualizer mascot",
+    "mascotTitle": "Hello! Let's learn QR codes together 👋",
+    "subtitle": "Learn how QR codes are generated"
+  },
+  "steps": {
+    "encode": {
+      "settings": "Step 1: Settings",
+      "dataEncoding": "Step 2: Data Encoding",
+      "errorCorrection": "Step 3: Error Correction",
+      "messageConstruction": "Step 4: Message Construction",
+      "modulePlacement": "Step 5: Module Placement",
+      "masking": "Step 6: Masking",
+      "finalGeneration": "Step 7: Final Generation"
+    },
+    "detect": {
+      "imageInput": "Step 1: Image Input",
+      "grayscale": "Step 2: Grayscale",
+      "binarization": "Step 3: Binarization",
+      "finderDetection": "Step 4: Finder Pattern Detection",
+      "perspectiveTransform": "Step 5: Perspective Transform",
+      "moduleSampling": "Step 6: Module Sampling"
+    },
+    "decode": {
+      "formatExtraction": "Step 1: Format Extraction",
+      "versionExtraction": "Step 2: Version Extraction",
+      "maskRemoval": "Step 3: Mask Removal",
+      "dataReading": "Step 4: Data Reading",
+      "errorCorrection": "Step 5: Error Correction",
+      "dataExtraction": "Step 6: Data Extraction"
+    }
+  },
+  "settings": {
+    "inputData": "Input data",
+    "processing": "Processing...",
+    "placeholder": "Enter data to encode as QR code...",
+    "characters": "Characters",
+    "recommendedMode": "Recommended mode",
+    "minimumVersion": "Minimum version",
+    "tooMuchData": "Too much data",
+    "qrVersion": "QR version",
+    "errorCorrectionLevel": "Error correction level",
+    "sampleData": "Sample data",
+    "samples": {
+      "numeric": "Numeric:",
+      "alphanumeric": "Alphanumeric:",
+      "korean": "Korean:",
+      "mixed": "Mixed:",
+      "practicalCases": "Practical cases",
+      "wifiConnect": "Connect to Wi-Fi",
+      "contact": "Contact:",
+      "email": "Email:",
+      "telephone": "Telephone:",
+      "textMessage": "Text message",
+      "location": "Location:",
+      "projectLink": "Project link",
+      "calendar": "Calendar:",
+      "videoLink": "Video link",
+      "appStore": "App store:",
+      "downloadApp": "Download app",
+      "facebookProfile": "Profile",
+      "instagramProfile": "Visit profile",
+      "playMusic": "Play music",
+      "shareLocation": "Share location"
+    }
+  },
+  "detect": {
+    "imageInputDesc": "Upload a QR image or capture from camera",
+    "processing": "Processing..."
+  },
+  "decode": {
+    "dataExtractedHere": "Extracted data will be displayed here",
+    "readDataModules": "Read data modules after mask removal to extract codewords",
+    "extractingFormat": "Extracting QR code format information. Reading 15 bits around finder patterns to determine error correction level and mask pattern.",
+    "extractingVersion": "Extracting QR code version information. For version 7 and above, reading 18 bits from version information area with BCH error correction.",
+    "removingMask": "Removing mask using the extracted mask pattern. After mask removal, actual data values can be read.",
+    "errorCorrecting": "Performing error correction using Reed-Solomon algorithm. Computing syndromes, error locator polynomial, and error values.",
+    "noDataYet": "Data interpretation results will be displayed here",
+    "finalData": "Final decoded data will be displayed here"
+  },
+  "errorCorrection": {
+    "waitingForData": "Waiting for data to perform error correction...",
+    "performingCorrection": "Performing Reed-Solomon error correction to recover data",
+    "generatingCodewords": "Generating error correction codewords for data codewords",
+    "dataCodewords": "Data codewords",
+    "ecCodewords": "Error correction codewords",
+    "interleavedCodewords": "Interleaved final codewords",
+    "ecBlocks": "EC blocks info",
+    "capacity": "Capacity",
+    "dataModules": "Data modules",
+    "remainderBits": "Remainder bits"
+  },
+  "messageConstruction": {
+    "waitingForData": "Waiting for data to generate bitstream...",
+    "constructingBitstream": "Converting interleaved codewords to final bitstream",
+    "bitstreamInfo": "Bitstream info",
+    "totalBits": "Total bits",
+    "dataSection": "Data section",
+    "ecSection": "Error correction",
+    "remainder": "Remainder",
+    "finalBitstream": "Final bitstream"
+  },
+  "modulePlacement": {
+    "waitingForData": "Waiting for data to place modules...",
+    "placingModules": "Placing function patterns and data in QR code matrix",
+    "matrix": "Matrix",
+    "dataModuleCount": "Data modules",
+    "emptyMatrix": "1. Empty matrix",
+    "finderPatterns": "2. Finder patterns",
+    "separators": "3. Separators",
+    "timingPatterns": "4. Timing patterns",
+    "alignmentPatterns": "5. Alignment patterns",
+    "formatVersion": "6. Format/Version areas",
+    "zigzagPattern": "6a. Zigzag pattern",
+    "dataPlacement": "7. Data placement"
+  },
+  "masking": {
+    "waitingForData": "Waiting for matrix data to apply masking...",
+    "evaluatingPatterns": "Evaluating 8 mask patterns and selecting optimal pattern",
+    "pattern": "Pattern",
+    "formula": "Formula",
+    "fullPattern": "Full pattern",
+    "encodingRegion": "Encoding region",
+    "result": "Result",
+    "penalty": "Penalty"
+  },
+  "finalGeneration": {
+    "waitingForData": "Waiting for data to generate final QR code...",
+    "generatingQR": "Adding format and version information to generate final QR code",
+    "completeQR": "Complete QR code (with format/version info)",
+    "maskApplied": "Mask applied",
+    "formatInfo": "Format info",
+    "versionInfo": "Version info",
+    "finalQR": "Final QR"
+  },
+  "bitstream": {
+    "currentByte": "Current byte",
+    "waitingForData": "Waiting for data to encode...",
+    "encodingData": "Encoding data step by step",
+    "colorLegend": "Color legend",
+    "modeIndicator": "Mode indicator",
+    "charCount": "Character count",
+    "data": "Data",
+    "terminator": "Terminator",
+    "padding": "Padding"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "data": "Data",
+    "total": "Total",
+    "bit": "bit",
+    "bits": "bits",
+    "blocks": "blocks",
+    "modules": "modules",
+    "pattern": "Pattern",
+    "version": "Version"
+  },
+  "grayscale": {
+    "noImage": "No image",
+    "histogram": "Histogram"
+  },
+  "binarization": {
+    "threshold": "Threshold",
+    "showThresholdMap": "Show threshold map"
+  },
+  "finderDetection": {
+    "detectingPatterns": "Detecting contours in binarized image to find finder patterns",
+    "patternPositions": "Finder pattern positions",
+    "contourScans": " scans",
+    "refinedHomography": "Refined homography"
+  },
+  "sampling": {
+    "gridToggle": "Toggle grid pattern",
+    "statistics": "Statistics",
+    "black": "Black",
+    "white": "White",
+    "unknown": "Unknown"
+  },
+  "formatExtraction": {
+    "location": "Location",
+    "bitsRead": "Bits read",
+    "bchCorrection": "BCH error correction applied"
+  },
+  "versionExtraction": {
+    "location": "Location",
+    "bitsRead": "Bits read",
+    "bchCorrection": "BCH error correction applied"
+  },
+  "dataReading": {
+    "fullMatrix": "Full matrix",
+    "dataAreas": "Data areas",
+    "zigzagPattern": "Zigzag pattern",
+    "codewords": "Codewords",
+    "confidence": "Confidence"
+  },
+  "errorCorrectionDecode": {
+    "blockStatus": "Block status",
+    "syndrome": "Syndrome",
+    "correctionSuccess": "Correction success",
+    "deinterleaving": "Deinterleaving",
+    "rsCorrection": "RS error correction",
+    "confidence": "Confidence"
+  },
+  "ui": {
+    "dragDropImage": "Drag and drop image here",
+    "or": "or",
+    "selectFile": "Select file",
+    "fileUpload": "File upload",
+    "camera": "Camera",
+    "virtualCamera": "Virtual camera",
+    "processing": "Processing...",
+    "toggleGrid": "Toggle grid",
+    "inputMethod": "Input method",
+    "inputMethodSelect": "Select input method",
+    "uploadedImage": "Uploaded image",
+    "size": "Size",
+    "processingStatus": "Processing status",
+    "frameSize": "Frame size",
+    "status": "Status",
+    "analyzing": "Analyzing...",
+    "realtimeMonitoring": "Real-time monitoring",
+    "virtualCameraLoading": "Loading virtual camera...",
+    "realtime": "Real-time",
+    "manual": "Manual",
+    "manualCapture": "Manual capture",
+    "stopRealtime": "Stop real-time",
+    "startRealtime": "Start real-time",
+    "closeCamera": "Close camera",
+    "captureResolution": "Capture resolution",
+    "captureMode": "Capture mode",
+    "cameraInfo": "Camera info",
+    "resolution": "Resolution",
+    "selected": "Selected",
+    "total": "Total",
+    "data": "Data",
+    "count": "count",
+    "module": "module",
+    "modules": "modules",
+    "bits": "bits",
+    "completed": "Completed",
+    "loading": "Loading...",
+    "error": "Error",
+    "complete": "Complete"
+  },
+  "modulePlacement": {
+    "waitingForData": "Waiting for data to place modules...",
+    "placingModules": "Placing function patterns and data in QR code matrix",
+    "matrix": "Matrix",
+    "dataModuleCount": "Data modules",
+    "emptyMatrix": "1. Empty matrix",
+    "finderPatterns": "2. Finder patterns",
+    "separators": "3. Separators",
+    "timingPatterns": "4. Timing patterns",
+    "alignmentPatterns": "5. Alignment patterns",
+    "formatVersion": "6. Format/Version areas",
+    "zigzagPattern": "6a. Zigzag pattern",
+    "dataPlacement": "7. Data placement",
+    "addedModules": "modules",
+    "stepCompleted": "Step completed",
+    "finalPlacementComplete": "Final module placement complete",
+    "blackWhiteVersion": "Black and white version",
+    "moduleType": "Module type",
+    "moduleTypes": {
+      "finder": "Finder",
+      "separator": "Separator",
+      "timing": "Timing",
+      "alignment": "Alignment",
+      "format": "Format",
+      "version": "Version",
+      "zigzag": "Zigzag",
+      "data": "Data",
+      "empty": "Empty"
+    },
+    "eightBitBlocks": "8-bit blocks (rainbow colors)"
+  },
+  "messageConstruction": {
+    "waitingForData": "Waiting for data to generate bitstream...",
+    "constructingBitstream": "Converting interleaved codewords to final bitstream",
+    "combiningData": "Combining data and error correction codes to generate final bitstream",
+    "willDisplayAfterEC": "Final bitstream will be displayed after error correction is complete",
+    "bitstreamInfo": "Bitstream info",
+    "totalBits": "Total bits",
+    "dataBits": "Data bits",
+    "ecBits": "Error correction bits",
+    "remainderBits": "Remainder bits",
+    "dataSection": "Data section",
+    "ecSection": "Error correction",
+    "remainder": "Remainder",
+    "finalBitstream": "Final bitstream",
+    "legend": "Legend"
+  },
+  "masking": {
+    "waitingForData": "Waiting for matrix data to apply masking...",
+    "evaluatingPatterns": "Evaluating 8 mask patterns and selecting optimal pattern",
+    "evaluatingDescription": "Evaluating 8 mask patterns to select the optimal pattern",
+    "willDisplayAfterPlacement": "Masking patterns will be displayed after module placement is complete",
+    "matrixDataError": "Matrix data error",
+    "pattern": "Pattern",
+    "formula": "Formula",
+    "fullPattern": "Full pattern",
+    "encodingRegion": "Encoding region",
+    "encodingRegionOnly": "Encoding region only",
+    "result": "Result",
+    "xorResult": "XOR result",
+    "penalty": "Penalty",
+    "penaltyScore": "Penalty score",
+    "selected": "Selected",
+    "evaluationSteps": {
+      "title": "Mask pattern evaluation process",
+      "step1": "1. Sequential patterns of same-colored modules (N₁)",
+      "step2": "2. Block patterns of same color (N₂)",
+      "step3": "3. Specific position patterns (N₃)",
+      "step4": "4. Black/white module ratio (N₄)"
+    }
+  },
+  "bitstream": {
+    "currentByte": "Current byte",
+    "waitingForData": "Waiting for data to encode...",
+    "encodingData": "Encoding data step by step",
+    "inputDataToDisplay": "Enter data to display bit stream",
+    "colorLegend": "Color legend",
+    "modeIndicator": "Mode indicator",
+    "charCount": "Character count",
+    "data": "Data",
+    "terminator": "Terminator",
+    "padding": "Padding",
+    "components": "Components",
+    "connectionProcess": "Connection process",
+    "total": "Total",
+    "finalBitstream": "Final bit stream"
+  },
+  "finalGeneration": {
+    "waitingForData": "Waiting for data to generate final QR code...",
+    "generatingQR": "Adding format and version information to generate final QR code",
+    "completeQR": "Complete QR code (with format/version info)",
+    "maskApplied": "Mask applied",
+    "formatInfo": "Format info",
+    "versionInfo": "Version info",
+    "finalQR": "Final QR",
+    "generationInfo": "Generation info",
+    "selectedMask": "Selected mask",
+    "selectedPattern": "Selected pattern",
+    "15bitBCH": "15-bit BCH",
+    "18bitBCH": "18-bit BCH",
+    "finalComplete": "Final complete",
+    "qrCode": "QR code",
+    "formatInfoArea": "Format info area",
+    "versionInfoArea": "Version info area",
+    "congratulations": "🎉 QR code generation process complete!",
+    "processes": {
+      "maskingApplied": "Masking applied",
+      "formatAdded": "Format info added",
+      "versionAdded": "Version info added (version 7+)",
+      "finalGenerated": "Final QR code generated"
+    }
+  },
+  "errorCorrection": {
+    "waitingForData": "Waiting for data to perform error correction...",
+    "performingCorrection": "Performing Reed-Solomon error correction to recover data",
+    "generatingCodewords": "Generating error correction codewords for data codewords",
+    "dataCodewords": "Data codewords",
+    "ecCodewords": "Error correction codewords",
+    "interleavedCodewords": "Interleaved final codewords",
+    "ecBlocks": "EC blocks info",
+    "capacity": "Capacity",
+    "dataModules": "Data modules",
+    "remainderBits": "Remainder bits",
+    "block": "Block",
+    "data": "Data",
+    "components": "Components"
+  },
+  "finderDetection": {
+    "detectingPatterns": "Detecting contours in binarized image to find finder patterns",
+    "usingOpenCV": "Using OpenCV.js to detect 3 finder patterns in QR code",
+    "willDisplayAfterBinarization": "Finder pattern detection will be displayed after binarization is complete",
+    "patternPositions": "Finder pattern positions",
+    "contourScans": " scans",
+    "refinedHomography": "Refined homography",
+    "detectionResult": "Pattern detection result",
+    "detectionInfo": "Detection info",
+    "selectedPatternDetails": "Selected pattern details",
+    "pattern": "Pattern",
+    "algorithm": "Finder pattern detection algorithm",
+    "algorithmSteps": {
+      "step1": "1. Detect contours in binarized image",
+      "step2": "2. Filter square contours",
+      "step3": "3. Analyze nested contour structure (1:1:3:1:1 ratio)",
+      "step4": "4. Calculate pattern scores and select top 3",
+      "step5": "5. Position-based pattern classification (top-left, top-right, bottom-left)"
+    },
+    "legend": {
+      "finderContour": "Finder contour",
+      "squareContour": "Square contour",
+      "otherContour": "Other contour",
+      "selectedPattern": "Selected pattern",
+      "patternCenter": "Pattern center"
+    },
+    "details": {
+      "imageSize": "Image size",
+      "contoursFound": "Contours found",
+      "squareCount": "Square contours",
+      "finderCount": "Finder candidates",
+      "center": "Center",
+      "area": "Area",
+      "score": "Score",
+      "position": "Position",
+      "squareContours": "Square contours"
+    }
+  },
+  "sampling": {
+    "gridToggle": "Toggle grid pattern",
+    "statistics": "Statistics",
+    "black": "Black",
+    "white": "White",
+    "unknown": "Unknown",
+    "sampledMatrix": "Sampled matrix",
+    "samplingStatistics": "Sampling statistics",
+    "moduleSize": "Module size",
+    "totalModules": "Total modules",
+    "samplingProcess": "Module sampling process",
+    "moduleColorLegend": "Module color legend",
+    "legendItems": {
+      "blackModule": "Black module (1)",
+      "whiteModule": "White module (0)",
+      "unknownModule": "Unknown module (-1)"
+    },
+    "processSteps": {
+      "step1": "1. Divide normalized image into version-specific grid",
+      "step2": "2. Sample pixel values at each grid center point",
+      "step3": "3. Determine black/white using adaptive threshold",
+      "step4": "4. Mark indeterminate areas as -1"
+    },
+    "willDisplayAfterTransform": "Module sampling will be displayed after perspective transform is complete"
+  },
+  "imageInput": {
+    "methods": {
+      "fileUpload": "Select or drag and drop an image file to upload",
+      "camera": "Capture in real-time using webcam",
+      "virtualCamera": "Capture QR code in 3D virtual environment"
+    }
+  },
+  "virtualCamera": {
+    "3dView": "3D QR Code View",
+    "realtimeCapturing": "Real-time capturing",
+    "settings": "Virtual Camera Settings",
+    "realtimeInterval": "Real-time (500ms)",
+    "throwTomato": "Throw tomato",
+    "damageCount": "Damage count",
+    "throwing": "🍅 Throwing...",
+    "throwTomatoBtn": "🍅 Throw Tomato",
+    "reset": "🧽 Reset",
+    "features": "Virtual Camera Features",
+    "featuresList": {
+      "3d": "• Render QR code in 3D environment",
+      "interaction": "• Change viewpoint with mouse/touch",
+      "damage": "• Simulate QR code damage with tomatoes",
+      "capture": "• Real-time/manual capture modes"
+    }
+  },
+  "cameraInput": {
+    "view": "Camera View",
+    "info": "Camera Info",
+    "resolution": "Resolution",
+    "captureMethod": "Camera Capture Method",
+    "methods": {
+      "manual": "• Manual: Click capture button at desired moment",
+      "realtime": "• Real-time: Auto-capture every 500ms",
+      "close": "• Close camera to finish"
+    }
+  },
+  "dataExtraction": {
+    "extractingData": "Extracting original data from error-corrected codewords",
+    "willStartWhenDetected": "Data extraction will start when QR code is detected"
+  }
+}

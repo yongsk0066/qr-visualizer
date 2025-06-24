@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { VersionInfoResult } from '../../qr-decode/decode/version-extraction/types';
 import type { TriStateQR } from '../../qr-decode/types';
-import { t } from '../../lang';
+import { t } from '../../i18n';
 
 interface VersionExtractionColumnProps {
   versionInfo: VersionInfoResult | null;
@@ -208,7 +208,7 @@ export const VersionExtractionColumn = ({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('2단계: 버전 정보 추출', 'Step 2: Version Extraction')}</h2>
+      <h2 className="font-medium mb-3">{t('steps.decode.versionExtraction')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">

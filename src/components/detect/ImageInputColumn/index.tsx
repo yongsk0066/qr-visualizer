@@ -2,7 +2,7 @@ import { Suspense, lazy, useState } from 'react';
 import type { ImageProcessingResult } from '../../../qr-decode/types';
 import { CameraInput } from './CameraInput';
 import { FileInput } from './FileInput';
-import { t } from '../../lang';
+import { t } from '../../../i18n';
 
 // VirtualCameraInput를 lazy load
 const VirtualCameraInput = lazy(() =>
@@ -52,16 +52,16 @@ export function ImageInputColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('1단계: 이미지 입력', 'Step 1: Image Input')}</h2>
+      <h2 className="font-medium mb-3">{t('steps.detect.imageInput')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          {t('QR 코드 이미지를 업로드하거나 카메라로 캡처합니다', 'Upload a QR image or capture from camera')}
+          {t('detect.imageInputDesc')}
         </p>
 
         {/* 입력 모드 선택 버튼 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">입력 방법 선택</div>
+          <div className="text-xs font-medium mb-2">{t('ui.inputMethodSelect')}</div>
           <div className="flex gap-2">
             <button
               onClick={() => handleModeChange('file')}
@@ -71,7 +71,7 @@ export function ImageInputColumn({
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
               }`}
             >
-              파일 업로드
+              {t('imageInput.fileUpload')}
             </button>
             <button
               onClick={() => handleModeChange('camera')}
@@ -81,7 +81,7 @@ export function ImageInputColumn({
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
               }`}
             >
-              카메라
+              {t('imageInput.camera')}
             </button>
             {encodedQRMatrix && (
               <button
@@ -92,7 +92,7 @@ export function ImageInputColumn({
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
                 }`}
               >
-                가상 카메라
+                {t('imageInput.virtualCamera')}
               </button>
             )}
           </div>
@@ -118,7 +118,7 @@ export function ImageInputColumn({
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-2"></div>
-                    <p className="text-sm text-gray-600">가상 카메라 로딩 중...</p>
+                    <p className="text-sm text-gray-600">{t('imageInput.virtualCameraLoading')}</p>
                   </div>
                 </div>
               </div>
@@ -132,11 +132,11 @@ export function ImageInputColumn({
         {imageUrl && inputMode === 'file' && (
           <div className="space-y-3">
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">업로드된 이미지</div>
+              <div className="text-xs font-medium mb-2">{t('imageInput.uploadedImage')}</div>
               <img src={imageUrl} alt="Input QR Code" className="w-full h-auto rounded border border-gray-200" />
               {imageProcessing && (
                 <div className="mt-2 text-xs text-gray-500">
-                  크기: {imageProcessing.width} × {imageProcessing.height}px
+                  {t('common.size')}: {imageProcessing.width} × {imageProcessing.height}px
                 </div>
               )}
             </div>
@@ -146,15 +146,15 @@ export function ImageInputColumn({
         {/* 카메라/가상카메라 모드에서의 처리 상태 */}
         {(inputMode === 'camera' || inputMode === 'virtual') && imageProcessing && (
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">처리 상태</div>
+            <div className="text-xs font-medium mb-2">{t('imageInput.processingStatus')}</div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
-                <span className="text-gray-600">프레임 크기:</span>
+                <span className="text-gray-600">{t('imageInput.frameSize')}:</span>
                 <span className="font-mono">{imageProcessing.width} × {imageProcessing.height}px</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">상태:</span>
-                <span className="font-mono">{isProcessing ? '분석 중...' : '실시간 모니터링 중'}</span>
+                <span className="text-gray-600">{t('common.status')}:</span>
+                <span className="font-mono">{isProcessing ? t('imageInput.analyzing') : t('imageInput.monitoring')}</span>
               </div>
             </div>
           </div>
@@ -162,11 +162,11 @@ export function ImageInputColumn({
 
         {/* 설명 */}
         <div className="p-2 bg-blue-50 rounded text-xs">
-          <div className="font-medium mb-1">입력 방법</div>
+          <div className="font-medium mb-1">{t('imageInput.inputMethods')}</div>
           <div className="space-y-0.5 text-gray-700">
-            <div>• 파일 업로드: 드래그 앤 드롭 또는 클릭하여 선택</div>
-            <div>• 카메라: 수동/자동 모드로 실시간 캐팁</div>
-            <div>• 가상 카메라: 3D QR 코드를 다양한 각도에서 테스트</div>
+            <div>• {t('imageInput.fileUploadDesc')}</div>
+            <div>• {t('imageInput.cameraDesc')}</div>
+            <div>• {t('imageInput.virtualCameraDesc')}</div>
           </div>
         </div>
       </div>

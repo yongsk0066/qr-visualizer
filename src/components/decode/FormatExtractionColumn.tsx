@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { FormatInfoResult } from '../../qr-decode/decode/format-extraction/types';
 import type { TriStateQR } from '../../qr-decode/types';
-import { t } from '../../lang';
+import { t } from '../../i18n';
 
 interface FormatExtractionColumnProps {
   formatInfo: FormatInfoResult | null;
@@ -93,7 +93,7 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('1단계: 포맷 정보 추출', 'Step 1: Format Extraction')}</h2>
+      <h2 className="font-medium mb-3">{t('steps.decode.formatExtraction')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">

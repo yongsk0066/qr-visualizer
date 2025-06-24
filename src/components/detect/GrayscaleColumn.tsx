@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { GrayscaleResult } from '../../qr-decode/types';
-import { t } from '../../lang';
+import { t } from '../../i18n';
 
 interface GrayscaleColumnProps {
   grayscale: GrayscaleResult | null;
@@ -61,7 +61,7 @@ export function GrayscaleColumn({ grayscale }: GrayscaleColumnProps) {
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('2단계: 그레이스케일 변환', 'Step 2: Grayscale')}</h2>
+      <h2 className="font-medium mb-3">{t('steps.detect.grayscale')}</h2>
       
       {grayscale ? (
         <div className="space-y-4">

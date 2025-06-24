@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
+import { t } from '../../../i18n';
 
 interface CameraInputProps {
   isActive: boolean;
@@ -67,7 +68,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
           };
         }
       } catch {
-        alert('카메라에 접근할 수 없습니다.');
+        alert(t('camera.accessError'));
         onStop();
       }
     };
@@ -120,7 +121,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
     <div className="space-y-3">
       {/* 카메라 화면 */}
       <div className="p-3 bg-gray-50 rounded">
-        <div className="text-xs font-medium mb-2">카메라 뷰</div>
+        <div className="text-xs font-medium mb-2">{t('camera.cameraView')}</div>
         <div className="relative">
           <video
             ref={videoRef}
@@ -138,7 +139,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
             <div className="absolute top-2 right-2 flex items-center gap-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
               <span className="text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
-                실시간 캡처 중
+                {t('camera.capturing')}
               </span>
             </div>
           )}
@@ -147,18 +148,18 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
 
       {/* 카메라 정보 */}
       <div className="p-3 bg-gray-50 rounded">
-        <div className="text-xs font-medium mb-2">카메라 정보</div>
+        <div className="text-xs font-medium mb-2">{t('camera.cameraInfo')}</div>
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div>
-            <div className="text-gray-600">해상도</div>
+            <div className="text-gray-600">{t('camera.resolution')}</div>
             <div className="font-mono font-semibold">
-              {videoRef.current?.videoWidth || '로딩'} × {videoRef.current?.videoHeight || '로딩'}
+              {videoRef.current?.videoWidth || t('common.loading')} × {videoRef.current?.videoHeight || t('common.loading')}
             </div>
           </div>
           <div>
-            <div className="text-gray-600">캡처 모드</div>
+            <div className="text-gray-600">{t('camera.captureMode')}</div>
             <div className="font-mono font-semibold">
-              {isCapturing ? '실시간 (500ms)' : '수동'}
+              {isCapturing ? t('camera.realtime') : t('camera.manual')}
             </div>
           </div>
         </div>
@@ -171,7 +172,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
             onClick={handleManualCapture}
             className="flex-1 px-3 py-2 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           >
-            수동 캡처
+            {t('camera.manualCapture')}
           </button>
           <button
             onClick={() => setIsCapturing(!isCapturing)}
@@ -181,7 +182,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
                 : 'bg-green-500 text-white hover:bg-green-600'
             }`}
           >
-            {isCapturing ? '실시간 정지' : '실시간 시작'}
+            {isCapturing ? t('camera.stopRealtime') : t('camera.startRealtime')}
           </button>
         </div>
         
@@ -189,17 +190,17 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
           onClick={onStop}
           className="w-full px-3 py-2 text-xs bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
         >
-          카메라 종료
+          {t('camera.stopCamera')}
         </button>
       </div>
 
       {/* 카메라 사용 설명 */}
       <div className="p-2 bg-amber-50 rounded text-xs">
-        <div className="font-medium mb-1">카메라 캡처 방법</div>
+        <div className="font-medium mb-1">{t('camera.captureMethod')}</div>
         <div className="space-y-0.5 text-gray-700">
-          <div>• 수동 캡처: 버튼을 클릭할 때마다 현재 프레임 캡처</div>
-          <div>• 실시간 모드: 500ms 간격으로 자동 캡처</div>
-          <div>• QR 코드를 카메라 화면 중앙에 위치시키세요</div>
+          <div>• {t('camera.manualCaptureDesc')}</div>
+          <div>• {t('camera.realtimeModeDesc')}</div>
+          <div>• {t('camera.positionTip')}</div>
         </div>
       </div>
     </div>

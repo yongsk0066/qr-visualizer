@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { multiLanguagePlugin } from './build/multiLanguagePlugin';
 
 const ReactCompilerConfig = {
   /* ... */
@@ -16,5 +17,13 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
+    multiLanguagePlugin(),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: './index.html',
+      },
+    },
+  },
 });

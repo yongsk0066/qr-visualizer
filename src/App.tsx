@@ -3,9 +3,10 @@ import './App.css';
 import { QRDetectProcess } from './components/QRDetectProcess';
 import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDecodeProcess } from './components/QRDecodeProcess';
+import { LanguageSelector } from './components/LanguageSelector';
 import type { TriStateQR } from './qr-decode/types';
 import mascot from './assets/mascot.gif';
-import { t } from './lang';
+import { t } from './i18n';
 
 function App() {
   const [encodedQRMatrix, setEncodedQRMatrix] = useState<number[][] | null>(null);
@@ -13,19 +14,22 @@ function App() {
 
   return (
     <div className="app">
-      <header className="mb-8 flex items-center gap-4">
-        <img
-          src={mascot}
-          alt={t('QR Visualizer 마스코트', 'QR Visualizer mascot')}
-          className="w-16 h-16 object-contain"
-          title={t('안녕하세요! QR 코드를 함께 배워봐요 👋', 'Hello! Let\'s learn QR codes together 👋')}
-        />
-        <div>
-          <h1 className="text-3xl font-light tracking-wide mb-1">QR Visualizer</h1>
-          <p className="text-gray-600 text-sm">
-            {t('QR 코드 생성 과정 학습', 'Learn how QR codes are generated')}
-          </p>
+      <header className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <img
+            src={mascot}
+            alt={t('app.mascotAlt')}
+            className="w-16 h-16 object-contain"
+            title={t('app.mascotTitle')}
+          />
+          <div>
+            <h1 className="text-3xl font-light tracking-wide mb-1">QR Visualizer</h1>
+            <p className="text-gray-600 text-sm">
+              {t('app.subtitle')}
+            </p>
+          </div>
         </div>
+        <LanguageSelector />
       </header>
 
       <div className="flex flex-col gap-12">

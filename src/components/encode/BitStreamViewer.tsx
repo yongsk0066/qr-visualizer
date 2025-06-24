@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { EncodedData } from '../../qr-encode/encoding/dataEncoding';
+import { t } from '../../i18n';
 
 interface BitStreamViewerProps {
   encodedData: EncodedData | null;
@@ -17,12 +18,12 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
     return (
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          입력된 데이터를 QR 코드 비트 스트림으로 변환합니다
+          {t('bitstream.encodingData')}
         </p>
         
         <div className="p-8 bg-gray-50 rounded text-center">
           <div className="text-gray-400 text-3xl mb-2">💾</div>
-          <div className="text-gray-500 text-sm">데이터를 입력하면 비트 스트림이 표시됩니다</div>
+          <div className="text-gray-500 text-sm">{t('bitstream.inputDataToDisplay')}</div>
         </div>
       </div>
     );
@@ -30,19 +31,19 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
 
   const segments: BitSegment[] = [
     {
-      label: '모드 지시자',
+      label: t('bitstream.modeIndicator'),
       bits: encodedData.modeIndicator,
       color: 'bg-red-200',
       highlightName: 'mode-indicator',
     },
     {
-      label: '문자 카운트',
+      label: t('bitstream.charCount'),
       bits: encodedData.characterCount,
       color: 'bg-blue-200',
       highlightName: 'character-count',
     },
     {
-      label: '데이터',
+      label: t('bitstream.data'),
       bits: encodedData.data,
       color: 'bg-green-200',
       highlightName: 'data-bits',
@@ -67,7 +68,7 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
 
   if (terminatorLength > 0) {
     segments.push({
-      label: '종단자',
+      label: t('bitstream.terminator'),
       bits: remainder.slice(0, terminatorLength),
       color: 'bg-yellow-200',
       highlightName: 'terminator',
@@ -78,7 +79,7 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
   const paddingStart = terminatorLength;
   if (paddingStart < remainder.length) {
     segments.push({
-      label: '패딩',
+      label: t('bitstream.padding'),
       bits: remainder.slice(paddingStart),
       color: 'bg-purple-200',
       highlightName: 'padding',
@@ -135,14 +136,14 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
     <div className="space-y-4">
       {/* 구성 요소별 세부 정보 */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-gray-800 mb-2">구성 요소</h3>
+        <h3 className="text-xs font-semibold text-gray-800 mb-2">{t('bitstream.components')}</h3>
         {segments.map((segment, index) => (
           <div key={index} className="space-y-1">
             <div className="flex items-center justify-between mb-1">
               <span className={`px-2 py-0.5 rounded ${segment.color} text-xs font-medium`}>
                 {index + 1}. {segment.label}
               </span>
-              <span className="text-gray-500 text-xs">{segment.bits.length} 비트</span>
+              <span className="text-gray-500 text-xs">{segment.bits.length} {t('common.bits')}</span>
             </div>
             <pre className="font-mono text-xs border border-gray-200 p-2 whitespace-pre-wrap leading-tight overflow-x-auto bg-gray-50 rounded">
               {formatBitGroups(segment.bits)}
@@ -153,7 +154,7 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
 
       {/* 연결 과정 시각화 */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-gray-800 mb-2">연결 과정</h3>
+        <h3 className="text-xs font-semibold text-gray-800 mb-2">{t('bitstream.connectionProcess')}</h3>
         <div className="flex items-center flex-wrap gap-1 text-xs text-gray-600">
           {segments.map((segment, index) => (
             <div key={index} className="flex items-center">
@@ -166,15 +167,15 @@ export function BitStreamViewer({ encodedData }: BitStreamViewerProps) {
             </div>
           ))}
           <span className="mx-1 text-gray-400 font-medium">=</span>
-          <span className="px-1.5 py-0.5 bg-blue-100 rounded text-xs font-medium">전체</span>
+          <span className="px-1.5 py-0.5 bg-blue-100 rounded text-xs font-medium">{t('bitstream.total')}</span>
         </div>
       </div>
 
       {/* 최종 비트 스트림 */}
       <div className="pt-3 border-t border-gray-300">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-gray-800">최종 비트 스트림</span>
-          <span className="text-gray-500 text-xs font-medium">{encodedData.totalBits} 비트</span>
+          <span className="text-xs font-semibold text-gray-800">{t('bitstream.finalBitstream')}</span>
+          <span className="text-gray-500 text-xs font-medium">{encodedData.totalBits} {t('common.bits')}</span>
         </div>
         <pre className="font-mono text-xs border border-gray-300 p-2 whitespace-pre-wrap leading-tight overflow-x-auto bg-blue-50 rounded">
           {renderColoredBitStream()}
