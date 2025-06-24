@@ -1,5 +1,6 @@
 import { BitStreamViewer } from './BitStreamViewer';
 import type { EncodedData } from '../../qr-encode/encoding/dataEncoding';
+import { t } from '../../i18n';
 
 interface DataEncodingColumnProps {
   encodedData: EncodedData | null;
@@ -8,7 +9,7 @@ interface DataEncodingColumnProps {
 export function DataEncodingColumn({ encodedData }: DataEncodingColumnProps) {
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">2단계: 데이터 부호화</h2>
+      <h2 className="font-medium mb-3">{t('steps.encode.dataEncoding')}</h2>
       <BitStreamViewer encodedData={encodedData} />
     </div>
   );

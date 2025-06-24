@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '../../i18n';
 import { detectFindersDirectly } from '../../qr-decode/detect/finder-detection/directFinderDetection';
 import { runFinderDetection } from '../../qr-decode/detect/finder-detection/finderDetection';
 import { applyHomography, runHomography } from '../../qr-decode/detect/homography/homography';
@@ -251,10 +252,10 @@ export function RefinedHomographyColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 원근 변환</h2>
+      <h2 className="font-medium mb-3">{t('steps.detect.perspectiveTransform')}</h2>
 
       {isProcessing ? (
-        <div className="text-gray-500 text-sm">변환 중...</div>
+        <div className="text-gray-500 text-sm">{t('detect.processing')}</div>
       ) : homographyImage ? (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">

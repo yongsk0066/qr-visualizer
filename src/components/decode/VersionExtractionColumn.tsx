@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { VersionInfoResult } from '../../qr-decode/decode/version-extraction/types';
 import type { TriStateQR } from '../../qr-decode/types';
+import { t } from '../../i18n';
 
 interface VersionExtractionColumnProps {
   versionInfo: VersionInfoResult | null;
@@ -113,7 +114,7 @@ const ExtractedRegion = ({ matrix, size, location }: ExtractedRegionProps) => {
   return (
     <div className="space-y-2">
       <div className="text-xs font-medium">
-        {location === 1 ? '위치 1 (왼쪽 하단 6×3)' : '위치 2 (오른쪽 상단 3×6)'}
+        {location === 1 ? t('versionExtraction.location1BottomLeft') : t('versionExtraction.location2TopRight')}
       </div>
       
       {/* 추출된 영역 그리드 */}
@@ -157,9 +158,9 @@ const ExtractedRegion = ({ matrix, size, location }: ExtractedRegionProps) => {
       {/* 읽기 순서 설명 */}
       <div className="text-[10px] text-gray-600">
         {location === 1 ? (
-          <div>읽기 순서: 열 우선 (↓)</div>
+          <div>{t('versionExtraction.readOrderColumnFirst')}</div>
         ) : (
-          <div>읽기 순서: 행 우선 (→)</div>
+          <div>{t('versionExtraction.readOrderRowFirst')}</div>
         )}
       </div>
 
@@ -207,17 +208,17 @@ export const VersionExtractionColumn = ({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">2단계: 버전 정보 추출</h2>
+      <h2 className="font-medium mb-3">{t('steps.decode.versionExtraction')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          QR 코드의 버전 정보를 추출합니다 (버전 7 이상)
+          {t('versionExtraction.extractingVersion')}
         </p>
 
         {!triStateMatrix ? (
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">📊</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 버전 정보가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('versionExtraction.willDisplayWhenDetected')}</div>
           </div>
         ) : (
           <>
@@ -226,8 +227,8 @@ export const VersionExtractionColumn = ({
           {estimatedVersion && estimatedVersion >= 7 && (
             <div className="flex flex-col items-center">
               <div className="mb-2 text-center">
-                <div className="text-xs font-medium">버전 정보 위치</div>
-                <div className="text-xs text-gray-600">두 위치에서 18비트 추출</div>
+                <div className="text-xs font-medium">{t('versionExtraction.versionInfoLocation')}</div>
+                <div className="text-xs text-gray-600">{t('versionExtraction.extractFrom18Bits')}</div>
               </div>
               <TriStateMatrix
                 matrix={triStateMatrix.matrix}
@@ -241,12 +242,12 @@ export const VersionExtractionColumn = ({
           {/* 버전 6 이하 메시지 */}
           {estimatedVersion && estimatedVersion <= 6 && (
             <div className="bg-blue-50 text-blue-700 p-3 rounded text-sm">
-              <div className="font-medium">버전 {estimatedVersion}</div>
+              <div className="font-medium">{t('versionExtraction.version')} {estimatedVersion}</div>
               <div className="text-xs mt-1">
-                버전 정보가 없습니다 (v7 이상에만 존재)
+                {t('versionExtraction.noVersionInfo')}
               </div>
               <div className="text-xs mt-1 text-blue-600">
-                매트릭스 크기: {triStateMatrix.size}×{triStateMatrix.size}
+                {t('versionExtraction.matrixSize')} {triStateMatrix.size}×{triStateMatrix.size}
               </div>
             </div>
           )}
@@ -272,20 +273,20 @@ export const VersionExtractionColumn = ({
             <div className="space-y-3">
               {/* 메인 결과 */}
               <div className="p-3 bg-gray-50 rounded">
-                <div className="text-xs font-medium mb-2">추출된 정보</div>
+                <div className="text-xs font-medium mb-2">{t('versionExtraction.extractedInfo')}</div>
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">추출된 버전:</span>
+                    <span className="text-gray-600">{t('versionExtraction.extractedVersion')}</span>
                     <span className="font-mono font-semibold">v{versionInfo.version}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">신뢰도:</span>
+                    <span className="text-gray-600">{t('versionExtraction.confidence')}</span>
                     <span className="font-mono">{(versionInfo.confidence * 100).toFixed(0)}%</span>
                   </div>
                   {versionInfo.errorBits !== undefined && versionInfo.errorBits > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">BCH 정정:</span>
-                      <span className="font-mono text-orange-600">{versionInfo.errorBits}비트 수정됨</span>
+                      <span className="text-gray-600">{t('versionExtraction.bchCorrected')}</span>
+                      <span className="font-mono text-orange-600">{versionInfo.errorBits}{t('versionExtraction.bitsCorrected')}</span>
                     </div>
                   )}
                 </div>
@@ -294,7 +295,7 @@ export const VersionExtractionColumn = ({
               {/* 18비트 상세 정보 */}
               {versionInfo.rawBits !== undefined && (
                 <div className="p-3 bg-gray-50 rounded">
-                  <div className="text-xs font-medium mb-2">18비트 버전 정보</div>
+                  <div className="text-xs font-medium mb-2">{t('versionExtraction.18bitVersionInfo')}</div>
                   <div className="font-mono text-xs space-y-2">
                     <div className="flex gap-0.5 flex-wrap">
                       {toBinaryString(versionInfo.rawBits, 18).split('').map((bit, index) => {
@@ -310,24 +311,24 @@ export const VersionExtractionColumn = ({
                       })}
                     </div>
                     <div className="text-[10px] text-gray-600 space-y-0.5">
-                      <div>전체 18비트: 0x{versionInfo.rawBits.toString(16).toUpperCase().padStart(5, '0')}</div>
-                      <div>버전 번호 (6비트): {toBinaryString(versionInfo.rawBits >> 12, 6)} = {versionInfo.version}</div>
-                      <div>BCH 코드 (12비트): {toBinaryString(versionInfo.rawBits & 0xFFF, 12)}</div>
+                      <div>{t('versionExtraction.whole18Bits')} 0x{versionInfo.rawBits.toString(16).toUpperCase().padStart(5, '0')}</div>
+                      <div>{t('versionExtraction.versionNumberBits')} {toBinaryString(versionInfo.rawBits >> 12, 6)} = {versionInfo.version}</div>
+                      <div>{t('versionExtraction.bchCodeBits')} {toBinaryString(versionInfo.rawBits & 0xFFF, 12)}</div>
                       <div className="text-orange-600 mt-1">
-                        * LSB first 방식: 배열의 첫 비트가 최하위 비트(bit 0)
+                        {t('versionExtraction.lsbFirst')}
                       </div>
                     </div>
                     <div className="mt-2 p-2 bg-blue-50 rounded">
                       <div className="text-[10px] text-blue-700">
-                        <div className="font-medium mb-1">버전 번호 계산</div>
-                        <div>{toBinaryString(versionInfo.rawBits >> 12, 6)} (2진수)</div>
+                        <div className="font-medium mb-1">{t('versionExtraction.versionCalculation')}</div>
+                        <div>{toBinaryString(versionInfo.rawBits >> 12, 6)} {t('versionExtraction.binary')}</div>
                         <div>= {Array.from(toBinaryString(versionInfo.rawBits >> 12, 6)).map((bit, idx) => 
                           bit === '1' ? `2^${5-idx}` : null
                         ).filter(Boolean).join(' + ')}</div>
                         <div>= {Array.from(toBinaryString(versionInfo.rawBits >> 12, 6)).map((bit, idx) => 
                           bit === '1' ? Math.pow(2, 5-idx) : null
                         ).filter(Boolean).join(' + ')}</div>
-                        <div>= {versionInfo.version} (10진수)</div>
+                        <div>= {versionInfo.version} {t('versionExtraction.decimal')}</div>
                       </div>
                     </div>
                   </div>
@@ -337,19 +338,19 @@ export const VersionExtractionColumn = ({
               {/* 위치별 상세 결과 */}
               {(versionInfo.location1 || versionInfo.location2) && (
                 <div className="space-y-2">
-                  <div className="text-xs font-medium">위치별 결과</div>
+                  <div className="text-xs font-medium">{t('versionExtraction.locationResults')}</div>
                   
                   {versionInfo.location1 && (
                     <div className="p-2 bg-red-50 rounded text-xs">
-                      <div className="font-medium text-red-700 mb-1">위치 1 (왼쪽 하단)</div>
+                      <div className="font-medium text-red-700 mb-1">{t('versionExtraction.location1')}</div>
                       <div className="flex gap-3 text-[10px] text-red-600">
-                        <span>유효: {versionInfo.location1.isValid ? '✓' : '✗'}</span>
-                        <span>에러: {versionInfo.location1.errorBits}비트</span>
-                        <span>신뢰도: {(versionInfo.location1.confidence * 100).toFixed(0)}%</span>
+                        <span>{t('versionExtraction.valid')}: {versionInfo.location1.isValid ? '✓' : '✗'}</span>
+                        <span>{t('versionExtraction.error')}: {versionInfo.location1.errorBits}{t('versionExtraction.bitsError')}</span>
+                        <span>{t('versionExtraction.confidence')} {(versionInfo.location1.confidence * 100).toFixed(0)}%</span>
                       </div>
                       {versionInfo.location1.rawBits !== undefined && (
                         <div className="mt-1 font-mono text-[10px]">
-                          원본: 0x{versionInfo.location1.rawBits.toString(16).toUpperCase().padStart(5, '0')}
+                          {t('versionExtraction.original')} 0x{versionInfo.location1.rawBits.toString(16).toUpperCase().padStart(5, '0')}
                         </div>
                       )}
                     </div>
@@ -357,15 +358,15 @@ export const VersionExtractionColumn = ({
                   
                   {versionInfo.location2 && (
                     <div className="p-2 bg-purple-50 rounded text-xs">
-                      <div className="font-medium text-purple-700 mb-1">위치 2 (오른쪽 상단)</div>
+                      <div className="font-medium text-purple-700 mb-1">{t('versionExtraction.location2')}</div>
                       <div className="flex gap-3 text-[10px] text-purple-600">
-                        <span>유효: {versionInfo.location2.isValid ? '✓' : '✗'}</span>
-                        <span>에러: {versionInfo.location2.errorBits}비트</span>
-                        <span>신뢰도: {(versionInfo.location2.confidence * 100).toFixed(0)}%</span>
+                        <span>{t('versionExtraction.valid')}: {versionInfo.location2.isValid ? '✓' : '✗'}</span>
+                        <span>{t('versionExtraction.error')}: {versionInfo.location2.errorBits}{t('versionExtraction.bitsError')}</span>
+                        <span>{t('versionExtraction.confidence')} {(versionInfo.location2.confidence * 100).toFixed(0)}%</span>
                       </div>
                       {versionInfo.location2.rawBits !== undefined && (
                         <div className="mt-1 font-mono text-[10px]">
-                          원본: 0x{versionInfo.location2.rawBits.toString(16).toUpperCase().padStart(5, '0')}
+                          {t('versionExtraction.original')} 0x{versionInfo.location2.rawBits.toString(16).toUpperCase().padStart(5, '0')}
                         </div>
                       )}
                     </div>
@@ -376,25 +377,25 @@ export const VersionExtractionColumn = ({
               {/* BCH 에러 정정 설명 */}
               {versionInfo.errorBits !== undefined && versionInfo.errorBits > 0 && (
                 <div className="p-2 bg-yellow-50 rounded text-xs">
-                  <div className="font-medium text-yellow-700 mb-1">BCH 에러 정정</div>
+                  <div className="font-medium text-yellow-700 mb-1">{t('versionExtraction.bchErrorCorrection')}</div>
                   <div className="text-[10px] text-yellow-600">
-                    <div>{versionInfo.errorBits}비트 에러가 감지되어 정정되었습니다.</div>
-                    <div>정정 후 버전 {versionInfo.version}이 확인되었습니다.</div>
+                    <div>{versionInfo.errorBits}{t('versionExtraction.bitsErrorCorrected')}</div>
+                    <div>{t('versionExtraction.versionConfirmed').replace('{version}', versionInfo.version.toString())}</div>
                   </div>
                 </div>
               )}
 
               {/* 최종 선택 설명 */}
               <div className="p-2 bg-blue-50 rounded text-xs">
-                <div className="font-medium mb-1">최종 선택</div>
+                <div className="font-medium mb-1">{t('versionExtraction.finalSelection')}</div>
                 <div className="text-gray-700">
                   {versionInfo.location1 && versionInfo.location2 ? (
                     versionInfo.location1.confidence >= versionInfo.location2.confidence ? 
-                      '위치 1의 데이터가 더 신뢰할 수 있어 선택되었습니다.' :
-                      '위치 2의 데이터가 더 신뢰할 수 있어 선택되었습니다.'
+                      t('versionExtraction.location1MoreReliable') :
+                      t('versionExtraction.location2MoreReliable')
                   ) : (
-                    versionInfo.location1 ? '위치 1의 데이터만 사용 가능합니다.' :
-                    '위치 2의 데이터만 사용 가능합니다.'
+                    versionInfo.location1 ? t('versionExtraction.onlyLocation1Available') :
+                    t('versionExtraction.onlyLocation2Available')
                   )}
                 </div>
               </div>
@@ -404,27 +405,27 @@ export const VersionExtractionColumn = ({
           {/* 에러 상태 */}
           {!versionInfo && estimatedVersion && estimatedVersion > 6 && (
             <div className="bg-red-50 text-red-700 p-3 rounded text-sm">
-              버전 정보를 추출할 수 없습니다.
+              {t('versionExtraction.cannotExtractVersion')}
             </div>
           )}
 
           {/* 범례 */}
           <div className="p-2 bg-gray-50 rounded text-xs">
-            <div className="font-medium mb-1">버전 정보 구조</div>
+            <div className="font-medium mb-1">{t('versionExtraction.versionInfoStructure')}</div>
             <div className="space-y-0.5 text-gray-600">
-              <div>• 버전 7-40에만 존재 (18비트)</div>
-              <div>• BCH(18,6) 에러 정정 코드 사용</div>
-              <div>• 최대 3비트 에러까지 정정 가능</div>
-              <div>• 2개 위치에 중복 저장</div>
+              <div>{t('versionExtraction.structureDetails.version7Plus')}</div>
+              <div>{t('versionExtraction.structureDetails.bchErrorCorrection')}</div>
+              <div>{t('versionExtraction.structureDetails.maxErrorCorrection')}</div>
+              <div>{t('versionExtraction.structureDetails.duplicateStorage')}</div>
             </div>
             <div className="mt-2 flex gap-2 flex-wrap">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 bg-blue-200 rounded"></span>
-                <span>버전 번호</span>
+                <span>{t('versionExtraction.versionNumber')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 bg-yellow-200 rounded"></span>
-                <span>BCH 코드</span>
+                <span>{t('versionExtraction.bchCode')}</span>
               </div>
             </div>
           </div>

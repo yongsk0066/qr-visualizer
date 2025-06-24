@@ -11,6 +11,7 @@ import {
   TOMATO_COOLDOWN,
   INITIAL_CAPTURE_DELAY
 } from './constants';
+import { t } from '../../../../i18n';
 
 export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInputProps) {
   const [isCapturing, setIsCapturing] = useState(false);
@@ -71,7 +72,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
     <div className="space-y-3">
       {/* 3D 뷰 */}
       <div ref={containerRef} className="p-3 bg-gray-50 rounded">
-        <div className="text-xs font-medium mb-2">3D QR 코드 뷰</div>
+        <div className="text-xs font-medium mb-2">{t('virtualCamera.3dView')}</div>
         <div className="relative">
           <div 
             style={{ 
@@ -102,7 +103,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
             <div className="absolute top-2 right-2 flex items-center gap-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
               <span className="text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
-                실시간 캡처 중
+                {t('virtualCamera.capturing')}
               </span>
             </div>
           )}
@@ -111,17 +112,17 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
 
       {/* 가상 카메라 정보 */}
       <div className="p-3 bg-gray-50 rounded">
-        <div className="text-xs font-medium mb-2">가상 카메라 설정</div>
+        <div className="text-xs font-medium mb-2">{t('virtualCamera.settings')}</div>
         <div className="space-y-2">
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <div className="text-gray-600">캡처 모드</div>
+              <div className="text-gray-600">{t('virtualCamera.captureMode')}</div>
               <div className="font-mono font-semibold">
-                {isCapturing ? '실시간 (500ms)' : '수동'}
+                {isCapturing ? t('virtualCamera.realtime') : t('virtualCamera.manual')}
               </div>
             </div>
             <div>
-              <div className="text-gray-600">캡처 해상도</div>
+              <div className="text-gray-600">{t('virtualCamera.captureResolution')}</div>
               <select 
                 value={captureResolution}
                 onChange={(e) => setCaptureResolution(Number(e.target.value))}
@@ -136,12 +137,12 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
           <div className="border-t pt-2">
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div>
-                <div className="text-gray-600">토마토 던짐</div>
-                <div className="font-mono font-semibold">{tomatoCount}개</div>
+                <div className="text-gray-600">{t('virtualCamera.tomatoesThrown')}</div>
+                <div className="font-mono font-semibold">{tomatoCount}{t('common.unit')}</div>
               </div>
               <div>
-                <div className="text-gray-600">얼룩 개수</div>
-                <div className="font-mono font-semibold">{damageSpots.length}개</div>
+                <div className="text-gray-600">{t('virtualCamera.damageSpots')}</div>
+                <div className="font-mono font-semibold">{damageSpots.length}{t('common.unit')}</div>
               </div>
             </div>
           </div>
@@ -155,7 +156,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
             onClick={handleManualCapture}
             className="flex-1 px-3 py-2 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           >
-            수동 캡처
+            {t('virtualCamera.manualCapture')}
           </button>
           <button
             onClick={() => setIsCapturing(!isCapturing)}
@@ -165,7 +166,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
                 : 'bg-green-500 text-white hover:bg-green-600'
             }`}
           >
-            {isCapturing ? '실시간 정지' : '실시간 시작'}
+            {isCapturing ? t('virtualCamera.stopRealtime') : t('virtualCamera.startRealtime')}
           </button>
         </div>
         
@@ -179,7 +180,7 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
                 : 'bg-red-400 text-white hover:bg-red-500 active:bg-red-600 hover:transform hover:scale-105'
             }`}
           >
-            {shouldThrowTomato ? '🍅 던지는 중...' : '🍅 토마토 던지기'}
+            {shouldThrowTomato ? t('virtualCamera.throwing') : t('virtualCamera.throwTomato')}
           </button>
           
           <button
@@ -191,19 +192,19 @@ export function VirtualCameraInput({ matrix, onImageCapture }: VirtualCameraInpu
                 : 'bg-gray-500 text-white hover:bg-gray-600'
             }`}
           >
-            🧽 초기화
+            {t('virtualCamera.reset')}
           </button>
         </div>
       </div>
 
       {/* 가상 카메라 사용 설명 */}
       <div className="p-2 bg-blue-50 rounded text-xs">
-        <div className="font-medium mb-1">가상 카메라 기능</div>
+        <div className="font-medium mb-1">{t('virtualCamera.features')}</div>
         <div className="space-y-0.5 text-gray-700">
-          <div>• 마우스 드래그: 3D QR 코드 회전</div>
-          <div>• 마우스 휠: 확대/축소</div>
-          <div>• 토마토 던지기: 에러 정정 테스트용 손상 생성</div>
-          <div>• 해상도 선택: 고해상도 캡처 가능 (512px ~ 2048px)</div>
+          <div>• {t('virtualCamera.featureDrag')}</div>
+          <div>• {t('virtualCamera.featureZoom')}</div>
+          <div>• {t('virtualCamera.featureTomato')}</div>
+          <div>• {t('virtualCamera.featureResolution')}</div>
         </div>
       </div>
     </div>

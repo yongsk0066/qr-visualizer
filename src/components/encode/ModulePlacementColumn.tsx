@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../../shared/types';
+import { t } from '../../i18n';
 
 interface ModulePlacementColumnProps {
   modulePlacement: ModulePlacementData | null;
@@ -116,16 +117,16 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
   if (!modulePlacement) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+        <h2 className="font-medium mb-3">{t('steps.encode.modulePlacement')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            QR 코드 매트릭스에 데이터를 배치하고 기능 패턴을 추가합니다
+            {t('modulePlacement.placingModules')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🎯</div>
-            <div className="text-gray-500 text-sm">메시지 구성이 완료되면 모듈 배치가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('modulePlacement.waitingForData')}</div>
           </div>
         </div>
       </div>
@@ -134,10 +135,10 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+      <h2 className="font-medium mb-3">{t('steps.encode.modulePlacement')}</h2>
       <p className="text-sm text-gray-600 mb-4">
-        {modulePlacement.size}×{modulePlacement.size} 매트릭스 | 
-        데이터 모듈: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
+        {modulePlacement.size}×{modulePlacement.size} {t('modulePlacement.matrix')} | 
+        {t('modulePlacement.dataModuleCount')}: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
       </p>
       
       {/* 가로 스크롤 컨테이너 */}
@@ -153,7 +154,7 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
                     {step.description}
                   </p>
                   <p className="text-xs text-blue-600">
-                    +{step.addedModules} 모듈
+                    +{step.addedModules} {t('modulePlacement.addedModules')}
                   </p>
                 </div>
                 
@@ -171,13 +172,13 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
             <div className="flex-shrink-0">
               <div className="text-center mb-3">
                 <h4 className="text-sm font-medium text-gray-700 mb-1">
-                  5단계 완성
+                  {t('modulePlacement.stepCompleted')}
                 </h4>
                 <p className="text-xs text-gray-500 mb-2">
-                  최종 모듈 배치 완료
+                  {t('modulePlacement.finalPlacementComplete')}
                 </p>
                 <p className="text-xs text-gray-600">
-                  흑백 버전
+                  {t('modulePlacement.blackWhiteVersion')}
                 </p>
               </div>
               
@@ -194,48 +195,48 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
 
         {/* 범례 */}
         <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h5 className="text-sm font-medium mb-2">모듈 타입</h5>
+          <h5 className="text-sm font-medium mb-2">{t('modulePlacement.moduleType')}</h5>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-800"></div>
-              <span>파인더</span>
+              <span>{t('modulePlacement.moduleTypes.finder')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-yellow-400"></div>
-              <span>분리자</span>
+              <span>{t('modulePlacement.moduleTypes.separator')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-600"></div>
-              <span>타이밍</span>
+              <span>{t('modulePlacement.moduleTypes.timing')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-purple-600"></div>
-              <span>얼라인먼트</span>
+              <span>{t('modulePlacement.moduleTypes.alignment')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-red-500"></div>
-              <span>포맷</span>
+              <span>{t('modulePlacement.moduleTypes.format')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-orange-500"></div>
-              <span>버전</span>
+              <span>{t('modulePlacement.moduleTypes.version')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-pink-500"></div>
-              <span>지그재그</span>
+              <span>{t('modulePlacement.moduleTypes.zigzag')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-blue-600"></div>
-              <span>데이터</span>
+              <span>{t('modulePlacement.moduleTypes.data')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-100 border border-gray-300"></div>
-              <span>빈 공간</span>
+              <span>{t('modulePlacement.moduleTypes.empty')}</span>
             </div>
           </div>
           
           {/* 8비트 블록 범례 (채도 낮은 무지개) */}
-          <h6 className="text-xs font-medium mb-2 text-gray-600">8비트 블록 (무지개 색상)</h6>
+          <h6 className="text-xs font-medium mb-2 text-gray-600">{t('modulePlacement.eightBitBlocks')}</h6>
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-1 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-red-300 border border-gray-300"></div>
