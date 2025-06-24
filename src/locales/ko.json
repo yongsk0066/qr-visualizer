@@ -63,6 +63,12 @@
       "instagramProfile": "프로필 방문",
       "playMusic": "음악 재생",
       "shareLocation": "위치 공유"
+    },
+    "errorLevels": {
+      "L": "L (낮음)",
+      "M": "M (중간)",
+      "Q": "Q (사분)",
+      "H": "H (높음)"
     }
   },
   "detect": {

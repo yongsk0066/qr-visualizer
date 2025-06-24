@@ -97,10 +97,10 @@ export function SettingsColumn({
               onChange={(e) => setErrorLevel(e.target.value as ErrorCorrectionLevel)}
               className="w-full p-1.5 border border-gray-200 text-xs focus:outline-none focus:border-black"
             >
-              <option value="L">L (Low)</option>
-              <option value="M">M (Medium)</option>
-              <option value="Q">Q (Quartile)</option>
-              <option value="H">H (High)</option>
+              <option value="L">{t('settings.errorLevels.L')}</option>
+              <option value="M">{t('settings.errorLevels.M')}</option>
+              <option value="Q">{t('settings.errorLevels.Q')}</option>
+              <option value="H">{t('settings.errorLevels.H')}</option>
             </select>
           </div>
         </div>

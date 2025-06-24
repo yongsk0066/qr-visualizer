@@ -63,6 +63,12 @@
       "instagramProfile": "Visit profile",
       "playMusic": "Play music",
       "shareLocation": "Share location"
+    },
+    "errorLevels": {
+      "L": "L (Low)",
+      "M": "M (Medium)",
+      "Q": "Q (Quartile)",
+      "H": "H (High)"
     }
   },
   "detect": {
