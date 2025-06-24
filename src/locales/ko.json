@@ -178,13 +178,28 @@
   },
   "masking": {
     "waitingForData": "마스킹을 위한 매트릭스 데이터를 기다리는 중...",
+    "evaluatingDescription": "8가지 마스크 패턴을 평가하여 최적의 패턴을 선택합니다",
+    "willDisplayAfterPlacement": "모듈 배치가 완료되면 마스킹 패턴이 표시됩니다",
     "evaluatingPatterns": "8가지 마스크 패턴 평가 및 최적 패턴 선택",
     "pattern": "패턴",
     "formula": "공식",
     "fullPattern": "전체 패턴",
     "encodingRegion": "인코딩 영역",
+    "encodingRegionOnly": "인코딩 영역만",
+    "xorResult": "XOR 결과",
     "result": "결과",
-    "penalty": "패널티"
+    "penalty": "패널티",
+    "matrixDataError": "매트릭스 데이터 오류",
+    "selected": "선택됨",
+    "penaltyScore": "패널티 점수",
+    "evaluationSteps": {
+      "title": "마스크 패턴 평가 과정",
+      "step1": "연속된 같은 색 모듈 (5개 이상)",
+      "step2": "2×2 같은 색 블록",
+      "step3": "1:1:3:1:1 파인더 패턴 유사성",
+      "step4": "검정 모듈 비율 (50%에서 편차)",
+      "bestPatternNote": "⭐ 가장 낮은 총 패널티 점수를 가진 패턴이 선택됩니다"
+    }
   },
   "finalGeneration": {
     "waitingForData": "최종 QR 코드 생성을 위한 데이터를 기다리는 중...",
@@ -193,7 +208,24 @@
     "maskApplied": "마스크 적용",
     "formatInfo": "포맷 정보",
     "versionInfo": "버전 정보",
-    "finalQR": "최종 QR"
+    "finalQR": "최종 QR",
+    "generationInfo": "생성 정보",
+    "selectedMask": "선택된 마스크",
+    "selectedPattern": "선택된 패턴",
+    "15bitBCH": "15비트 BCH 코드",
+    "18bitBCH": "18비트 BCH 코드",
+    "finalComplete": "최종 완성",
+    "qrCode": "QR 코드",
+    "processes": {
+      "title": "최종 생성 과정",
+      "maskingApplied": "선택된 패턴을 인코딩 영역에 XOR",
+      "formatAdded": "에러 레벨 + 마스크 패턴 (BCH 인코딩, MSB first)",
+      "versionAdded": "버전 7+ 전용 (BCH 인코딩, LSB first)",
+      "finalGenerated": "스캔 가능한 완전한 QR 코드"
+    },
+    "formatInfoArea": "포맷 정보 영역",
+    "versionInfoArea": "버전 정보 영역",
+    "congratulations": "🎉 QR 코드 생성 과정 완료!"
   },
   "bitstream": {
     "currentByte": "현재 바이트",

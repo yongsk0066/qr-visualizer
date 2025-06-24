@@ -178,13 +178,28 @@
   },
   "masking": {
     "waitingForData": "Waiting for matrix data to apply masking...",
+    "evaluatingDescription": "Evaluating 8 mask patterns to select the optimal pattern",
+    "willDisplayAfterPlacement": "Masking patterns will be displayed after module placement",
     "evaluatingPatterns": "Evaluating 8 mask patterns and selecting optimal pattern",
     "pattern": "Pattern",
     "formula": "Formula",
     "fullPattern": "Full pattern",
     "encodingRegion": "Encoding region",
+    "encodingRegionOnly": "Encoding region only",
+    "xorResult": "XOR result",
     "result": "Result",
-    "penalty": "Penalty"
+    "penalty": "Penalty",
+    "matrixDataError": "Matrix data error",
+    "selected": "Selected",
+    "penaltyScore": "Penalty score",
+    "evaluationSteps": {
+      "title": "Mask pattern evaluation process",
+      "step1": "Consecutive same-color modules (5 or more)",
+      "step2": "2×2 same-color blocks",
+      "step3": "1:1:3:1:1 finder pattern similarity",
+      "step4": "Dark module ratio (deviation from 50%)",
+      "bestPatternNote": "⭐ Pattern with lowest total penalty score is selected"
+    }
   },
   "finalGeneration": {
     "waitingForData": "Waiting for data to generate final QR code...",
@@ -193,7 +208,24 @@
     "maskApplied": "Mask applied",
     "formatInfo": "Format info",
     "versionInfo": "Version info",
-    "finalQR": "Final QR"
+    "finalQR": "Final QR",
+    "generationInfo": "Generation info",
+    "selectedMask": "Selected mask",
+    "selectedPattern": "Selected pattern",
+    "15bitBCH": "15-bit BCH code",
+    "18bitBCH": "18-bit BCH code",
+    "finalComplete": "Final complete",
+    "qrCode": "QR code",
+    "processes": {
+      "title": "Final generation process",
+      "maskingApplied": "Apply selected pattern to encoding region with XOR",
+      "formatAdded": "Error level + mask pattern (BCH encoded, MSB first)",
+      "versionAdded": "Version 7+ only (BCH encoded, LSB first)",
+      "finalGenerated": "Scannable complete QR code"
+    },
+    "formatInfoArea": "Format info area",
+    "versionInfoArea": "Version info area",
+    "congratulations": "🎉 QR code generation process complete!"
   },
   "bitstream": {
     "currentByte": "Current byte",
