@@ -123,7 +123,10 @@
     "ecBlocks": "EC 블록 정보",
     "capacity": "용량",
     "dataModules": "데이터 모듈",
-    "remainderBits": "나머지 비트"
+    "remainderBits": "나머지 비트",
+    "block": "블록",
+    "data": "데이터",
+    "components": "구성 요소"
   },
   "messageConstruction": {
     "waitingForData": "비트스트림 생성을 위한 데이터를 기다리는 중...",
@@ -414,6 +417,7 @@
     "processing": "처리 중...",
     "toggleGrid": "격자 토글",
     "inputMethod": "입력 방법",
+    "count": "개",
     "inputMethodSelect": "입력 방법 선택",
     "uploadedImage": "업로드된 이미지",
     "size": "크기",

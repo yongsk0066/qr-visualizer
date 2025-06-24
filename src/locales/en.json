@@ -123,7 +123,10 @@
     "ecBlocks": "EC blocks info",
     "capacity": "Capacity",
     "dataModules": "Data modules",
-    "remainderBits": "Remainder bits"
+    "remainderBits": "Remainder bits",
+    "block": "Block",
+    "data": "Data",
+    "components": "Components"
   },
   "messageConstruction": {
     "waitingForData": "Waiting for data to generate bitstream...",
@@ -404,6 +407,7 @@
     "processing": "Processing...",
     "toggleGrid": "Toggle grid",
     "inputMethod": "Input method",
+    "count": "",
     "inputMethodSelect": "Select input method",
     "uploadedImage": "Uploaded image",
     "size": "Size",
