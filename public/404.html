@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>QR Visualizer</title>
+    <script type="text/javascript">
+      // GitHub Pages SPA 라우팅 해결을 위한 스크립트
+      // 404 페이지를 index.html로 리다이렉트하되 URL 경로는 유지
+      const pathSegmentsToKeep = 1; // GitHub Pages의 경우 1, 커스텀 도메인은 0
+      
+      const l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
