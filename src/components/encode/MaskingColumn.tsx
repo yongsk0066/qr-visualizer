@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../../shared/types';
+import { t } from '@/config/language';
 import {
   generateAllMaskMatrices,
   generateAllEncodingMaskMatrices,
@@ -54,7 +55,7 @@ const QRMatrix = ({
 
   // 매트릭스 크기 안전성 체크
   if (!matrix || !maskMatrix || matrix.length === 0 || maskMatrix.length === 0) {
-    return <div className="text-red-500 text-sm p-2">매트릭스 데이터 오류</div>;
+    return <div className="text-red-500 text-sm p-2">{t('매트릭스 데이터 오류', 'Matrix data error')}</div>;
   }
 
   return (
@@ -108,10 +109,10 @@ const PenaltyScoreDisplay = ({ evaluation }: { evaluation: MaskEvaluationResult 
       }`}
     >
       {isSelected && (
-        <div className="text-xs font-bold text-green-700 mb-1 text-center">✓ 선택됨</div>
+        <div className="text-xs font-bold text-green-700 mb-1 text-center">{t('✓ 선택됨', '✓ Selected')}</div>
       )}
       <div className="text-xs space-y-0.5">
-        <div className="font-medium text-center">패널티 점수</div>
+        <div className="font-medium text-center">{t('패널티 점수', 'Penalty Score')}</div>
         <div className="space-y-0.5 text-[10px]">
           <div>N₁: {penaltyScore.penalty1}</div>
           <div>N₂: {penaltyScore.penalty2}</div>
@@ -123,7 +124,7 @@ const PenaltyScoreDisplay = ({ evaluation }: { evaluation: MaskEvaluationResult 
             isSelected ? 'text-green-700' : 'text-gray-700'
           }`}
         >
-          총합: {penaltyScore.total}
+{t('총합:', 'Total:')} {penaltyScore.total}
         </div>
       </div>
     </div>
@@ -145,16 +146,16 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   if (!modulePlacement || !modulePlacement.subSteps || modulePlacement.subSteps.length === 0) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 마스킹</h2>
+        <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            8가지 마스크 패턴을 평가하여 최적의 패턴을 선택합니다
+            {t('8가지 마스크 패턴을 평가하여 최적의 패턴을 선택합니다', 'Evaluates 8 mask patterns to select the optimal pattern')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🎭</div>
-            <div className="text-gray-500 text-sm">모듈 배치가 완료되면 마스킹 패턴이 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('모듈 배치가 완료되면 마스킹 패턴이 표시됩니다', 'Masking patterns will be displayed when module placement is completed')}</div>
           </div>
         </div>
       </div>
@@ -166,8 +167,8 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
   if (!finalStep || !finalStep.matrix) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 마스킹</h2>
-        <div className="text-gray-500 text-sm">매트릭스 데이터를 불러오는 중...</div>
+        <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
+        <div className="text-gray-500 text-sm">{t('매트릭스 데이터를 불러오는 중...', 'Loading matrix data...')}</div>
       </div>
     );
   }
@@ -189,8 +190,8 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 마스킹</h2>
-      <p className="text-sm text-gray-600 mb-4">8가지 마스크 패턴 평가 및 최적 패턴 선택</p>
+      <h2 className="font-medium mb-3">{t('6단계: 마스킹', 'Step 6: Masking')}</h2>
+      <p className="text-sm text-gray-600 mb-4">{t('8가지 마스크 패턴 평가 및 최적 패턴 선택', 'Evaluate 8 mask patterns and select optimal pattern')}</p>
 
       <div className="space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-auto">
         {evaluationResults.map((evaluation) => {
@@ -202,7 +203,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
           if (!maskMatrix || !Array.isArray(maskMatrix) || !encodingMaskMatrix) {
             return (
               <div key={pattern} className="text-red-500 text-sm p-2">
-                패턴 {pattern}: 마스크 데이터 오류
+{t('패턴', 'Pattern')} {pattern}: {t('마스크 데이터 오류', 'Mask data error')}
               </div>
             );
           }
@@ -217,7 +218,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                       : 'bg-gray-600 text-white'
                   }`}
                 >
-                  패턴 {pattern}
+{t('패턴', 'Pattern')} {pattern}
                 </div>
               </div>
 
@@ -234,7 +235,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                   size={size}
                   scale={scale}
                   pattern={pattern}
-                  title="전체 패턴"
+                  title={t('전체 패턴', 'Full Pattern')}
                 />
 
                 <QRMatrix
@@ -243,7 +244,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                   size={size}
                   scale={scale}
                   pattern={pattern}
-                  title="인코딩 영역만"
+                  title={t('인코딩 영역만', 'Encoding Area Only')}
                 />
 
                 <QRMatrix
@@ -252,7 +253,7 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
                   size={size}
                   scale={scale}
                   pattern={pattern}
-                  title="XOR 결과"
+                  title={t('XOR 결과', 'XOR Result')}
                   isXorResult={true}
                 />
 
@@ -265,40 +266,40 @@ export const MaskingColumn = ({ modulePlacement }: MaskingColumnProps) => {
 
       {/* 범례 */}
       <div className="mt-4 p-2 bg-gray-50 rounded text-xs">
-        <div className="font-medium mb-1">마스크 패턴 평가 과정</div>
+        <div className="font-medium mb-1">{t('마스크 패턴 평가 과정', 'Mask Pattern Evaluation Process')}</div>
         <div className="space-y-1">
           <div>
-            <strong>전체 패턴:</strong> 전체 매트릭스에 수학적 패턴 적용
+            <strong>{t('전체 패턴:', 'Full Pattern:')}</strong> {t('전체 매트릭스에 수학적 패턴 적용', 'Apply mathematical pattern to entire matrix')}
           </div>
           <div>
-            <strong>인코딩 영역만:</strong> 데이터 영역에만 패턴 필터링
+            <strong>{t('인코딩 영역만:', 'Encoding Area Only:')}</strong> {t('데이터 영역에만 패턴 필터링', 'Pattern filtering for data area only')}
           </div>
           <div>
-            <strong>XOR 결과:</strong> 원본 QR과 마스크를 XOR한 최종 결과
+            <strong>{t('XOR 결과:', 'XOR Result:')}</strong> {t('원본 QR과 마스크를 XOR한 최종 결과', 'Final result of XOR between original QR and mask')}
           </div>
           <div>
-            <strong>패널티 점수:</strong> ISO/IEC 18004 기준 4가지 평가 항목
+            <strong>{t('패널티 점수:', 'Penalty Score:')}</strong> {t('ISO/IEC 18004 기준 4가지 평가 항목', 'Four evaluation criteria based on ISO/IEC 18004')}
           </div>
         </div>
         <div className="mt-2 space-y-1">
           <div className="text-gray-700">
             <div>
-              <strong>N₁:</strong> 연속된 같은 색 모듈 (5개 이상)
+              <strong>N₁:</strong> {t('연속된 같은 색 모듈 (5개 이상)', 'Consecutive same color modules (5 or more)')}
             </div>
             <div>
-              <strong>N₂:</strong> 2×2 같은 색 블록
+              <strong>N₂:</strong> {t('2×2 같은 색 블록', '2×2 same color blocks')}
             </div>
             <div>
-              <strong>N₃:</strong> 1:1:3:1:1 파인더 패턴 유사성
+              <strong>N₃:</strong> {t('1:1:3:1:1 파인더 패턴 유사성', '1:1:3:1:1 finder pattern similarity')}
             </div>
             <div>
-              <strong>N₄:</strong> 검정 모듈 비율 (50%에서 편차)
+              <strong>N₄:</strong> {t('검정 모듈 비율 (50%에서 편차)', 'Dark module ratio (deviation from 50%)')}
             </div>
           </div>
         </div>
         <div className="mt-2 p-1 bg-green-100 rounded">
           <div className="text-green-700 font-medium">
-            ⭐ 가장 낮은 총 패널티 점수를 가진 패턴이 선택됩니다
+⭐ {t('가장 낮은 총 패널티 점수를 가진 패턴이 선택됩니다', 'The pattern with the lowest total penalty score is selected')}
           </div>
         </div>
       </div>

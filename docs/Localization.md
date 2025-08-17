@@ -240,15 +240,15 @@ function App() {
 - [ ] 언어 전환 버튼 컴포넌트 생성
 - [x] GitHub Pages 라우팅 설정 ✅
 
-### 📝 QREncodingProcess (2/7)
+### 📝 QREncodingProcess (7/7) ✅
 
 - [x] **SettingsColumn** - 입력 설정 UI ✅
 - [x] **DataEncodingColumn** - 데이터 인코딩 시각화 ✅
-- [ ] **ErrorCorrectionColumn** - 에러 정정 시각화
-- [ ] **MessageConstructionColumn** - 메시지 구성 시각화
-- [ ] **ModulePlacementColumn** - 모듈 배치 시각화
-- [ ] **MaskingColumn** - 마스킹 시각화
-- [ ] **FinalGenerationColumn** - 최종 생성 시각화
+- [x] **ErrorCorrectionColumn** - 에러 정정 시각화 ✅
+- [x] **MessageConstructionColumn** - 메시지 구성 시각화 ✅
+- [x] **ModulePlacementColumn** - 모듈 배치 시각화 ✅
+- [x] **MaskingColumn** - 마스킹 시각화 ✅
+- [x] **FinalGenerationColumn** - 최종 생성 시각화 ✅
 
 ### 📸 QRDetectProcess (0/6)
 
@@ -290,8 +290,8 @@ function App() {
 ### 📊 진행률
 
 - **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
-- **완료**: 7개 (인프라 5개 + SettingsColumn 1개 + DataEncodingColumn 1개)
-- **진행률**: 26.9%
+- **완료**: 12개 (인프라 5개 + QREncodingProcess 7개 완료)
+- **진행률**: 46.2%
 
 ## 성공 기준
 
