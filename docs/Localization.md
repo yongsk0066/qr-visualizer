@@ -203,6 +203,63 @@ function App() {
 
 **총 예상**: ~54시간
 
+## 진행 상황 체크리스트
+
+### 🔧 인프라 설정
+- [ ] `src/config/language.ts` 파일 생성
+- [ ] `t()` 헬퍼 함수 구현
+- [ ] React Router 언어 prefix 설정 (`/:lang/*`)
+- [ ] 루트 경로 → `/ko` 리다이렉트 설정
+- [ ] 언어 전환 버튼 컴포넌트 생성
+- [ ] GitHub Pages 라우팅 설정
+
+### 📝 QREncodingProcess (0/7)
+- [ ] **SettingsColumn** - 입력 설정 UI
+- [ ] **DataEncodingColumn** - 데이터 인코딩 시각화
+- [ ] **ErrorCorrectionColumn** - 에러 정정 시각화
+- [ ] **MessageConstructionColumn** - 메시지 구성 시각화
+- [ ] **ModulePlacementColumn** - 모듈 배치 시각화
+- [ ] **MaskingColumn** - 마스킹 시각화
+- [ ] **FinalGenerationColumn** - 최종 생성 시각화
+
+### 📸 QRDetectProcess (0/6)
+- [ ] **ImageInputColumn** - 이미지 입력
+  - [ ] FileInput 서브컴포넌트
+  - [ ] CameraInput 서브컴포넌트
+  - [ ] VirtualCameraInput 서브컴포넌트
+- [ ] **GrayscaleColumn** - 그레이스케일 변환
+- [ ] **BinarizationColumn** - 이진화
+- [ ] **FinderDetectionColumn** - Finder 패턴 검출
+- [ ] **RefinedHomographyColumn** - 원근 변환
+- [ ] **SamplingColumn** - 모듈 샘플링
+
+### 🔍 QRDecodeProcess (0/6)
+- [ ] **FormatExtractionColumn** - 포맷 정보 추출
+- [ ] **VersionExtractionColumn** - 버전 정보 추출
+- [ ] **MaskRemovalColumn** - 마스크 패턴 제거
+- [ ] **DataReadingColumn** - 데이터 모듈 읽기
+- [ ] **ErrorCorrectionColumn** - 에러 정정
+- [ ] **DataExtractionColumn** - 데이터 추출
+
+### 🎯 공통 컴포넌트
+- [ ] **App.tsx** - 메인 헤더 및 푸터
+- [ ] **ProcessingWrapper.tsx** - 프로세스 래퍼
+- [ ] **BitStreamViewer.tsx** - 비트스트림 뷰어
+- [ ] **샘플 데이터** - 각종 예제 텍스트
+
+### ✅ 테스트 및 검증
+- [ ] 한국어 경로 (`/ko`) 정상 작동
+- [ ] 영어 경로 (`/en`) 정상 작동
+- [ ] 언어 전환 버튼 작동
+- [ ] 모든 한국어 텍스트 영어 번역 확인
+- [ ] 기술 용어 정확성 검증
+- [ ] 반응형 UI 확인
+
+### 📊 진행률
+- **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
+- **완료**: 0개
+- **진행률**: 0%
+
 ## 성공 기준
 
 - [ ] 세 가지 프로세스 모두 영어로 완전 번역
