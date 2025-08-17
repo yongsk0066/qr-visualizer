@@ -15,7 +15,9 @@ const router = createBrowserRouter([
     path: '/:lang',
     element: <App />
   }
-])
+], {
+  basename: '/qr-visualizer'
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

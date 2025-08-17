@@ -233,16 +233,16 @@ function App() {
 
 ### 🔧 인프라 설정
 
-- [ ] `src/config/language.ts` 파일 생성
-- [ ] `t()` 헬퍼 함수 구현
-- [ ] React Router 언어 prefix 설정 (`/:lang/*`)
-- [ ] 루트 경로 → `/ko` 리다이렉트 설정
+- [x] `src/config/language.ts` 파일 생성 ✅
+- [x] `t()` 헬퍼 함수 구현 ✅
+- [x] React Router 언어 prefix 설정 (`/:lang/*`) ✅
+- [x] 루트 경로 → `/ko` 리다이렉트 설정 ✅
 - [ ] 언어 전환 버튼 컴포넌트 생성
-- [ ] GitHub Pages 라우팅 설정
+- [x] GitHub Pages 라우팅 설정 ✅
 
-### 📝 QREncodingProcess (0/7)
+### 📝 QREncodingProcess (1/7)
 
-- [ ] **SettingsColumn** - 입력 설정 UI
+- [x] **SettingsColumn** - 입력 설정 UI ✅
 - [ ] **DataEncodingColumn** - 데이터 인코딩 시각화
 - [ ] **ErrorCorrectionColumn** - 에러 정정 시각화
 - [ ] **MessageConstructionColumn** - 메시지 구성 시각화
@@ -290,8 +290,8 @@ function App() {
 ### 📊 진행률
 
 - **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
-- **완료**: 0개
-- **진행률**: 0%
+- **완료**: 6개 (인프라 5개 + SettingsColumn 1개)
+- **진행률**: 23.1%
 
 ## 성공 기준
 

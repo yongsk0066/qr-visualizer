@@ -3,8 +3,9 @@
  * URL 경로 기반으로 언어를 결정 (/ko, /en)
  */
 
-// 현재 언어 감지
-export const LANG = window.location.pathname.startsWith('/en') ? 'en' : 'ko';
+// 현재 언어 감지 (base path 고려)
+const pathname = window.location.pathname.replace('/qr-visualizer', '');
+export const LANG = pathname.startsWith('/en') ? 'en' : 'ko';
 
 /**
  * 번역 헬퍼 함수
