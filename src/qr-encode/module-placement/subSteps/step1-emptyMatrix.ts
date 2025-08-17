@@ -5,6 +5,7 @@ import {
   createEmptyMatrix, 
   createEmptyModuleTypes 
 } from '../utils/matrixUtils';
+import { t } from '@/config/language';
 
 /**
  * Step 5-1: Empty Matrix
@@ -19,7 +20,7 @@ export const createEmptyMatrixStep = (version: QRVersion): SubStepResult => {
     matrix,
     moduleTypes,
     stepName: '5-1: Empty Matrix',
-    description: `${size}×${size} 빈 매트릭스 초기화`,
+    description: t(`${size}×${size} 빈 매트릭스 초기화`, `${size}×${size} empty matrix initialization`),
     addedModules: 0,
   };
 };

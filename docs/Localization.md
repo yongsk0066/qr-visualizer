@@ -291,7 +291,10 @@ function App() {
 
 - **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
 - **완료**: 12개 (인프라 5개 + QREncodingProcess 7개 완료)
+- **추가 완료**: Module placement substeps (6개 서브 컴포넌트)
 - **진행률**: 46.2%
+
+**Note**: Module placement substeps는 ModulePlacementColumn의 일부로 이미 완료 처리됨
 
 ## 성공 기준
 

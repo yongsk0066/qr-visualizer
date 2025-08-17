@@ -9,6 +9,7 @@ import {
   isValidPosition
 } from '../utils/matrixUtils';
 import { getFinderPatternPositions } from '../utils/constants';
+import { t } from '@/config/language';
 
 /**
  * Step 5-3: Separators
@@ -55,7 +56,7 @@ export const addSeparatorsStep = (
     matrix,
     moduleTypes,
     stepName: '5-3: Separators',
-    description: `파인더 패턴 주변 분리자 배치`,
+    description: t('파인더 패턴 주변 분리자 배치', 'Separators placed around finder patterns'),
     addedModules,
   };
 };

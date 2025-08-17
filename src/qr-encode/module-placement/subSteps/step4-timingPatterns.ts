@@ -8,6 +8,7 @@ import {
   setModuleType,
   isEmpty
 } from '../utils/matrixUtils';
+import { t } from '@/config/language';
 
 /**
  * Step 5-4: Timing Patterns
@@ -50,7 +51,7 @@ export const addTimingPatternsStep = (
     matrix,
     moduleTypes,
     stepName: '5-4: Timing Patterns',
-    description: `6행/6열에 교대 타이밍 패턴 배치`,
+    description: t('6행/6열에 교대 타이밍 패턴 배치', 'Alternating timing patterns placed in row/column 6'),
     addedModules,
   };
 };
