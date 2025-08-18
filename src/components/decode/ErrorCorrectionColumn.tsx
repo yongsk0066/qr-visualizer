@@ -45,7 +45,7 @@ export function ErrorCorrectionColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 에러 정정</h2>
+      <h2 className="font-medium mb-3">{t('5단계: 에러 정정', 'Step 5: Error Correction')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
@@ -73,7 +73,7 @@ export function ErrorCorrectionColumn({
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">{t('총 에러 수:', 'Total Errors:')}</span>
-              <span className="font-mono">{totalErrors}{t('개', '')}</span>
+              <span className="font-mono">{totalErrors}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">{t('성공 블록:', 'Success Blocks:')}</span>
@@ -87,7 +87,7 @@ export function ErrorCorrectionColumn({
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">{t('블록 수:', 'Block Count:')}</span>
-              <span className="font-mono">{blockResults.length}{t('개', '')}</span>
+              <span className="font-mono">{blockResults.length}</span>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export function ErrorCorrectionColumn({
                 <div className="text-[10px] text-gray-500 mt-1">
                   {blockSyndromes.every((s) => s === 0)
                     ? t('에러 없음', 'No errors')
-                    : `${blockSyndromes.filter((s) => s !== 0).length}{t('개 신드롬 활성', ' syndromes active')}`}
+                    : t(`${blockSyndromes.filter((s) => s !== 0).length}개 신드롬 활성`, `${blockSyndromes.filter((s) => s !== 0).length} syndromes active`)}
                 </div>
               </div>
             ))}
@@ -173,9 +173,9 @@ export function ErrorCorrectionColumn({
                       : 'text-green-600'
                   }`}
                 >
-                  {result.errorPositions.length}{t('개 에러', ' errors')}
+                  {t(`${result.errorPositions.length}개 에러`, `${result.errorPositions.length} errors`)}
                   {result.maxCorrectableErrors !== undefined &&
-                    ` ({t('최대', 'max')} ${result.maxCorrectableErrors}{t('개', '')})`}
+                    t(` (최대 ${result.maxCorrectableErrors}개)`, ` (max ${result.maxCorrectableErrors})`)}
                 </span>
               </div>
             ))}
@@ -223,7 +223,7 @@ export function ErrorCorrectionColumn({
                               : ''
                           }`}
                         >
-                          {result.detectedErrors || 0} / {result.maxCorrectableErrors}{t('개', '')}
+                          {result.detectedErrors || 0} / {result.maxCorrectableErrors}
                         </span>
                       </div>
                     )}
@@ -232,7 +232,7 @@ export function ErrorCorrectionColumn({
                       <div className="flex justify-between">
                         <span className="text-gray-600">{t('검출된 에러 개수:', 'Detected error count:')}</span>
                         <span className="font-mono font-semibold">
-                          {result.errorPositions.length}{t('개', '')}
+                          {result.errorPositions.length}
                         </span>
                       </div>
                       {result.errorPositions.length > 0 && (
@@ -274,7 +274,7 @@ export function ErrorCorrectionColumn({
 
                 <div className="flex justify-between">
                   <span className="text-gray-600">{t('총 코드워드:', 'Total codewords:')}</span>
-                  <span className="font-mono">{result.originalCodewords.length}{t('개', '')}</span>
+                  <span className="font-mono">{result.originalCodewords.length}</span>
                 </div>
               </div>
             </div>
@@ -284,7 +284,7 @@ export function ErrorCorrectionColumn({
         {/* 정정된 데이터 코드워드 */}
         <div className="p-3 bg-gray-50 rounded">
           <div className="text-xs font-medium mb-2">{t('정정된 데이터 코드워드', 'Corrected Data Codewords')}</div>
-          <div className="text-xs text-gray-600 mb-2">{t('총', 'Total')} {correctedDataCodewords.length}{t('개', '')}</div>
+          <div className="text-xs text-gray-600 mb-2">{t(`총 ${correctedDataCodewords.length}개`, `Total ${correctedDataCodewords.length}`)}</div>
           <div className="font-mono text-[10px] flex flex-wrap gap-1">
             {correctedDataCodewords.map((codeword, index) => (
               <span
