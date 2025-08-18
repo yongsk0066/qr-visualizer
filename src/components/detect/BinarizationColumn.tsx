@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '@/config/language';
 import type { BinarizationResult } from '../../qr-decode/types';
 
 interface BinarizationColumnProps {
@@ -72,7 +73,7 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">3단계: 이진화</h2>
+      <h2 className="font-medium mb-3">{t('3단계: 이진화', 'Step 3: Binarization')}</h2>
       
       {binarization ? (
         <div className="space-y-4">
@@ -82,7 +83,7 @@ export function BinarizationColumn({ binarization }: BinarizationColumnProps) {
 
           {/* 이진화 결과 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">이진화 결과</div>
+            <div className="text-xs font-medium mb-2">{t('이진화 결과', 'Binarization Result')}</div>
             <canvas 
               ref={binaryCanvasRef} 
               className="w-full h-auto border border-gray-200"

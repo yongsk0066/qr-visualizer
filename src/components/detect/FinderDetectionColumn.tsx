@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { t } from '@/config/language';
 import type { FinderDetectionResult } from '../../qr-decode/types';
 import {
   calculateCenter,
@@ -207,44 +208,44 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">4단계: 파인더 패턴 검출</h2>
+      <h2 className="font-medium mb-3">{t('4단계: 파인더 패턴 검출', 'Step 4: Finder Pattern Detection')}</h2>
 
       {finderDetection ? (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            OpenCV.js를 사용하여 QR 코드의 3개 파인더 패턴을 검출합니다
+            {t('OpenCV.js를 사용하여 QR 코드의 3개 파인더 패턴을 검출합니다', 'Detect three finder patterns of QR code using OpenCV.js')}
           </p>
           {/* 시각화 캔버스 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">패턴 검출 결과</div>
+            <div className="text-xs font-medium mb-2">{t('패턴 검출 결과', 'Pattern Detection Result')}</div>
             <canvas
               ref={canvasRef}
               className="w-full h-auto border border-gray-200"
               style={{ maxHeight: '400px', objectFit: 'contain' }}
             />
             <div className="mt-2 space-y-0.5 text-[11px] text-gray-600">
-              <div>• 회색 박스: 후보 패턴</div>
-              <div>• 빨간색 박스: 선택된 파인더 패턴</div>
-              <div>• 숫자: 패턴 품질 점수</div>
-              <div>• 녹색 점선: 추정된 QR 코드 경계</div>
-              <div>• 녹색 점: 모서리 지점 (TL, TR, BL, BR)</div>
+              <div>• {t('회색 박스: 후보 패턴', 'Gray box: Candidate patterns')}</div>
+              <div>• {t('빨간색 박스: 선택된 파인더 패턴', 'Red box: Selected finder patterns')}</div>
+              <div>• {t('숫자: 패턴 품질 점수', 'Numbers: Pattern quality scores')}</div>
+              <div>• {t('녹색 점선: 추정된 QR 코드 경계', 'Green dashed line: Estimated QR code boundary')}</div>
+              <div>• {t('녹색 점: 모서리 지점 (TL, TR, BL, BR)', 'Green dots: Corner points (TL, TR, BL, BR)')}</div>
             </div>
           </div>
 
           {/* 검출 통계 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">검출 정보</div>
+            <div className="text-xs font-medium mb-2">{t('검출 정보', 'Detection Information')}</div>
             <div className="grid grid-cols-3 gap-3 text-xs">
               <div className="text-center">
-                <div className="text-gray-600">후보 패턴</div>
+                <div className="text-gray-600">{t('후보 패턴', 'Candidates')}</div>
                 <div className="font-mono font-semibold">{finderDetection.candidates.length}</div>
               </div>
               <div className="text-center">
-                <div className="text-gray-600">선택된 패턴</div>
+                <div className="text-gray-600">{t('선택된 패턴', 'Selected')}</div>
                 <div className="font-mono font-semibold">{finderDetection.patterns.length}</div>
               </div>
               <div className="text-center">
-                <div className="text-gray-600">신뢰도</div>
+                <div className="text-gray-600">{t('신뢰도', 'Confidence')}</div>
                 <div className="font-mono font-semibold">{(finderDetection.confidence * 100).toFixed(0)}%</div>
               </div>
             </div>
@@ -253,22 +254,22 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
           {/* 선택된 패턴 상세 정보 */}
           {finderDetection.patterns.length > 0 && (
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">선택된 패턴 상세</div>
+              <div className="text-xs font-medium mb-2">{t('선택된 패턴 상세', 'Selected Pattern Details')}</div>
               <div className="space-y-2">
                 {finderDetection.patterns.map((pattern, index) => (
                   <div key={index} className="p-2 bg-white rounded border border-gray-200">
-                    <div className="text-xs font-medium mb-1">패턴 {index + 1}</div>
+                    <div className="text-xs font-medium mb-1">{t('패턴', 'Pattern')} {index + 1}</div>
                     <div className="grid grid-cols-3 gap-2 text-[11px]">
                       <div>
-                        <span className="text-gray-600">중심:</span>
+                        <span className="text-gray-600">{t('중심', 'Center')}:</span>
                         <div className="font-mono">({pattern.center.x.toFixed(0)}, {pattern.center.y.toFixed(0)})</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">크기:</span>
+                        <span className="text-gray-600">{t('크기', 'Size')}:</span>
                         <div className="font-mono">{pattern.size.toFixed(1)}px</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">점수:</span>
+                        <span className="text-gray-600">{t('점수', 'Score')}:</span>
                         <div className="font-mono">{pattern.score.toFixed(1)}</div>
                       </div>
                     </div>
@@ -280,25 +281,25 @@ export function FinderDetectionColumn({ finderDetection }: FinderDetectionColumn
 
           {/* 설명 */}
           <div className="p-2 bg-blue-50 rounded text-xs">
-            <div className="font-medium mb-1">파인더 패턴 검출 알고리즘</div>
+            <div className="font-medium mb-1">{t('파인더 패턴 검출 알고리즘', 'Finder Pattern Detection Algorithm')}</div>
             <div className="space-y-0.5 text-gray-700">
-              <div>• 윤곽선 검출로 사각형 패턴 찾기</div>
-              <div>• 중첩된 사각형 구조 확인 (1:1:3:1:1 비율)</div>
-              <div>• 패턴 품질 점수 계산 및 순위 매기기</div>
-              <div>• 상위 3개 패턴을 파인더로 선택</div>
-              <div>• 교점 계산으로 정확한 QR 경계 추정</div>
+              <div>• {t('윤곽선 검출로 사각형 패턴 찾기', 'Find rectangular patterns through contour detection')}</div>
+              <div>• {t('중첩된 사각형 구조 확인 (1:1:3:1:1 비율)', 'Verify nested square structure (1:1:3:1:1 ratio)')}</div>
+              <div>• {t('패턴 품질 점수 계산 및 순위 매기기', 'Calculate pattern quality scores and ranking')}</div>
+              <div>• {t('상위 3개 패턴을 파인더로 선택', 'Select top 3 patterns as finders')}</div>
+              <div>• {t('교점 계산으로 정확한 QR 경계 추정', 'Accurate QR boundary estimation through intersection calculation')}</div>
             </div>
           </div>
         </div>
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            OpenCV.js를 사용하여 QR 코드의 3개 파인더 패턴을 검출합니다
+            {t('OpenCV.js를 사용하여 QR 코드의 3개 파인더 패턴을 검출합니다', 'Detect three finder patterns of QR code using OpenCV.js')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🔍</div>
-            <div className="text-gray-500 text-sm">이진화가 완료되면 파인더 패턴 검출이 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('이진화가 완료되면 파인더 패턴 검출이 표시됩니다', 'Finder pattern detection will be displayed when binarization is completed')}</div>
           </div>
         </div>
       )}

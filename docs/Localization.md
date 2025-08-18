@@ -250,17 +250,17 @@ function App() {
 - [x] **MaskingColumn** - 마스킹 시각화 ✅
 - [x] **FinalGenerationColumn** - 최종 생성 시각화 ✅
 
-### 📸 QRDetectProcess (0/6)
+### 📸 QRDetectProcess (6/6) ✅
 
-- [ ] **ImageInputColumn** - 이미지 입력
-  - [ ] FileInput 서브컴포넌트
-  - [ ] CameraInput 서브컴포넌트
-  - [ ] VirtualCameraInput 서브컴포넌트
-- [ ] **GrayscaleColumn** - 그레이스케일 변환
-- [ ] **BinarizationColumn** - 이진화
-- [ ] **FinderDetectionColumn** - Finder 패턴 검출
-- [ ] **RefinedHomographyColumn** - 원근 변환
-- [ ] **SamplingColumn** - 모듈 샘플링
+- [x] **ImageInputColumn** - 이미지 입력 ✅
+  - [x] FileInput 서브컴포넌트 ✅
+  - [x] CameraInput 서브컴포넌트 ✅
+  - [x] VirtualCameraInput 서브컴포넌트 ✅
+- [x] **GrayscaleColumn** - 그레이스케일 변환 ✅
+- [x] **BinarizationColumn** - 이진화 ✅
+- [x] **FinderDetectionColumn** - Finder 패턴 검출 ✅
+- [x] **RefinedHomographyColumn** - 원근 변환 ✅
+- [x] **SamplingColumn** - 모듈 샘플링 ✅
 
 ### 🔍 QRDecodeProcess (0/6)
 
@@ -290,9 +290,9 @@ function App() {
 ### 📊 진행률
 
 - **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
-- **완료**: 12개 (인프라 5개 + QREncodingProcess 7개 완료)
-- **추가 완료**: Module placement substeps (6개 서브 컴포넌트)
-- **진행률**: 46.2%
+- **완료**: 18개 (인프라 5개 + QREncodingProcess 7개 + QRDetectProcess 6개)
+- **추가 완료**: Module placement substeps (6개 서브 컴포넌트), ImageInputColumn 서브컴포넌트 (3개)
+- **진행률**: 69.2%
 
 **Note**: Module placement substeps는 ModulePlacementColumn의 일부로 이미 완료 처리됨
 
