@@ -262,14 +262,14 @@ function App() {
 - [x] **RefinedHomographyColumn** - 원근 변환 ✅
 - [x] **SamplingColumn** - 모듈 샘플링 ✅
 
-### 🔍 QRDecodeProcess (0/6)
+### 🔍 QRDecodeProcess (6/6) ✅
 
-- [ ] **FormatExtractionColumn** - 포맷 정보 추출
-- [ ] **VersionExtractionColumn** - 버전 정보 추출
-- [ ] **MaskRemovalColumn** - 마스크 패턴 제거
-- [ ] **DataReadingColumn** - 데이터 모듈 읽기
-- [ ] **ErrorCorrectionColumn** - 에러 정정
-- [ ] **DataExtractionColumn** - 데이터 추출
+- [x] **FormatExtractionColumn** - 포맷 정보 추출 ✅
+- [x] **VersionExtractionColumn** - 버전 정보 추출 ✅
+- [x] **MaskRemovalColumn** - 마스크 패턴 제거 ✅
+- [x] **DataReadingColumn** - 데이터 모듈 읽기 ✅
+- [x] **ErrorCorrectionColumn** - 에러 정정 ✅
+- [x] **DataExtractionColumn** - 데이터 추출 ✅
 
 ### 🎯 공통 컴포넌트
 
@@ -290,9 +290,9 @@ function App() {
 ### 📊 진행률
 
 - **총 컴포넌트**: 19개 메인 + 3개 서브 + 4개 공통 = 26개
-- **완료**: 18개 (인프라 5개 + QREncodingProcess 7개 + QRDetectProcess 6개)
+- **완료**: 24개 (인프라 5개 + QREncodingProcess 7개 + QRDetectProcess 6개 + QRDecodeProcess 6개)
 - **추가 완료**: Module placement substeps (6개 서브 컴포넌트), ImageInputColumn 서브컴포넌트 (3개)
-- **진행률**: 69.2%
+- **진행률**: 92.3%
 
 **Note**: Module placement substeps는 ModulePlacementColumn의 일부로 이미 완료 처리됨
 

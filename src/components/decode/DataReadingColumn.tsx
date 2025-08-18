@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { t } from '../../config/language';
 import type { DataReadingResult } from '../../qr-decode/decode/data-reading/types';
 import { copyHexArrayToClipboard, showCopyNotification } from '../../shared/utils';
 
@@ -113,16 +114,16 @@ export function DataReadingColumn({
   if (!dataReadingResult || !unmaskedMatrix || !dataModules) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">4단계: 데이터 모듈 읽기</h2>
+        <h2 className="font-medium mb-3">{t('4단계: 데이터 모듈 읽기', 'Step 4: Data Module Reading')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            지그재그 패턴으로 데이터 모듈을 읽어 비트스트림을 생성합니다
+            {t('지그재그 패턴으로 데이터 모듈을 읽어 비트스트림을 생성합니다', 'Generate bit stream by reading data modules in zigzag pattern')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">📖</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 데이터 읽기가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('QR 코드를 감지하면 데이터 읽기가 표시됩니다', 'Data reading will be displayed when QR code is detected')}</div>
           </div>
         </div>
       </div>
@@ -159,17 +160,17 @@ export function DataReadingColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">4단계: 데이터 모듈 읽기</h2>
+      <h2 className="font-medium mb-3">{t('4단계: 데이터 모듈 읽기', 'Step 4: Data Module Reading')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          지그재그 패턴으로 데이터 모듈을 읽어 비트스트림을 생성합니다
+          {t('지그재그 패턴으로 데이터 모듈을 읽어 비트스트림을 생성합니다', 'Generate bit stream by reading data modules in zigzag pattern')}
         </p>
 
         {!dataReadingResult || !unmaskedMatrix || !dataModules ? (
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">📖</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 데이터 읽기가 시작됩니다</div>
+            <div className="text-gray-500 text-sm">{t('QR 코드를 감지하면 데이터 읽기가 시작됩니다', 'Data reading will start when QR code is detected')}</div>
           </div>
         ) : (
           <>
@@ -178,7 +179,7 @@ export function DataReadingColumn({
           <div className="flex gap-4 min-w-max justify-center">
             {/* 전체 매트릭스 */}
             <div className="flex flex-col items-center">
-              <div className="text-xs font-medium mb-2">전체 매트릭스</div>
+              <div className="text-xs font-medium mb-2">{t('전체 매트릭스', 'Full Matrix')}</div>
               <Matrix
                 matrix={unmaskedMatrix}
                 size={unmaskedMatrix.length}
@@ -188,7 +189,7 @@ export function DataReadingColumn({
 
             {/* 데이터 영역만 표시 */}
             <div className="flex flex-col items-center">
-              <div className="text-xs font-medium mb-2">데이터 영역</div>
+              <div className="text-xs font-medium mb-2">{t('데이터 영역', 'Data Area')}</div>
               <Matrix
                 matrix={unmaskedMatrix}
                 size={unmaskedMatrix.length}
@@ -199,7 +200,7 @@ export function DataReadingColumn({
 
             {/* 지그재그 패턴 시각화 */}
             <div className="flex flex-col items-center">
-              <div className="text-xs font-medium mb-2">지그재그 읽기 패턴</div>
+              <div className="text-xs font-medium mb-2">{t('지그재그 읽기 패턴', 'Zigzag Reading Pattern')}</div>
               <Matrix
                 matrix={unmaskedMatrix}
                 size={unmaskedMatrix.length}
@@ -214,7 +215,7 @@ export function DataReadingColumn({
 
         {/* 비트스트림 표시 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">비트스트림 ({totalBits} 비트)</div>
+          <div className="text-xs font-medium mb-2">{t('비트스트림', 'Bit Stream')} ({totalBits} {t('비트', 'bits')})</div>
           <div className="font-mono text-[10px] space-y-1">
             {bitGroups.map((group, index) => (
               <span key={index} className="inline-block mr-1">
@@ -238,7 +239,7 @@ export function DataReadingColumn({
         {/* 코드워드 시각화 */}
         <div className="p-3 bg-gray-50 rounded">
           <div className="flex justify-between items-center mb-2">
-            <div className="text-xs font-medium">전체 코드워드</div>
+            <div className="text-xs font-medium">{t('전체 코드워드', 'All Codewords')}</div>
             <button
               onClick={handleCopyCodewords}
               disabled={isCopying}
@@ -247,13 +248,13 @@ export function DataReadingColumn({
                   ? 'bg-green-500 text-white' 
                   : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
               }`}
-              title="코드워드를 클립보드에 복사"
+              title={t('코드워드를 클립보드에 복사', 'Copy codewords to clipboard')}
             >
-              {isCopying ? '✓ 복사됨' : '📋 복사'}
+              {isCopying ? t('✓ 복사됨', '✓ Copied') : t('📋 복사', '📋 Copy')}
             </button>
           </div>
           <div className="text-[10px] text-gray-600 mb-2">
-            총 {codewords.length}개 = 데이터 {dataCodewordCount}개 + 에러 정정 {errorCorrectionCodewordCount}개
+            {t('총', 'Total')} {codewords.length}{t('개 = 데이터', ' = Data')} {dataCodewordCount}{t('개 + 에러 정정', ' + Error Correction')} {errorCorrectionCodewordCount}{t('개', '')}
           </div>
           <div className="font-mono text-[10px] flex flex-wrap gap-1">
             {codewords.map((codeword, index) => {
@@ -264,7 +265,7 @@ export function DataReadingColumn({
                 <span
                   key={index}
                   className={`${isDataCodeword ? 'bg-green-200' : 'bg-red-200'} px-1 py-0.5 rounded`}
-                  title={isDataCodeword ? '데이터 코드워드' : '에러 정정 코드워드'}
+                  title={isDataCodeword ? t('데이터 코드워드', 'Data Codeword') : t('에러 정정 코드워드', 'Error Correction Codeword')}
                 >
                   {hexValue}
                 </span>
@@ -275,34 +276,34 @@ export function DataReadingColumn({
 
         {/* 구성 요소 범례 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">구성 요소</div>
+          <div className="text-xs font-medium mb-2">{t('구성 요소', 'Components')}</div>
           <div className="flex items-center flex-wrap gap-2 text-xs">
             <div className="flex items-center">
               <span className="bg-green-200 px-2 py-0.5 rounded text-xs font-medium">
-                데이터 코드워드
+                {t('데이터 코드워드', 'Data Codewords')}
               </span>
-              <span className="ml-1 text-gray-600">{dataCodewordCount}개</span>
+              <span className="ml-1 text-gray-600">{dataCodewordCount}{t('개', '')}</span>
             </div>
             <span className="text-gray-400 font-medium">+</span>
             <div className="flex items-center">
               <span className="bg-red-200 px-2 py-0.5 rounded text-xs font-medium">
-                에러 정정 코드워드
+                {t('에러 정정 코드워드', 'Error Correction Codewords')}
               </span>
-              <span className="ml-1 text-gray-600">{errorCorrectionCodewordCount}개</span>
+              <span className="ml-1 text-gray-600">{errorCorrectionCodewordCount}{t('개', '')}</span>
             </div>
             <span className="text-gray-400 font-medium">=</span>
             <span className="bg-blue-100 px-2 py-0.5 rounded text-xs font-medium">
-              총 {codewords.length}개
+              {t('총', 'Total')} {codewords.length}{t('개', '')}
             </span>
           </div>
         </div>
 
         {/* 신뢰도 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">읽기 신뢰도</div>
+          <div className="text-xs font-medium mb-2">{t('읽기 신뢰도', 'Reading Confidence')}</div>
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="text-gray-600">신뢰도:</span>
+              <span className="text-gray-600">{t('신뢰도:', 'Confidence:')}</span>
               <span className="font-semibold">{(confidence * 100).toFixed(1)}%</span>
             </div>
             <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -315,10 +316,10 @@ export function DataReadingColumn({
               />
             </div>
             <div className="text-[10px] text-gray-500 leading-relaxed">
-              예상 {codewords.length * 8}비트 중 {totalBits}비트를 읽음.
+              {t('예상', 'Expected')} {codewords.length * 8}{t('비트 중', ' bits out of')} {totalBits}{t('비트를 읽음.', ' bits read.')}
               {confidence >= 1 
-                ? " 모든 데이터를 성공적으로 읽었습니다."
-                : " 일부 데이터가 누락되어 에러 정정이 필요할 수 있습니다."
+                ? t(" 모든 데이터를 성공적으로 읽었습니다.", " All data was read successfully.")
+                : t(" 일부 데이터가 누락되어 에러 정정이 필요할 수 있습니다.", " Some data is missing and error correction may be needed.")
               }
             </div>
           </div>

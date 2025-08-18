@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { t } from '../../config/language';
 import type { DataExtractionResult } from '../../qr-decode/decode/data-extraction/types';
 
 interface DataExtractionColumnProps {
@@ -16,16 +17,16 @@ export function DataExtractionColumn({
   if (!dataExtractionResult || !correctedDataCodewords) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">6단계: 데이터 추출</h2>
+        <h2 className="font-medium mb-3">{t('6단계: 데이터 추출', 'Step 6: Data Extraction')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            에러 정정된 코드워드에서 원본 데이터를 추출합니다
+            {t('에러 정정된 코드워드에서 원본 데이터를 추출합니다', 'Extract original data from error-corrected codewords')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">📤</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 데이터 추출이 시작됩니다</div>
+            <div className="text-gray-500 text-sm">{t('QR 코드를 감지하면 데이터 추출이 시작됩니다', 'Data extraction will start when QR code is detected')}</div>
           </div>
         </div>
       </div>
@@ -48,13 +49,13 @@ export function DataExtractionColumn({
   // 모드 이름 변환
   const getModeName = (mode: number): string => {
     switch (mode) {
-      case 0b0001: return '숫자';
-      case 0b0010: return '영숫자';
-      case 0b0100: return '바이트';
-      case 0b1000: return '한자';
+      case 0b0001: return t('숫자', 'Numeric');
+      case 0b0010: return t('영숫자', 'Alphanumeric');
+      case 0b0100: return t('바이트', 'Byte');
+      case 0b1000: return t('한자', 'Kanji');
       case 0b0111: return 'ECI';
-      case 0b0000: return '종료';
-      default: return '알 수 없음';
+      case 0b0000: return t('종료', 'Terminator');
+      default: return t('알 수 없음', 'Unknown');
     }
   };
 
@@ -73,46 +74,45 @@ export function DataExtractionColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 데이터 추출</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 데이터 추출', 'Step 6: Data Extraction')}</h2>
 
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          에러 정정된 코드워드에서 원본 데이터를 추출합니다
+          {t('에러 정정된 코드워드에서 원본 데이터를 추출합니다', 'Extract original data from error-corrected codewords')}
         </p>
 
         {/* 에러 정정 실패 경고 */}
         {errorCorrectionFailed && (
           <div className="p-3 bg-orange-50 border border-orange-200 rounded">
-            <div className="text-xs font-medium text-orange-700 mb-1">⚠️ 주의</div>
+            <div className="text-xs font-medium text-orange-700 mb-1">{t('⚠️ 주의', '⚠️ Warning')}</div>
             <div className="text-xs text-orange-600">
-              에러 정정이 완전히 성공하지 못했습니다. 
-              일부 데이터가 손상되어 있을 수 있습니다.
+              {t('에러 정정이 완전히 성공하지 못했습니다. 일부 데이터가 손상되어 있을 수 있습니다.', 'Error correction was not completely successful. Some data may be damaged.')}
             </div>
           </div>
         )}
 
         {/* 추출 결과 요약 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">추출 결과</div>
+          <div className="text-xs font-medium mb-2">{t('추출 결과', 'Extraction Result')}</div>
           <div className="space-y-1 text-xs">
             <div className="flex justify-between">
-              <span className="text-gray-600">추출 상태:</span>
+              <span className="text-gray-600">{t('추출 상태:', 'Extraction status:')}</span>
               <span
                 className={`font-semibold ${isValid ? 'text-green-600' : 'text-red-600'}`}
               >
-                {isValid ? '✓ 성공' : '✗ 실패'}
+                {isValid ? t('✓ 성공', '✓ Success') : t('✗ 실패', '✗ Failed')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">세그먼트 수:</span>
-              <span className="font-mono">{segments.length}개</span>
+              <span className="text-gray-600">{t('세그먼트 수:', 'Segments:')}</span>
+              <span className="font-mono">{segments.length}{t('개', '')}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">사용 비트:</span>
+              <span className="text-gray-600">{t('사용 비트:', 'Used bits:')}</span>
               <span className="font-mono">{bitsUsed} / {totalBits} bits</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">신뢰도:</span>
+              <span className="text-gray-600">{t('신뢰도:', 'Confidence:')}</span>
               <span className="font-mono font-semibold">{(confidence * 100).toFixed(1)}%</span>
             </div>
           </div>
@@ -121,25 +121,25 @@ export function DataExtractionColumn({
         {/* 에러 메시지 */}
         {errorMessage && (
           <div className="p-3 bg-red-50 border border-red-200 rounded">
-            <div className="text-xs font-medium text-red-700 mb-1">❌ 추출 실패</div>
+            <div className="text-xs font-medium text-red-700 mb-1">{t('❌ 추출 실패', '❌ Extraction Failed')}</div>
             <div className="text-xs text-red-600">{errorMessage}</div>
           </div>
         )}
 
         {/* 최종 추출 데이터 */}
         <div className="p-3 bg-green-50 rounded">
-          <div className="text-xs font-medium mb-2">추출된 데이터</div>
+          <div className="text-xs font-medium mb-2">{t('추출된 데이터', 'Extracted Data')}</div>
           <div className="font-mono text-sm bg-white p-2 rounded border border-green-200 break-all">
-            {decodedText || '(데이터 없음)'}
+            {decodedText || t('(데이터 없음)', '(No data)')}
           </div>
           <div className="text-xs text-gray-600 mt-1">
-            길이: {decodedText.length}자
+            {t('길이:', 'Length:')} {decodedText.length}{t('자', ' characters')}
           </div>
         </div>
 
         {/* 비트 스트림 구조 시각화 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">비트 스트림 구조</div>
+          <div className="text-xs font-medium mb-2">{t('비트 스트림 구조', 'Bit Stream Structure')}</div>
           
           {/* 컴팩트 비트 시각화 */}
           <div className="font-mono text-[10px] break-all mb-3">
@@ -222,7 +222,7 @@ export function DataExtractionColumn({
                       left: `${(paddingInfo.terminatorPosition / totalBits) * 100}%`,
                       width: `${((totalBits - paddingInfo.terminatorPosition) / totalBits) * 100}%`,
                     }}
-                    title="패딩"
+                    title={t('패딩', 'Padding')}
                   />
                 )}
               </div>
@@ -239,7 +239,7 @@ export function DataExtractionColumn({
               {paddingInfo.terminatorPosition !== undefined && (
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-gray-400 rounded mr-1" />
-                  <span>패딩</span>
+                  <span>{t('패딩', 'Padding')}</span>
                 </div>
               )}
             </div>
@@ -248,29 +248,29 @@ export function DataExtractionColumn({
 
         {/* 세그먼트 상세 정보 */}
         <div className="space-y-3">
-          <div className="text-xs font-medium">세그먼트 상세</div>
+          <div className="text-xs font-medium">{t('세그먼트 상세', 'Segment Details')}</div>
           {segments.map((segment, index) => (
             <div key={index} className="p-3 bg-gray-50 rounded">
               <div className="flex justify-between items-center mb-2">
                 <div className="font-medium text-xs">
-                  세그먼트 {index + 1}: {getModeName(segment.mode)}
+                  {t('세그먼트', 'Segment')} {index + 1}: {getModeName(segment.mode)}
                 </div>
                 <div className={`text-xs px-2 py-0.5 rounded ${getSegmentColor(index)}`}>
-                  {segment.characterCount}자
+                  {segment.characterCount}{t('자', ' chars')}
                 </div>
               </div>
               
               <div className="space-y-1 text-xs">
                 <div>
-                  <span className="text-gray-600">모드 지시자:</span>
+                  <span className="text-gray-600">{t('모드 지시자:', 'Mode indicator:')}</span>
                   <span className="font-mono ml-1">{segment.modeIndicatorBits}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">문자 개수:</span>
+                  <span className="text-gray-600">{t('문자 개수:', 'Character count:')}</span>
                   <span className="font-mono ml-1">{segment.characterCountBits}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">데이터 비트:</span>
+                  <span className="text-gray-600">{t('데이터 비트:', 'Data bits:')}</span>
                   <span className="font-mono ml-1 text-[10px]">
                     {segment.dataBits.length > 32 
                       ? segment.dataBits.slice(0, 32) + '...' 
@@ -279,11 +279,11 @@ export function DataExtractionColumn({
                   <span className="text-gray-500 ml-1">({segment.dataBits.length} bits)</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">추출 데이터:</span>
+                  <span className="text-gray-600">{t('추출 데이터:', 'Extracted data:')}</span>
                   <span className="font-mono ml-1 break-all">{segment.data}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">비트 범위:</span>
+                  <span className="text-gray-600">{t('비트 범위:', 'Bit range:')}</span>
                   <span className="font-mono ml-1">{segment.startBit}-{segment.endBit}</span>
                 </div>
               </div>
@@ -293,27 +293,27 @@ export function DataExtractionColumn({
 
         {/* 패딩 정보 */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">패딩 분석</div>
+          <div className="text-xs font-medium mb-2">{t('패딩 분석', 'Padding Analysis')}</div>
           <div className="space-y-1 text-xs">
             <div className="flex justify-between">
-              <span className="text-gray-600">종료 패턴:</span>
+              <span className="text-gray-600">{t('종료 패턴:', 'Terminator pattern:')}</span>
               <span className="font-mono">
                 {paddingInfo.terminatorPosition !== undefined
-                  ? `위치 ${paddingInfo.terminatorPosition}, ${paddingInfo.terminatorBits} bits`
-                  : '없음'}
+                  ? `${t('위치', 'Position')} ${paddingInfo.terminatorPosition}, ${paddingInfo.terminatorBits} bits`
+                  : t('없음', 'None')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">바이트 경계 패딩:</span>
+              <span className="text-gray-600">{t('바이트 경계 패딩:', 'Byte boundary padding:')}</span>
               <span className="font-mono">{paddingInfo.byteBoundaryPaddingBits} bits</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">패딩 바이트:</span>
-              <span className="font-mono">{paddingInfo.paddingBytes}개</span>
+              <span className="text-gray-600">{t('패딩 바이트:', 'Padding bytes:')}</span>
+              <span className="font-mono">{paddingInfo.paddingBytes}{t('개', '')}</span>
             </div>
             {paddingInfo.paddingPattern.length > 0 && (
               <div>
-                <span className="text-gray-600">패딩 패턴:</span>
+                <span className="text-gray-600">{t('패딩 패턴:', 'Padding pattern:')}</span>
                 <div className="font-mono text-[10px] mt-1 flex flex-wrap gap-1">
                   {paddingInfo.paddingPattern.map((pattern, idx) => (
                     <span
@@ -335,19 +335,19 @@ export function DataExtractionColumn({
 
         {/* 전체 비트 스트림 시각화 (인코딩 스타일) */}
         <div className="p-3 bg-gray-50 rounded">
-          <div className="text-xs font-medium mb-2">전체 비트 스트림 상세</div>
+          <div className="text-xs font-medium mb-2">{t('전체 비트 스트림 상세', 'Complete Bit Stream Details')}</div>
           
           {/* 세그먼트별 비트 스트림 */}
           <div className="space-y-2">
             {segments.map((segment, segIndex) => (
               <div key={segIndex} className="space-y-1">
                 <div className="text-[10px] font-medium text-gray-700">
-                  세그먼트 {segIndex + 1}: {getModeName(segment.mode)}
+                  {t('세그먼트', 'Segment')} {segIndex + 1}: {getModeName(segment.mode)}
                 </div>
                 
                 {/* 모드 지시자 */}
                 <div className="flex items-start gap-2">
-                  <span className="text-[10px] text-gray-600 w-20">모드 지시자:</span>
+                  <span className="text-[10px] text-gray-600 w-20">{t('모드 지시자:', 'Mode indicator:')}</span>
                   <div className="flex-1">
                     <span className={`font-mono text-[10px] px-1 py-0.5 rounded ${getSegmentColor(segIndex)}`}>
                       {segment.modeIndicatorBits}
@@ -361,13 +361,13 @@ export function DataExtractionColumn({
                 {/* 문자 개수 지시자 */}
                 {segment.characterCountBits && (
                   <div className="flex items-start gap-2">
-                    <span className="text-[10px] text-gray-600 w-20">문자 개수:</span>
+                    <span className="text-[10px] text-gray-600 w-20">{t('문자 개수:', 'Character count:')}</span>
                     <div className="flex-1">
                       <span className={`font-mono text-[10px] px-1 py-0.5 rounded ${getSegmentColor(segIndex)}`}>
                         {segment.characterCountBits}
                       </span>
                       <span className="text-[10px] text-gray-500 ml-1">
-                        ({segment.characterCount}자)
+                        ({segment.characterCount}{t('자', ' chars')})
                       </span>
                     </div>
                   </div>
@@ -375,7 +375,7 @@ export function DataExtractionColumn({
                 
                 {/* 데이터 비트 */}
                 <div className="flex items-start gap-2">
-                  <span className="text-[10px] text-gray-600 w-20">데이터:</span>
+                  <span className="text-[10px] text-gray-600 w-20">{t('데이터:', 'Data:')}</span>
                   <div className="flex-1">
                     <div className="font-mono text-[10px] break-all">
                       {segment.dataBits.split('').map((bit, bitIndex) => {
@@ -406,12 +406,12 @@ export function DataExtractionColumn({
             {/* 패딩 섹션 */}
             {paddingInfo.terminatorPosition !== undefined && (
               <div className="space-y-1">
-                <div className="text-[10px] font-medium text-gray-700">패딩</div>
+                <div className="text-[10px] font-medium text-gray-700">{t('패딩', 'Padding')}</div>
                 
                 {/* 종료 패턴 */}
                 {paddingInfo.terminatorBits > 0 && (
                   <div className="flex items-start gap-2">
-                    <span className="text-[10px] text-gray-600 w-20">종료 패턴:</span>
+                    <span className="text-[10px] text-gray-600 w-20">{t('종료 패턴:', 'Terminator:')}</span>
                     <div className="flex-1">
                       <span className="font-mono text-[10px] px-1 py-0.5 rounded bg-gray-300">
                         {'0'.repeat(paddingInfo.terminatorBits)}
@@ -426,7 +426,7 @@ export function DataExtractionColumn({
                 {/* 바이트 경계 패딩 */}
                 {paddingInfo.byteBoundaryPaddingBits > 0 && (
                   <div className="flex items-start gap-2">
-                    <span className="text-[10px] text-gray-600 w-20">바이트 정렬:</span>
+                    <span className="text-[10px] text-gray-600 w-20">{t('바이트 정렬:', 'Byte align:')}</span>
                     <div className="flex-1">
                       <span className="font-mono text-[10px] px-1 py-0.5 rounded bg-gray-300">
                         {'0'.repeat(paddingInfo.byteBoundaryPaddingBits)}
@@ -441,7 +441,7 @@ export function DataExtractionColumn({
                 {/* 패딩 바이트 */}
                 {paddingInfo.paddingBytes > 0 && (
                   <div className="flex items-start gap-2">
-                    <span className="text-[10px] text-gray-600 w-20">패딩 바이트:</span>
+                    <span className="text-[10px] text-gray-600 w-20">{t('패딩 바이트:', 'Padding bytes:')}</span>
                     <div className="flex-1">
                       <div className="font-mono text-[10px]">
                         {paddingInfo.paddingPattern.map((pattern, idx) => (
@@ -467,7 +467,7 @@ export function DataExtractionColumn({
           
           {/* 전체 비트스트림 (8비트 단위) */}
           <div className="mt-4 pt-3 border-t border-gray-200">
-            <div className="text-[10px] font-medium text-gray-700 mb-2">최종 비트스트림</div>
+            <div className="text-[10px] font-medium text-gray-700 mb-2">{t('최종 비트스트림', 'Final Bit Stream')}</div>
             <div className="font-mono text-[10px] break-all">
               {(() => {
                 const elements: ReactNode[] = [];
@@ -546,42 +546,42 @@ export function DataExtractionColumn({
               })()}
             </div>
             <div className="text-[10px] text-gray-500 mt-1">
-              {Math.ceil(bitStream.length / 8)}개 바이트
+              {Math.ceil(bitStream.length / 8)}{t('개 바이트', ' bytes')}
               {/* 디버그 정보 */}
               <span className="ml-2 text-[9px]">
-                (데이터: {bitsUsed}비트, 종료: {paddingInfo.terminatorBits}비트, 정렬: {paddingInfo.byteBoundaryPaddingBits}비트)
+                ({t('데이터:', 'Data:')} {bitsUsed}{t('비트,', ' bits,')} {t('종료:', ' Term:')} {paddingInfo.terminatorBits}{t('비트,', ' bits,')} {t('정렬:', ' Align:')} {paddingInfo.byteBoundaryPaddingBits}{t('비트', ' bits')})
               </span>
             </div>
             {/* 색상 범례 */}
             <div className="flex flex-wrap gap-2 text-[10px] mt-2">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-red-200 rounded mr-1" />
-                <span>모드 지시자</span>
+                <span>{t('모드 지시자', 'Mode Indicator')}</span>
               </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-blue-200 rounded mr-1" />
-                <span>문자 개수</span>
+                <span>{t('문자 개수', 'Character Count')}</span>
               </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-200 rounded mr-1" />
-                <span>데이터</span>
+                <span>{t('데이터', 'Data')}</span>
               </div>
               {paddingInfo.terminatorBits > 0 && (
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-yellow-200 rounded mr-1" />
-                  <span>종료 패턴 ({paddingInfo.terminatorBits}비트)</span>
+                  <span>{t('종료 패턴', 'Terminator Pattern')} ({paddingInfo.terminatorBits}{t('비트', ' bits')})</span>
                 </div>
               )}
               {paddingInfo.byteBoundaryPaddingBits > 0 && (
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-orange-200 rounded mr-1" />
-                  <span>바이트 정렬 ({paddingInfo.byteBoundaryPaddingBits}비트)</span>
+                  <span>{t('바이트 정렬', 'Byte Alignment')} ({paddingInfo.byteBoundaryPaddingBits}{t('비트', ' bits')})</span>
                 </div>
               )}
               {paddingInfo.paddingBytes > 0 && (
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-purple-200 rounded mr-1" />
-                  <span>패딩 바이트 ({paddingInfo.paddingBytes}바이트)</span>
+                  <span>{t('패딩 바이트', 'Padding Bytes')} ({paddingInfo.paddingBytes}{t('바이트', ' bytes')})</span>
                 </div>
               )}
             </div>
@@ -590,15 +590,15 @@ export function DataExtractionColumn({
           {/* 전체 요약 */}
           <div className="mt-3 pt-2 border-t border-gray-200">
             <div className="flex justify-between text-[10px]">
-              <span className="text-gray-600">총 비트 수:</span>
+              <span className="text-gray-600">{t('총 비트 수:', 'Total bits:')}</span>
               <span className="font-mono">{bitStream.length} bits ({Math.ceil(bitStream.length / 8)} bytes)</span>
             </div>
             <div className="flex justify-between text-[10px]">
-              <span className="text-gray-600">데이터 비트:</span>
+              <span className="text-gray-600">{t('데이터 비트:', 'Data bits:')}</span>
               <span className="font-mono">{bitsUsed} bits ({(bitsUsed / bitStream.length * 100).toFixed(1)}%)</span>
             </div>
             <div className="flex justify-between text-[10px]">
-              <span className="text-gray-600">패딩 비트:</span>
+              <span className="text-gray-600">{t('패딩 비트:', 'Padding bits:')}</span>
               <span className="font-mono">{bitStream.length - bitsUsed} bits</span>
             </div>
           </div>
@@ -606,12 +606,12 @@ export function DataExtractionColumn({
 
         {/* 설명 */}
         <div className="p-2 bg-blue-50 rounded text-xs">
-          <div className="font-medium mb-1">데이터 추출 과정</div>
+          <div className="font-medium mb-1">{t('데이터 추출 과정', 'Data Extraction Process')}</div>
           <div className="space-y-0.5 text-gray-700">
-            <div>• 모드 지시자(4비트)로 인코딩 방식 확인</div>
-            <div>• 문자 개수 지시자로 데이터 길이 파악</div>
-            <div>• 각 모드별 디코딩 규칙 적용</div>
-            <div>• 종료 패턴 및 패딩 처리</div>
+            <div>{t('• 모드 지시자(4비트)로 인코딩 방식 확인', '• Identify encoding method with mode indicator (4 bits)')}</div>
+            <div>{t('• 문자 개수 지시자로 데이터 길이 파악', '• Determine data length with character count indicator')}</div>
+            <div>{t('• 각 모드별 디코딩 규칙 적용', '• Apply decoding rules for each mode')}</div>
+            <div>{t('• 종료 패턴 및 패딩 처리', '• Process terminator pattern and padding')}</div>
           </div>
         </div>
       </div>
