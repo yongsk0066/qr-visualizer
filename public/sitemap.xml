@@ -35,4 +35,34 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://yongsk0066.github.io/qr-visualizer/"/>
   </url>
   
+  <!-- LLMs.txt for AI systems -->
+  <url>
+    <loc>https://yongsk0066.github.io/qr-visualizer/llms.txt</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Documentation pages for AI understanding -->
+  <url>
+    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-encoding-process.md</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-detection-process.md</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-decoding-process.md</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
 </urlset>

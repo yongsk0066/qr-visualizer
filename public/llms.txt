@@ -1,0 +1,77 @@
+# QR Visualizer
+
+> Interactive educational web application that visualizes step-by-step how QR codes store and read data, following ISO/IEC 18004 standard.
+
+QR Visualizer는 QR 코드의 인코딩부터 디코딩까지 전체 과정을 시각적으로 보여주는 교육용 도구입니다. 
+각 단계별 중간 결과를 실시간으로 확인하며 QR 코드 표준을 학습할 수 있습니다.
+
+Key features:
+- Complete QR code generation process visualization (7 steps)
+- QR code detection from images/camera (6 steps)  
+- QR code decoding with error correction (6 steps)
+- Reed-Solomon error correction implementation
+- Multi-language support (Korean/English)
+- Real-time camera QR code recognition
+
+## Documentation
+
+- [Project Overview](https://github.com/yongsk0066/qr-visualizer/blob/master/CLAUDE.md): Architecture, development guidelines, and implementation status
+- [QR Encoding Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-encoding-process.md): Complete 7-step encoding implementation
+- [QR Detection Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-detection-process.md): Image to tri-state matrix conversion
+- [QR Decoding Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-decoding-process.md): Data extraction with error correction
+- [Localization Guide](https://github.com/yongsk0066/qr-visualizer/blob/master/docs/Localization.md): Multi-language support implementation
+- [GitHub Repository](https://github.com/yongsk0066/qr-visualizer): Source code and contribution guidelines
+
+## Core Implementation
+
+### Encoding Process
+- [Data Analysis](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/analysis): Mode selection and version calculation
+- [Data Encoding](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/encoding): Bit stream generation by encoding modes
+- [Error Correction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/error-correction): Reed-Solomon algorithm implementation
+- [Message Construction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/message-construction): Final bit stream assembly
+- [Module Placement](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/module-placement): 8-step matrix construction
+- [Masking](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/masking): Pattern application and penalty calculation
+- [Final Generation](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-encode/final-generation): Format/version info with BCH codes
+
+### Detection Process
+- [Image Processing](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/detect/image-processing): Grayscale conversion
+- [Binarization](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/detect/binarization): Sauvola adaptive thresholding
+- [Finder Detection](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/detect/finder-detection): OpenCV.js contour-based detection
+- [Homography](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/detect/homography): Perspective transformation
+- [Sampling](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/detect/sampling): Module grid sampling
+
+### Decoding Process
+- [Format Extraction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/format-extraction): BCH error correction
+- [Version Extraction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/version-extraction): 18-bit version info
+- [Mask Removal](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/mask-removal): XOR pattern removal
+- [Data Reading](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/data-reading): Zigzag pattern reading
+- [Error Correction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/error-correction): Reed-Solomon decoding
+- [Data Extraction](https://github.com/yongsk0066/qr-visualizer/tree/master/src/qr-decode/decode/data-extraction): Multi-segment decoding
+
+## Technical Stack
+
+- React 19.1.0 with TypeScript
+- Vite build tool with experimental React Compiler
+- Tailwind CSS for styling
+- OpenCV.js for computer vision algorithms
+- Comprehensive test suite (382+ tests)
+
+## Educational Value
+
+This project serves as a complete reference implementation for understanding:
+- QR code ISO/IEC 18004 standard
+- Reed-Solomon error correction algorithms
+- Computer vision techniques for pattern detection
+- Step-by-step visualization of complex algorithms
+- Clean architecture patterns in React applications
+
+## Live Demo
+
+- [Korean Version](https://yongsk0066.github.io/qr-visualizer/ko)
+- [English Version](https://yongsk0066.github.io/qr-visualizer/en)
+
+## Optional
+
+- [Test Coverage Report](https://github.com/yongsk0066/qr-visualizer/tree/master/src): 382+ comprehensive tests
+- [Component Documentation](https://github.com/yongsk0066/qr-visualizer/tree/master/src/components): UI component structure
+- [Shared Utilities](https://github.com/yongsk0066/qr-visualizer/tree/master/src/shared): Reusable functions and constants

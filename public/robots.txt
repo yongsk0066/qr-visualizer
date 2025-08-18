@@ -7,6 +7,11 @@ Allow: /
 # Sitemap location
 Sitemap: https://yongsk0066.github.io/qr-visualizer/sitemap.xml
 
+# LLMs.txt location for AI systems
+# This file helps AI understand our project structure
+Allow: /llms.txt
+Allow: /docs/*.md
+
 # Crawl-delay (in seconds) for being respectful to search engines
 Crawl-delay: 1
 
@@ -44,3 +49,24 @@ Allow: /
 
 User-agent: YandexBot
 Allow: /
+
+# AI crawlers - explicitly allowed for training
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
