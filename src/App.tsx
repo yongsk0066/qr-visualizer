@@ -4,6 +4,7 @@ import { QRDetectProcess } from './components/QRDetectProcess';
 import { QREncodingProcess } from './components/QREncodingProcess';
 import { QRDecodeProcess } from './components/QRDecodeProcess';
 import type { TriStateQR } from './qr-decode/types';
+import { t } from './config/language';
 import mascot from './assets/mascot.gif';
 
 function App() {
@@ -15,24 +16,24 @@ function App() {
       <header className="mb-8 flex items-center gap-4">
         <img 
           src={mascot} 
-          alt="QR Visualizer 마스코트" 
+          alt={t("QR Visualizer 마스코트", "QR Visualizer Mascot")} 
           className="w-16 h-16 object-contain"
-          title="안녕하세요! QR 코드를 함께 배워봐요 👋"
+          title={t("안녕하세요! QR 코드를 함께 배워봐요 👋", "Hello! Let's learn QR codes together 👋")}
         />
         <div>
           <h1 className="text-3xl font-light tracking-wide mb-1">QR Visualizer</h1>
-          <p className="text-gray-600 text-sm">QR 코드 생성 과정 학습</p>
+          <p className="text-gray-600 text-sm">{t("QR 코드 생성 과정 학습", "Learning QR Code Generation Process")}</p>
         </div>
       </header>
 
       <div className="flex flex-col gap-12">
         <section>
-          <h2 className="text-xl font-light mb-4">Encoding Process</h2>
+          <h2 className="text-xl font-light mb-4">{t("Encoding Process", "Encoding Process")}</h2>
           <QREncodingProcess onQRGenerated={setEncodedQRMatrix} />
         </section>
 
         <section>
-          <h2 className="text-xl font-light mb-4">Detection Process</h2>
+          <h2 className="text-xl font-light mb-4">{t("Detection Process", "Detection Process")}</h2>
           <QRDetectProcess 
             encodedQRMatrix={encodedQRMatrix}
             onTriStateMatrixGenerated={setTriStateMatrix}
@@ -40,7 +41,7 @@ function App() {
         </section>
 
         <section>
-          <h2 className="text-xl font-light mb-4">Decode Process</h2>
+          <h2 className="text-xl font-light mb-4">{t("Decode Process", "Decode Process")}</h2>
           <QRDecodeProcess triStateMatrix={triStateMatrix} />
         </section>
       </div>

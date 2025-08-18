@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { t } from '@/config/language';
 import type { FinalQRResult } from '../../qr-encode/final-generation/finalGeneration';
 
 interface FinalGenerationColumnProps {
@@ -95,32 +96,32 @@ const InfoDisplay = ({ finalGeneration }: { finalGeneration: FinalQRResult }) =>
   return (
     <div className="p-2 bg-gray-50 rounded border min-w-[140px]">
       <div className="text-xs space-y-1">
-        <div className="font-medium text-center">생성 정보</div>
+        <div className="font-medium text-center">{t('생성 정보', 'Generation Info')}</div>
         
         <div className="space-y-1">
           <div className="text-xs">
-            <span className="font-medium">선택된 마스크:</span>
-            <div className="font-mono text-green-600">패턴 {finalGeneration.selectedMaskPattern}</div>
+            <span className="font-medium">{t('선택된 마스크:', 'Selected Mask:')}</span>
+            <div className="font-mono text-green-600">{t('패턴', 'Pattern')} {finalGeneration.selectedMaskPattern}</div>
           </div>
           
           <div className="text-xs">
-            <span className="font-medium">포맷 정보:</span>
+            <span className="font-medium">{t('포맷 정보:', 'Format Info:')}</span>
             <div className="font-mono text-red-600 text-[10px] break-all">
               {formatInfoBinary}
             </div>
             <div className="text-gray-600 text-[10px]">
-              (15비트 BCH 코드)
+              {t('(15비트 BCH 코드)', '(15-bit BCH Code)')}
             </div>
           </div>
           
           {versionInfoBinary && (
             <div className="text-xs">
-              <span className="font-medium">버전 정보:</span>
+              <span className="font-medium">{t('버전 정보:', 'Version Info:')}</span>
               <div className="font-mono text-orange-600 text-[10px] break-all">
                 {versionInfoBinary}
               </div>
               <div className="text-gray-600 text-[10px]">
-                (18비트 BCH 코드)
+                {t('(18비트 BCH 코드)', '(18-bit BCH Code)')}
               </div>
             </div>
           )}
@@ -144,16 +145,16 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
   if (!finalGeneration) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">7단계: 최종 생성</h2>
+        <h2 className="font-medium mb-3">{t('7단계: 최종 생성', 'Step 7: Final Generation')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            포맷 정보와 버전 정보를 추가하여 완전한 QR 코드를 생성합니다
+            {t('포맷 정보와 버전 정보를 추가하여 완전한 QR 코드를 생성합니다', 'Add format and version information to generate a complete QR code')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🎉</div>
-            <div className="text-gray-500 text-sm">마스킹이 완료되면 최종 QR 코드가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('마스킹이 완료되면 최종 QR 코드가 표시됩니다', 'Final QR code will be displayed once masking is complete')}</div>
           </div>
         </div>
       </div>
@@ -165,9 +166,9 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">7단계: 최종 생성</h2>
+      <h2 className="font-medium mb-3">{t('7단계: 최종 생성', 'Step 7: Final Generation')}</h2>
       <p className="text-sm text-gray-600 mb-4">
-        완성된 QR 코드 (포맷/버전 정보 포함)
+        {t('완성된 QR 코드 (포맷/버전 정보 포함)', 'Complete QR code (with format/version info)')}
       </p>
 
       <div className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-auto">
@@ -177,16 +178,16 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
             matrix={finalGeneration.steps.step1_withSelectedMask}
             size={size}
             scale={scale}
-            title="마스킹 적용"
-            subtitle="선택된 패턴"
+            title={t('마스킹 적용', 'Masking Applied')}
+            subtitle={t('선택된 패턴', 'Selected Pattern')}
           />
           
           <QRMatrix
             matrix={finalGeneration.steps.step2_withFormatInfo}
             size={size}
             scale={scale}
-            title="포맷 정보"
-            subtitle="15비트 BCH"
+            title={t('포맷 정보', 'Format Info')}
+            subtitle={t('15비트 BCH', '15-bit BCH')}
             highlightAreas="format"
           />
           
@@ -195,8 +196,8 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
               matrix={finalGeneration.steps.step3_withVersionInfo}
               size={size}
               scale={scale}
-              title="버전 정보"
-              subtitle="18비트 BCH"
+              title={t('버전 정보', 'Version Info')}
+              subtitle={t('18비트 BCH', '18-bit BCH')}
               highlightAreas="version"
             />
           )}
@@ -205,8 +206,8 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
             matrix={finalGeneration.finalMatrix}
             size={size}
             scale={scale}
-            title="최종 완성"
-            subtitle="QR 코드"
+            title={t('최종 완성', 'Final Complete')}
+            subtitle={t('QR 코드', 'QR Code')}
           />
           
           <InfoDisplay finalGeneration={finalGeneration} />
@@ -215,29 +216,29 @@ export const FinalGenerationColumn = ({ finalGeneration }: FinalGenerationColumn
 
       {/* 범례 */}
       <div className="mt-4 p-2 bg-gray-50 rounded text-xs">
-        <div className="font-medium mb-1">최종 생성 과정</div>
+        <div className="font-medium mb-1">{t('최종 생성 과정', 'Final Generation Process')}</div>
         <div className="space-y-1">
-          <div><strong>마스킹 적용:</strong> 선택된 패턴을 인코딩 영역에 XOR</div>
-          <div><strong>포맷 정보:</strong> 에러 레벨 + 마스크 패턴 (BCH 인코딩, MSB first)</div>
+          <div><strong>{t('마스킹 적용:', 'Masking Applied:')}</strong> {t('선택된 패턴을 인코딩 영역에 XOR', 'XOR selected pattern to encoding area')}</div>
+          <div><strong>{t('포맷 정보:', 'Format Info:')}</strong> {t('에러 레벨 + 마스크 패턴 (BCH 인코딩, MSB first)', 'Error level + mask pattern (BCH encoding, MSB first)')}</div>
           {hasVersionInfo && (
-            <div><strong>버전 정보:</strong> 버전 7+ 전용 (BCH 인코딩, LSB first)</div>
+            <div><strong>{t('버전 정보:', 'Version Info:')}</strong> {t('버전 7+ 전용 (BCH 인코딩, LSB first)', 'Version 7+ only (BCH encoding, LSB first)')}</div>
           )}
-          <div><strong>최종 완성:</strong> 스캔 가능한 완전한 QR 코드</div>
+          <div><strong>{t('최종 완성:', 'Final Complete:')}</strong> {t('스캔 가능한 완전한 QR 코드', 'Scannable complete QR code')}</div>
         </div>
         <div className="mt-2 space-y-1">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 bg-red-400"></div>
-            <span>포맷 정보 영역</span>
+            <span>{t('포맷 정보 영역', 'Format Info Area')}</span>
           </div>
           {hasVersionInfo && (
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-orange-400"></div>
-              <span>버전 정보 영역</span>
+              <span>{t('버전 정보 영역', 'Version Info Area')}</span>
             </div>
           )}
         </div>
         <div className="mt-2 p-1 bg-blue-100 rounded">
-          <div className="text-blue-700 font-medium">🎉 QR 코드 생성 과정 완료!</div>
+          <div className="text-blue-700 font-medium">🎉 {t('QR 코드 생성 과정 완료!', 'QR code generation process complete!')}</div>
         </div>
       </div>
     </div>

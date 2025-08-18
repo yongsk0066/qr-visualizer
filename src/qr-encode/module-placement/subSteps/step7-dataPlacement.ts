@@ -8,6 +8,7 @@ import {
   setModuleType,
   isEmpty
 } from '../utils/matrixUtils';
+import { t } from '@/config/language';
 
 /**
  * Step 5-7: Data Placement
@@ -77,7 +78,7 @@ export const placeDataBitsStep = (
     matrix,
     moduleTypes,
     stepName: '5-7: Data Placement',
-    description: `지그재그 패턴으로 ${placedBits}비트 데이터 배치 + 남은 영역 초기화`,
+    description: t(`지그재그 패턴으로 ${placedBits}비트 데이터 배치 + 남은 영역 초기화`, `${placedBits} bits placed in zigzag pattern + remaining area initialized`),
     addedModules,
   };
 };

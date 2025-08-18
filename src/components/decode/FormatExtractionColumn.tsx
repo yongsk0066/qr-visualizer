@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { t } from '../../config/language';
 import type { FormatInfoResult } from '../../qr-decode/decode/format-extraction/types';
 import type { TriStateQR } from '../../qr-decode/types';
 
@@ -92,17 +93,17 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">1단계: 포맷 정보 추출</h2>
+      <h2 className="font-medium mb-3">{t('1단계: 포맷 정보 추출', 'Step 1: Format Information Extraction')}</h2>
       
       <div className="space-y-4">
         <p className="text-sm text-gray-600">
-          QR 코드의 포맷 정보(에러 정정 레벨, 마스크 패턴)를 추출합니다
+          {t('QR 코드의 포맷 정보(에러 정정 레벨, 마스크 패턴)를 추출합니다', 'Extract format information (error correction level, mask pattern) from QR code')}
         </p>
 
         {!formatInfo || !triStateMatrix ? (
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🔍</div>
-            <div className="text-gray-500 text-sm">QR 코드를 감지하면 포맷 정보가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('QR 코드를 감지하면 포맷 정보가 표시됩니다', 'Format information will be displayed when QR code is detected')}</div>
           </div>
         ) : (
           <>
@@ -110,8 +111,8 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
           {/* tri-state 매트릭스 시각화 */}
           <div className="flex flex-col items-center">
             <div className="mb-2 text-center">
-              <div className="text-xs font-medium">포맷 정보 위치</div>
-              <div className="text-xs text-gray-600">빨간색 영역에서 15비트 추출</div>
+              <div className="text-xs font-medium">{t('포맷 정보 위치', 'Format Information Location')}</div>
+              <div className="text-xs text-gray-600">{t('빨간색 영역에서 15비트 추출', 'Extract 15 bits from red area')}</div>
             </div>
             <TriStateMatrix
               matrix={triStateMatrix.matrix}
@@ -124,20 +125,20 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
           {/* 추출된 정보 표시 */}
           <div className="space-y-3">
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">추출된 정보</div>
+              <div className="text-xs font-medium mb-2">{t('추출된 정보', 'Extracted Information')}</div>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">에러 정정 레벨:</span>
+                  <span className="text-gray-600">{t('에러 정정 레벨:', 'Error Correction Level:')}  </span>
                   <span className="font-mono font-semibold">{formatInfo.errorLevel}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">마스크 패턴:</span>
-                  <span className="font-mono font-semibold">패턴 {formatInfo.maskPattern}</span>
+                  <span className="text-gray-600">{t('마스크 패턴:', 'Mask Pattern:')}</span>
+                  <span className="font-mono font-semibold">{t('패턴', 'Pattern')} {formatInfo.maskPattern}</span>
                 </div>
                 {formatInfo.errorBits !== undefined && formatInfo.errorBits > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">BCH 정정:</span>
-                    <span className="font-mono text-orange-600">{formatInfo.errorBits}비트 수정됨</span>
+                    <span className="text-gray-600">{t('BCH 정정:', 'BCH Correction:')}</span>
+                    <span className="font-mono text-orange-600">{formatInfo.errorBits}{t('비트 수정됨', ' bits corrected')}</span>
                   </div>
                 )}
               </div>
@@ -148,7 +149,7 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
               {/* 위치 1 */}
               {formatInfo.location1 && (
                 <div className="p-2 bg-gray-50 rounded">
-                  <div className="text-xs font-medium mb-1">위치 1 (왼쪽 상단)</div>
+                  <div className="text-xs font-medium mb-1">{t('위치 1 (왼쪽 상단)', 'Location 1 (Top-Left)')}</div>
                   <div className="font-mono text-xs">
                     <div className="flex gap-0.5 flex-wrap mb-1">
                       {formatInfo.location1.rawBits.split('').map((bit, index) => {
@@ -165,10 +166,10 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
                       })}
                     </div>
                     <div className="flex gap-3 text-[10px] text-gray-600">
-                      <span>신뢰도: {(formatInfo.location1.confidence * 100).toFixed(0)}%</span>
+                      <span>{t('신뢰도:', 'Confidence:')} {(formatInfo.location1.confidence * 100).toFixed(0)}%</span>
                       {formatInfo.location1.errorBits > 0 && (
                         <span className="text-orange-600">
-                          {formatInfo.location1.errorBits}비트 정정됨
+                          {formatInfo.location1.errorBits}{t('비트 정정됨', ' bits corrected')}
                         </span>
                       )}
                       <span className="text-orange-600">MSB first</span>
@@ -180,7 +181,7 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
               {/* 위치 2 */}
               {formatInfo.location2 && (
                 <div className="p-2 bg-gray-50 rounded">
-                  <div className="text-xs font-medium mb-1">위치 2 (오른쪽 하단)</div>
+                  <div className="text-xs font-medium mb-1">{t('위치 2 (오른쪽 하단)', 'Location 2 (Bottom-Right)')}</div>
                   <div className="font-mono text-xs">
                     <div className="flex gap-0.5 flex-wrap mb-1">
                       {formatInfo.location2.rawBits.split('').map((bit, index) => {
@@ -197,10 +198,10 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
                       })}
                     </div>
                     <div className="flex gap-3 text-[10px] text-gray-600">
-                      <span>신뢰도: {(formatInfo.location2.confidence * 100).toFixed(0)}%</span>
+                      <span>{t('신뢰도:', 'Confidence:')} {(formatInfo.location2.confidence * 100).toFixed(0)}%</span>
                       {formatInfo.location2.errorBits > 0 && (
                         <span className="text-orange-600">
-                          {formatInfo.location2.errorBits}비트 정정됨
+                          {formatInfo.location2.errorBits}{t('비트 정정됨', ' bits corrected')}
                         </span>
                       )}
                       <span className="text-orange-600">MSB first</span>
@@ -213,11 +214,11 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
               <div className="flex gap-2 text-[10px] text-gray-600 justify-center">
                 <div className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-blue-200 rounded"></span>
-                  <span>에러 레벨</span>
+                  <span>{t('에러 레벨', 'Error Level')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-green-200 rounded"></span>
-                  <span>마스크</span>
+                  <span>{t('마스크', 'Mask')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-2 h-2 bg-yellow-200 rounded"></span>
@@ -228,15 +229,15 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
 
             {/* 최종 선택 결과 */}
             <div className="p-2 bg-blue-50 rounded text-xs">
-              <div className="font-medium mb-1">최종 선택</div>
+              <div className="font-medium mb-1">{t('최종 선택', 'Final Selection')}</div>
               <div className="text-gray-700">
                 {formatInfo.location1 && formatInfo.location2 ? (
                   formatInfo.location1.confidence >= formatInfo.location2.confidence ? 
-                    '위치 1의 데이터가 더 신뢰할 수 있어 선택되었습니다.' :
-                    '위치 2의 데이터가 더 신뢰할 수 있어 선택되었습니다.'
+                    t('위치 1의 데이터가 더 신뢰할 수 있어 선택되었습니다.', 'Location 1 data was selected as it is more reliable.') :
+                    t('위치 2의 데이터가 더 신뢰할 수 있어 선택되었습니다.', 'Location 2 data was selected as it is more reliable.')
                 ) : (
-                  formatInfo.location1 ? '위치 1의 데이터만 사용 가능합니다.' :
-                  '위치 2의 데이터만 사용 가능합니다.'
+                  formatInfo.location1 ? t('위치 1의 데이터만 사용 가능합니다.', 'Only Location 1 data is available.') :
+                  t('위치 2의 데이터만 사용 가능합니다.', 'Only Location 2 data is available.')
                 )}
               </div>
             </div>
@@ -244,20 +245,20 @@ export function FormatExtractionColumn({ formatInfo, triStateMatrix }: FormatExt
 
           {/* 범례 */}
           <div className="p-2 bg-gray-50 rounded text-xs">
-            <div className="font-medium mb-1">포맷 정보 구조</div>
+            <div className="font-medium mb-1">{t('포맷 정보 구조', 'Format Information Structure')}</div>
             <div className="space-y-0.5 text-gray-600">
-              <div>• 2개의 위치에서 중복 저장 (신뢰성 향상)</div>
-              <div>• BCH(15,5) 에러 정정 코드 사용</div>
-              <div>• 최대 3비트 에러까지 정정 가능</div>
+              <div>{t('• 2개의 위치에서 중복 저장 (신뢰성 향상)', '• Stored redundantly at 2 locations (reliability improvement)')}</div>
+              <div>{t('• BCH(15,5) 에러 정정 코드 사용', '• Uses BCH(15,5) error correction code')}</div>
+              <div>{t('• 최대 3비트 에러까지 정정 가능', '• Can correct up to 3 bit errors')}</div>
             </div>
             <div className="mt-2 flex gap-2 flex-wrap">
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-red-400"></div>
-                <span>위치 1</span>
+                <span>{t('위치 1', 'Location 1')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-purple-400"></div>
-                <span>위치 2</span>
+                <span>{t('위치 2', 'Location 2')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-gray-400"></div>

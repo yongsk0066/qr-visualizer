@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '@/config/language';
 import { detectFindersDirectly } from '../../qr-decode/detect/finder-detection/directFinderDetection';
 import { runFinderDetection } from '../../qr-decode/detect/finder-detection/finderDetection';
 import { applyHomography, runHomography } from '../../qr-decode/detect/homography/homography';
@@ -251,24 +252,24 @@ export function RefinedHomographyColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 원근 변환</h2>
+      <h2 className="font-medium mb-3">{t('5단계: 원근 변환', 'Step 5: Perspective Transformation')}</h2>
 
       {isProcessing ? (
-        <div className="text-gray-500 text-sm">변환 중...</div>
+        <div className="text-gray-500 text-sm">{t('변환 중...', 'Processing...')}</div>
       ) : homographyImage ? (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다
+            {t('검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다', 'Apply perspective transformation based on detected finder patterns to generate square QR code')}
           </p>
           {/* 변환된 이미지 */}
           <div className="p-3 bg-gray-50 rounded">
             <div className="flex justify-between items-center mb-2">
-              <div className="text-xs font-medium">정사각형으로 변환된 QR 코드</div>
+              <div className="text-xs font-medium">{t('정사각형으로 변환된 QR 코드', 'QR Code Transformed to Square')}</div>
               <button
                 onClick={() => setShowGrid(!showGrid)}
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                {showGrid ? '▼ 그리드 숨기기' : '▶ 그리드 보기'}
+                {showGrid ? t('▼ 그리드 숨기기', '▼ Hide Grid') : t('▶ 그리드 보기', '▶ Show Grid')}
               </button>
             </div>
             <canvas
@@ -278,30 +279,30 @@ export function RefinedHomographyColumn({
             />
             {showGrid && (
               <div className="mt-2 text-[11px] text-gray-600">
-                <div>• 녹색 그리드: 모듈 경계선</div>
-                <div>• 빨간색 테두리: 파인더 패턴 영역</div>
+                <div>• {t('녹색 그리드: 모듈 경계선', 'Green grid: Module boundaries')}</div>
+                <div>• {t('빨간색 테두리: 파인더 패턴 영역', 'Red border: Finder pattern areas')}</div>
               </div>
             )}
           </div>
 
           {/* 변환 정보 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">변환 정보</div>
+            <div className="text-xs font-medium mb-2">{t('변환 정보', 'Transformation Information')}</div>
             <div className="grid grid-cols-3 gap-3 text-xs">
               <div className="text-center">
-                <div className="text-gray-600">검출된 버전</div>
+                <div className="text-gray-600">{t('검출된 버전', 'Detected Version')}</div>
                 <div className="font-mono font-semibold">
                   v{refinedHomography?.version || homography?.version}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-gray-600">모듈 수</div>
+                <div className="text-gray-600">{t('모듈 수', 'Module Count')}</div>
                 <div className="font-mono font-semibold">
                   {refinedHomography?.qrSize || homography?.qrSize}×{refinedHomography?.qrSize || homography?.qrSize}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-gray-600">출력 크기</div>
+                <div className="text-gray-600">{t('출력 크기', 'Output Size')}</div>
                 <div className="font-mono font-semibold">
                   {homographyImage.width}×{homographyImage.height}px
                 </div>
@@ -312,9 +313,9 @@ export function RefinedHomographyColumn({
           {/* 코너 좌표 */}
           {refinedHomography && (
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">코너 지점</div>
+              <div className="text-xs font-medium mb-2">{t('코너 지점', 'Corner Points')}</div>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                {['왼쪽 상단', '오른쪽 상단', '오른쪽 하단', '왼쪽 하단'].map((label, idx) => (
+                {[t('왼쪽 상단', 'Top Left'), t('오른쪽 상단', 'Top Right'), t('오른쪽 하단', 'Bottom Right'), t('왼쪽 하단', 'Bottom Left')].map((label, idx) => (
                   <div key={idx} className="p-2 bg-white rounded border border-gray-200">
                     <div className="text-gray-600 text-[11px]">{label}:</div>
                     <div className="font-mono">
@@ -329,7 +330,7 @@ export function RefinedHomographyColumn({
           {/* 변환 행렬 */}
           {refinedHomography && (
             <div className="p-3 bg-gray-50 rounded">
-              <div className="text-xs font-medium mb-2">원근 변환 행렬 (3×3)</div>
+              <div className="text-xs font-medium mb-2">{t('원근 변환 행렬 (3×3)', 'Perspective Transformation Matrix (3×3)')}</div>
               <div className="text-xs font-mono bg-white p-2 rounded border border-gray-200 overflow-x-auto">
                 <table className="w-full">
                   <tbody>
@@ -350,25 +351,25 @@ export function RefinedHomographyColumn({
 
           {/* 설명 */}
           <div className="p-2 bg-blue-50 rounded text-xs">
-            <div className="font-medium mb-1">원근 변환 프로세스</div>
+            <div className="font-medium mb-1">{t('원근 변환 프로세스', 'Perspective Transformation Process')}</div>
             <div className="space-y-0.5 text-gray-700">
-              <div>• 3개 파인더 패턴을 기준점으로 사용</div>
-              <div>• 4번째 모서리는 선 교차로 계산</div>
-              <div>• 타이밍 패턴 분석으로 정확한 버전 검출</div>
-              <div>• 정사각형 이미지로 정규화 (512×512px)</div>
-              <div>• 재검출로 정밀도 향상</div>
+              <div>• {t('3개 파인더 패턴을 기준점으로 사용', 'Use three finder patterns as reference points')}</div>
+              <div>• {t('4번째 모서리는 선 교차로 계산', 'Calculate fourth corner through line intersection')}</div>
+              <div>• {t('타이밍 패턴 분석으로 정확한 버전 검출', 'Accurate version detection through timing pattern analysis')}</div>
+              <div>• {t('정사각형 이미지로 정규화 (512×512px)', 'Normalize to square image (512×512px)')}</div>
+              <div>• {t('재검출로 정밀도 향상', 'Improve accuracy through re-detection')}</div>
             </div>
           </div>
         </div>
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다
+            {t('검출된 파인더 패턴을 기준으로 원근 변환을 적용해 정사각 QR 코드를 생성합니다', 'Apply perspective transformation based on detected finder patterns to generate square QR code')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🔄</div>
-            <div className="text-gray-500 text-sm">파인더 패턴이 검출되면 원근 변환이 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('파인더 패턴이 검출되면 원근 변환이 표시됩니다', 'Perspective transformation will be displayed when finder patterns are detected')}</div>
           </div>
         </div>
       )}

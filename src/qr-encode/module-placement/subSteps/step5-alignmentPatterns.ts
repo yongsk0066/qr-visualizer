@@ -6,6 +6,7 @@ import {
   placePattern
 } from '../utils/matrixUtils';
 import { ALIGNMENT_PATTERN, getAlignmentPatternPositions } from '../utils/constants';
+import { t } from '@/config/language';
 
 /**
  * Step 5-5: Alignment Patterns
@@ -45,7 +46,7 @@ export const addAlignmentPatternsStep = (
     matrix,
     moduleTypes,
     stepName: '5-5: Alignment Patterns',
-    description: `${alignmentPositions.length}개 얼라인먼트 패턴 (5×5) 배치`,
+    description: t(`${alignmentPositions.length}개 얼라인먼트 패턴 (5×5) 배치`, `${alignmentPositions.length} alignment patterns (5×5) placed`),
     addedModules,
   };
 };

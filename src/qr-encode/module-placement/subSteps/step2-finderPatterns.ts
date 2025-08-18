@@ -7,6 +7,7 @@ import {
   placePattern 
 } from '../utils/matrixUtils';
 import { FINDER_PATTERN, getFinderPatternPositions } from '../utils/constants';
+import { t } from '@/config/language';
 
 /**
  * Step 5-2: Finder Patterns
@@ -41,7 +42,7 @@ export const addFinderPatternsStep = (
     matrix,
     moduleTypes,
     stepName: '5-2: Finder Patterns',
-    description: `3개 파인더 패턴 (7×7) 배치`,
+    description: t('3개 파인더 패턴 (7×7) 배치', '3 finder patterns (7×7) placed'),
     addedModules,
   };
 };

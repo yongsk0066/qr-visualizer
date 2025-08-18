@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { t } from '@/config/language';
 import { runSampling } from '../../qr-decode/detect/sampling/sampling';
 import type { HomographyResult, TriStateQR } from '../../qr-decode/types';
 
@@ -127,22 +128,22 @@ export function SamplingColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">6단계: 모듈 샘플링</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 모듈 샘플링', 'Step 6: Module Sampling')}</h2>
 
       {sampling ? (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            정사각형 QR 코드에서 각 모듈의 중심을 샘플링하여 tri-state 행렬로 변환합니다
+            {t('정사각형 QR 코드에서 각 모듈의 중심을 샘플링하여 tri-state 행렬로 변환합니다', 'Sample center of each module from square QR code to convert to tri-state matrix')}
           </p>
           {/* 샘플링 결과 시각화 */}
           <div className="p-3 bg-gray-50 rounded">
             <div className="flex justify-between items-center mb-2">
-              <div className="text-xs font-medium">샘플링된 행렬</div>
+              <div className="text-xs font-medium">{t('샘플링된 행렬', 'Sampled Matrix')}</div>
               <button
                 onClick={() => setShowGrid(!showGrid)}
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                {showGrid ? '▼ 그리드 숨기기' : '▶ 그리드 보기'}
+                {showGrid ? t('▼ 그리드 숨기기', '▼ Hide Grid') : t('▶ 그리드 보기', '▶ Show Grid')}
               </button>
             </div>
             <canvas
@@ -152,45 +153,45 @@ export function SamplingColumn({
             />
             {showGrid && (
               <div className="mt-2 space-y-0.5 text-[11px] text-gray-600">
-                <div>• 파란색 테두리: 파인더 패턴 영역</div>
-                <div>• 녹색 선: 타이밍 패턴 행/열</div>
-                <div>• 빨간색 모듈: 불확실한 분류</div>
+                <div>• {t('파란색 테두리: 파인더 패턴 영역', 'Blue border: Finder pattern areas')}</div>
+                <div>• {t('녹색 선: 타이밍 패턴 행/열', 'Green lines: Timing pattern row/column')}</div>
+                <div>• {t('빨간색 모듈: 불확실한 분류', 'Red modules: Uncertain classification')}</div>
               </div>
             )}
           </div>
 
           {/* 샘플링 통계 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">샘플링 통계</div>
+            <div className="text-xs font-medium mb-2">{t('샘플링 통계', 'Sampling Statistics')}</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <div className="text-[11px] text-gray-600 mb-1">모듈 크기</div>
+                <div className="text-[11px] text-gray-600 mb-1">{t('모듈 크기', 'Module Size')}</div>
                 <div className="text-xs font-mono font-semibold">
                   {sampling.size} × {sampling.size}
                 </div>
               </div>
               <div>
-                <div className="text-[11px] text-gray-600 mb-1">전체 모듈 수</div>
+                <div className="text-[11px] text-gray-600 mb-1">{t('전체 모듈 수', 'Total Modules')}</div>
                 <div className="text-xs font-mono font-semibold">
-                  {(sampling.size * sampling.size).toLocaleString()}개
+                  {(sampling.size * sampling.size).toLocaleString()}{t('개', '')}
                 </div>
               </div>
             </div>
             <div className="mt-3 space-y-1 text-xs">
               <div className="flex justify-between">
-                <span className="text-gray-600">검은 모듈 (1):</span>
+                <span className="text-gray-600">{t('검은 모듈 (1)', 'Black Modules (1)')}:</span>
                 <span className="font-mono">
                   {sampling.statistics.black.toLocaleString()} ({((sampling.statistics.black / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">흰 모듈 (0):</span>
+                <span className="text-gray-600">{t('흰 모듈 (0)', 'White Modules (0)')}:</span>
                 <span className="font-mono">
                   {sampling.statistics.white.toLocaleString()} ({((sampling.statistics.white / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">미확인 모듈 (-1):</span>
+                <span className="text-gray-600">{t('미확인 모듈 (-1)', 'Unknown Modules (-1)')}:</span>
                 <span className="font-mono text-red-600">
                   {sampling.statistics.unknown.toLocaleString()} ({((sampling.statistics.unknown / (sampling.size * sampling.size)) * 100).toFixed(1)}%)
                 </span>
@@ -200,44 +201,44 @@ export function SamplingColumn({
 
           {/* 범례 */}
           <div className="p-3 bg-gray-50 rounded">
-            <div className="text-xs font-medium mb-2">모듈 색상 범례</div>
+            <div className="text-xs font-medium mb-2">{t('모듈 색상 범례', 'Module Color Legend')}</div>
             <div className="grid grid-cols-3 gap-2 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-black border border-gray-300"></div>
-                <span>검은색 (1)</span>
+                <span>{t('검은색 (1)', 'Black (1)')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-white border border-gray-300"></div>
-                <span>흰색 (0)</span>
+                <span>{t('흰색 (0)', 'White (0)')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-red-500 border border-gray-300"></div>
-                <span>미확인 (-1)</span>
+                <span>{t('미확인 (-1)', 'Unknown (-1)')}</span>
               </div>
             </div>
           </div>
 
           {/* 설명 */}
           <div className="p-2 bg-blue-50 rounded text-xs">
-            <div className="font-medium mb-1">모듈 샘플링 프로세스</div>
+            <div className="font-medium mb-1">{t('모듈 샘플링 프로세스', 'Module Sampling Process')}</div>
             <div className="space-y-0.5 text-gray-700">
-              <div>• 각 모듈의 중심 지점에서 픽셀 값 샘플링</div>
-              <div>• 적응형 임계값으로 흑백 모듈 분류</div>
-              <div>• QR 표준: 검은 모듈 = 1, 흰 모듈 = 0</div>
-              <div>• 불확실한 경우 -1로 표시 (디코딩 시 처리)</div>
-              <div>• tri-state 행렬로 디코딩 준비 완료</div>
+              <div>• {t('각 모듈의 중심 지점에서 픽셀 값 샘플링', 'Sample pixel values at center of each module')}</div>
+              <div>• {t('적응형 임계값으로 흑백 모듈 분류', 'Classify black/white modules with adaptive threshold')}</div>
+              <div>• {t('QR 표준: 검은 모듈 = 1, 흰 모듈 = 0', 'QR standard: black modules = 1, white modules = 0')}</div>
+              <div>• {t('불확실한 경우 -1로 표시 (디코딩 시 처리)', 'Uncertain cases marked as -1 (handled during decoding)')}</div>
+              <div>• {t('tri-state 행렬로 디코딩 준비 완료', 'Decoding ready with tri-state matrix')}</div>
             </div>
           </div>
         </div>
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            변환된 QR 코드에서 각 모듈의 값을 읽어 tri-state 행렬을 생성합니다
+            {t('변환된 QR 코드에서 각 모듈의 값을 읽어 tri-state 행렬을 생성합니다', 'Generate tri-state matrix by reading values of each module from transformed QR code')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">⚡</div>
-            <div className="text-gray-500 text-sm">원근 변환이 완료되면 모듈 샘플링이 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('원근 변환이 완료되면 모듈 샘플링이 표시됩니다', 'Module sampling will be displayed when perspective transformation is completed')}</div>
           </div>
         </div>
       )}

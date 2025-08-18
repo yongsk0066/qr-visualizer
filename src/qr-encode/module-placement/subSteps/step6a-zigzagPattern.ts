@@ -8,6 +8,7 @@ import {
   setModuleType,
   isEmpty
 } from '../utils/matrixUtils';
+import { t } from '@/config/language';
 
 /**
  * Step 5-6A: Zigzag Pattern Visualization
@@ -74,7 +75,7 @@ export const showZigzagPatternStep = (
     matrix,
     moduleTypes,
     stepName: '5-6A: Zigzag Pattern',
-    description: `8비트 블록별 지그재그 패턴 (${totalBlocks}개 블록)`,
+    description: t(`8비트 블록별 지그재그 패턴 (${totalBlocks}개 블록)`, `Zigzag pattern by 8-bit blocks (${totalBlocks} blocks)`),
     addedModules,
     byteBlocks, // 8비트 블록 정보 추가
     zigzagOrder, // 지그재그 순서 정보 추가

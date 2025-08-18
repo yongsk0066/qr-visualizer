@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ModulePlacementData } from '../../shared/types';
+import { t } from '@/config/language';
 
 interface ModulePlacementColumnProps {
   modulePlacement: ModulePlacementData | null;
@@ -14,35 +15,35 @@ interface QRMatrixProps {
 }
 
 const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: QRMatrixProps & { showColors?: boolean }) => {
-  // 5-6A 단계인지 확인하는 함수
+  // 5-6A 단계인지 확인하는 함수 / Check if it's step 5-6A
   const isZigzagStep = () => {
     return moduleTypes.some(row => row.some(type => type.startsWith('byte-')));
   };
 
   const getModuleColor = (value: 0 | 1 | null, type: string) => {
     if (!showColors) {
-      // 컬러 없는 버전 - 흑백만
-      if (value === null) return '#f8f9fa'; // 빈 공간
+      // 컬러 없는 버전 - 흑백만 / No color version - black and white only
+      if (value === null) return '#f8f9fa'; // 빈 공간 / Empty space
       return value === 1 ? '#000' : '#fff';
     }
     
     if (value === null) {
-      return type === 'empty' ? '#f8f9fa' : '#e2e8f0'; // 빈 공간은 연한 회색
+      return type === 'empty' ? '#f8f9fa' : '#e2e8f0'; // 빈 공간은 연한 회색 / Empty space is light gray
     }
     
-    // 5-6A 단계일 때의 특별한 색상 처리
+    // 5-6A 단계일 때의 특별한 색상 처리 / Special color handling for step 5-6A
     if (isZigzagStep()) {
-      // 8비트 블록은 채도 낮은 무지개 색상
+      // 8비트 블록은 채도 낮은 무지개 색상 / 8-bit blocks use desaturated rainbow colors
       if (type.startsWith('byte-')) {
         const byteColors = {
-          'byte-0': value === 1 ? '#b91c1c' : '#fecaca',    // 채도 낮은 빨강
-          'byte-1': value === 1 ? '#c2410c' : '#fed7aa',    // 채도 낮은 주황
-          'byte-2': value === 1 ? '#a16207' : '#fef3c7',    // 채도 낮은 노랑
-          'byte-3': value === 1 ? '#15803d' : '#bbf7d0',    // 채도 낮은 초록
-          'byte-4': value === 1 ? '#0369a1' : '#bae6fd',    // 채도 낮은 하늘
-          'byte-5': value === 1 ? '#1d4ed8' : '#bfdbfe',    // 채도 낮은 파랑
-          'byte-6': value === 1 ? '#6d28d9' : '#ddd6fe',    // 채도 낮은 보라
-          'byte-7': value === 1 ? '#be185d' : '#fbcfe8'     // 채도 낮은 분홍
+          'byte-0': value === 1 ? '#b91c1c' : '#fecaca',    // 채도 낮은 빨강 / Desaturated red
+          'byte-1': value === 1 ? '#c2410c' : '#fed7aa',    // 채도 낮은 주황 / Desaturated orange
+          'byte-2': value === 1 ? '#a16207' : '#fef3c7',    // 채도 낮은 노랑 / Desaturated yellow
+          'byte-3': value === 1 ? '#15803d' : '#bbf7d0',    // 채도 낮은 초록 / Desaturated green
+          'byte-4': value === 1 ? '#0369a1' : '#bae6fd',    // 채도 낮은 하늘 / Desaturated sky blue
+          'byte-5': value === 1 ? '#1d4ed8' : '#bfdbfe',    // 채도 낮은 파랑 / Desaturated blue
+          'byte-6': value === 1 ? '#6d28d9' : '#ddd6fe',    // 채도 낮은 보라 / Desaturated purple
+          'byte-7': value === 1 ? '#be185d' : '#fbcfe8'     // 채도 낮은 분홍 / Desaturated pink
         };
         return byteColors[type as keyof typeof byteColors] || (value === 1 ? '#000' : '#fff');
       }
@@ -51,7 +52,7 @@ const QRMatrix = ({ matrix, moduleTypes, size, scale = 3, showColors = true }: Q
       return value === 1 ? '#000' : '#fff';
     }
     
-    // 일반 단계에서는 기존 컬러 사용
+    // 일반 단계에서는 기존 컬러 사용 / Use existing colors for regular steps
     const colors = {
       finder: value === 1 ? '#1f2937' : '#f3f4f6',      // 파인더: 진한 회색/연한 회색
       separator: '#fbbf24',                              // 분리자: 노란색
@@ -116,16 +117,16 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
   if (!modulePlacement) {
     return (
       <div className="step-column">
-        <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+        <h2 className="font-medium mb-3">{t('5단계: 모듈 배치', 'Step 5: Module Placement')}</h2>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            QR 코드 매트릭스에 데이터를 배치하고 기능 패턴을 추가합니다
+{t('QR 코드 매트릭스에 데이터를 배치하고 기능 패턴을 추가합니다', 'Places data in QR code matrix and adds function patterns')}
           </p>
           
           <div className="p-8 bg-gray-50 rounded text-center">
             <div className="text-gray-400 text-3xl mb-2">🎯</div>
-            <div className="text-gray-500 text-sm">메시지 구성이 완료되면 모듈 배치가 표시됩니다</div>
+            <div className="text-gray-500 text-sm">{t('메시지 구성이 완료되면 모듈 배치가 표시됩니다', 'Module placement will be displayed when message construction is completed')}</div>
           </div>
         </div>
       </div>
@@ -134,10 +135,10 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">5단계: 모듈 배치</h2>
+      <h2 className="font-medium mb-3">{t('5단계: 모듈 배치', 'Step 5: Module Placement')}</h2>
       <p className="text-sm text-gray-600 mb-4">
-        {modulePlacement.size}×{modulePlacement.size} 매트릭스 | 
-        데이터 모듈: {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
+{modulePlacement.size}×{modulePlacement.size} {t('매트릭스', 'matrix')} | 
+        {t('데이터 모듈:', 'Data Modules:')} {modulePlacement.usedDataModules}/{modulePlacement.totalDataModules}
       </p>
       
       {/* 가로 스크롤 컨테이너 */}
@@ -153,7 +154,7 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
                     {step.description}
                   </p>
                   <p className="text-xs text-blue-600">
-                    +{step.addedModules} 모듈
++{step.addedModules} {t('모듈', 'modules')}
                   </p>
                 </div>
                 
@@ -167,17 +168,17 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
               </div>
             ))}
             
-            {/* 5단계 완성본 (컬러 없이) */}
+            {/* 5단계 완성본 (컬러 없이) / Step 5 complete (without color) */}
             <div className="flex-shrink-0">
               <div className="text-center mb-3">
                 <h4 className="text-sm font-medium text-gray-700 mb-1">
-                  5단계 완성
+{t('5단계 완성', 'Step 5 Complete')}
                 </h4>
                 <p className="text-xs text-gray-500 mb-2">
-                  최종 모듈 배치 완료
+{t('최종 모듈 배치 완료', 'Final module placement complete')}
                 </p>
                 <p className="text-xs text-gray-600">
-                  흑백 버전
+{t('흑백 버전', 'Black and white version')}
                 </p>
               </div>
               
@@ -192,50 +193,50 @@ export const ModulePlacementColumn = ({ modulePlacement }: ModulePlacementColumn
           </div>
         </div>
 
-        {/* 범례 */}
+        {/* 범례 / Legend */}
         <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h5 className="text-sm font-medium mb-2">모듈 타입</h5>
+          <h5 className="text-sm font-medium mb-2">{t('모듈 타입', 'Module Types')}</h5>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-800"></div>
-              <span>파인더</span>
+              <span>{t('파인더', 'Finder')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-yellow-400"></div>
-              <span>분리자</span>
+              <span>{t('분리자', 'Separator')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-600"></div>
-              <span>타이밍</span>
+              <span>{t('타이밍', 'Timing')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-purple-600"></div>
-              <span>얼라인먼트</span>
+              <span>{t('얼라인먼트', 'Alignment')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-red-500"></div>
-              <span>포맷</span>
+              <span>{t('포맷', 'Format')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-orange-500"></div>
-              <span>버전</span>
+              <span>{t('버전', 'Version')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-pink-500"></div>
-              <span>지그재그</span>
+              <span>{t('지그재그', 'Zigzag')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-blue-600"></div>
-              <span>데이터</span>
+              <span>{t('데이터', 'Data')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-gray-100 border border-gray-300"></div>
-              <span>빈 공간</span>
+              <span>{t('빈 공간', 'Empty space')}</span>
             </div>
           </div>
           
-          {/* 8비트 블록 범례 (채도 낮은 무지개) */}
-          <h6 className="text-xs font-medium mb-2 text-gray-600">8비트 블록 (무지개 색상)</h6>
+          {/* 8비트 블록 범례 (채도 낮은 무지개) / 8-bit block legend (desaturated rainbow) */}
+          <h6 className="text-xs font-medium mb-2 text-gray-600">{t('8비트 블록 (무지개 색상)', '8-bit blocks (rainbow colors)')}</h6>
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-1 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-red-300 border border-gray-300"></div>

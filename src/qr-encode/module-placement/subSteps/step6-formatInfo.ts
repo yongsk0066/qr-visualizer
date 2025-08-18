@@ -8,6 +8,7 @@ import {
   setModuleType,
   isEmpty
 } from '../utils/matrixUtils';
+import { t } from '@/config/language';
 
 /**
  * 정확한 포맷 정보 위치 정의 (ISO/IEC 18004 Figure 19 기준)
@@ -158,13 +159,13 @@ export const reserveFormatInfoStep = (
   
   addedModules += versionModules;
   
-  const versionInfo = version >= 7 ? ` + 버전 정보 (18비트×2)` : '';
+  const versionInfo = version >= 7 ? t(' + 버전 정보 (18비트×2)', ' + version info (18bits×2)') : '';
 
   return {
     matrix,
     moduleTypes,
     stepName: '5-6: Format Info',
-    description: `포맷 정보 (15비트×2) + 다크 모듈${versionInfo}`,
+    description: t(`포맷 정보 (15비트×2) + 다크 모듈${versionInfo}`, `Format info (15bits×2) + dark module${versionInfo}`),
     addedModules,
   };
 };
