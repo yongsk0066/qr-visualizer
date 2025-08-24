@@ -9,7 +9,7 @@ const ReactCompilerConfig = {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/qr-visualizer/',
+  base: '/',
   plugins: [
     react({
       babel: {

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "tsc": "tsc",
     "test": "vitest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "yarn build && npx wrangler deploy"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",

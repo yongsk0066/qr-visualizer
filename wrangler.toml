@@ -1,0 +1,10 @@
+name = "qr-visualizer"
+compatibility_date = "2025-08-24"
+
+# Static assets configuration for Vite build output
+[assets]
+directory = "./dist"
+
+# Alternative legacy configuration (commented out)
+# [site]
+# bucket = "./dist"
