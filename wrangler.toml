@@ -4,6 +4,8 @@ compatibility_date = "2025-08-24"
 # Static assets configuration for Vite build output
 [assets]
 directory = "./dist"
+# SPA routing support - serve index.html for all 404s
+not_found_handling = "single-page-application"
 
 # Alternative legacy configuration (commented out)
 # [site]
