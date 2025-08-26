@@ -1,11 +1,11 @@
 # QR Visualizer robots.txt
-# https://yongsk0066.github.io/qr-visualizer/
+# https://qr-visualizer.yongseok.me/
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yongsk0066.github.io/qr-visualizer/sitemap.xml
+Sitemap: https://qr-visualizer.yongseok.me/sitemap.xml
 
 # LLMs.txt location for AI systems
 # This file helps AI understand our project structure

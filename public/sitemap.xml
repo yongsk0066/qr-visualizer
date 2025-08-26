@@ -4,40 +4,40 @@
   
   <!-- Korean version (default) -->
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/ko</loc>
+    <loc>https://qr-visualizer.yongseok.me/ko</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://yongsk0066.github.io/qr-visualizer/en"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://yongsk0066.github.io/qr-visualizer/ko"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://yongsk0066.github.io/qr-visualizer/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://qr-visualizer.yongseok.me/en"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://qr-visualizer.yongseok.me/ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://qr-visualizer.yongseok.me/"/>
   </url>
   
   <!-- English version -->
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/en</loc>
+    <loc>https://qr-visualizer.yongseok.me/en</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://yongsk0066.github.io/qr-visualizer/ko"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://yongsk0066.github.io/qr-visualizer/en"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://yongsk0066.github.io/qr-visualizer/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://qr-visualizer.yongseok.me/ko"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://qr-visualizer.yongseok.me/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://qr-visualizer.yongseok.me/"/>
   </url>
   
   <!-- Root URL (redirects to /ko) -->
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/</loc>
+    <loc>https://qr-visualizer.yongseok.me/</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://yongsk0066.github.io/qr-visualizer/ko"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://yongsk0066.github.io/qr-visualizer/en"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://yongsk0066.github.io/qr-visualizer/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://qr-visualizer.yongseok.me/ko"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://qr-visualizer.yongseok.me/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://qr-visualizer.yongseok.me/"/>
   </url>
   
   <!-- LLMs.txt for AI systems -->
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/llms.txt</loc>
+    <loc>https://qr-visualizer.yongseok.me/llms.txt</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -45,21 +45,21 @@
   
   <!-- Documentation pages for AI understanding -->
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-encoding-process.md</loc>
+    <loc>https://qr-visualizer.yongseok.me/docs/qr-encoding-process.md</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-detection-process.md</loc>
+    <loc>https://qr-visualizer.yongseok.me/docs/qr-detection-process.md</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://yongsk0066.github.io/qr-visualizer/docs/qr-decoding-process.md</loc>
+    <loc>https://qr-visualizer.yongseok.me/docs/qr-decoding-process.md</loc>
     <lastmod>2025-01-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

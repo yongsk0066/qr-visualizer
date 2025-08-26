@@ -16,9 +16,9 @@ Key features:
 ## Documentation
 
 - [Project Overview](https://github.com/yongsk0066/qr-visualizer/blob/master/CLAUDE.md): Architecture, development guidelines, and implementation status
-- [QR Encoding Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-encoding-process.md): Complete 7-step encoding implementation
-- [QR Detection Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-detection-process.md): Image to tri-state matrix conversion
-- [QR Decoding Process](https://yongsk0066.github.io/qr-visualizer/docs/qr-decoding-process.md): Data extraction with error correction
+- [QR Encoding Process](https://qr-visualizer.yongseok.me/docs/qr-encoding-process.md): Complete 7-step encoding implementation
+- [QR Detection Process](https://qr-visualizer.yongseok.me/docs/qr-detection-process.md): Image to tri-state matrix conversion
+- [QR Decoding Process](https://qr-visualizer.yongseok.me/docs/qr-decoding-process.md): Data extraction with error correction
 - [Localization Guide](https://github.com/yongsk0066/qr-visualizer/blob/master/docs/Localization.md): Multi-language support implementation
 - [GitHub Repository](https://github.com/yongsk0066/qr-visualizer): Source code and contribution guidelines
 
@@ -67,8 +67,8 @@ This project serves as a complete reference implementation for understanding:
 
 ## Live Demo
 
-- [Korean Version](https://yongsk0066.github.io/qr-visualizer/ko)
-- [English Version](https://yongsk0066.github.io/qr-visualizer/en)
+- [Korean Version](https://qr-visualizer.yongseok.me/ko)
+- [English Version](https://qr-visualizer.yongseok.me/en)
 
 ## Optional
 
