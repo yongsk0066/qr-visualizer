@@ -77,73 +77,88 @@ export const calculateEdgeProjections = (
   
   cv.warpPerspective(srcMat, warpedMat, H, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar(0));
 
-  // 3. Calculate Edges on Warped Image
-  // We need raw pixel data from warpedMat
-  const warpedData = warpedMat.data; // Uint8Array
+  // 3. Calculate Edges on Warped Image (OpenCV Native)
+  // Horizontal edge (dx) - detects vertical lines
+  // |I(x,y) - I(x-1,y)|
+  const dx = new cv.Mat.zeros(warpSize, warpSize, cv.CV_8UC1);
+  const dy = new cv.Mat.zeros(warpSize, warpSize, cv.CV_8UC1);
+
+  // Use ROI to calculate diff without copying data to JS
+  // dx: col(1..w) - col(0..w-1)
+  const srcRectLeft = new cv.Rect(0, 0, warpSize - 1, warpSize);
+  const srcRectRight = new cv.Rect(1, 0, warpSize - 1, warpSize);
   
-  const horizontalEdges = new Float32Array(warpSize * warpSize); // dx
-  const verticalEdges = new Float32Array(warpSize * warpSize);   // dy
+  const roiLeft = warpedMat.roi(srcRectLeft);
+  const roiRight = warpedMat.roi(srcRectRight);
+  const dxRoi = dx.roi(srcRectRight); // Fill right part of dx
+  
+  cv.absdiff(roiRight, roiLeft, dxRoi);
 
-  for (let y = 0; y < warpSize; y++) {
-    for (let x = 0; x < warpSize; x++) {
-      const idx = y * warpSize + x;
-      const val = warpedData[idx];
+  // dy: row(1..h) - row(0..h-1)
+  const srcRectTop = new cv.Rect(0, 0, warpSize, warpSize - 1);
+  const srcRectBottom = new cv.Rect(0, 1, warpSize, warpSize - 1);
+  
+  const roiTop = warpedMat.roi(srcRectTop);
+  const roiBottom = warpedMat.roi(srcRectBottom);
+  const dyRoi = dy.roi(srcRectBottom); // Fill bottom part of dy
+  
+  cv.absdiff(roiBottom, roiTop, dyRoi);
 
-      // Horizontal edge (dx) - detects vertical lines
-      const prevX = x > 0 ? warpedData[y * warpSize + (x - 1)] : val;
-      horizontalEdges[idx] = Math.abs(val - prevX);
+  // 4. Calculate Projections (OpenCV Native)
+  const projXMat = new cv.Mat();
+  const projYMat = new cv.Mat();
 
-      // Vertical edge (dy) - detects horizontal lines
-      const prevY = y > 0 ? warpedData[(y - 1) * warpSize + x] : val;
-      verticalEdges[idx] = Math.abs(val - prevY);
-    }
-  }
+  // Projection X: Sum of columns of dx (vertical lines)
+  // reduce(src, dst, dim, rtype, dtype)
+  // dim 0: reduce to single row (sum down columns)
+  cv.reduce(dx, projXMat, 0, cv.REDUCE_SUM, cv.CV_32F);
 
-  // 4. Calculate Projections
-  const projectionY = new Float32Array(warpSize); // Project onto Y axis (sum rows)
-  const projectionX = new Float32Array(warpSize); // Project onto X axis (sum cols)
+  // Projection Y: Sum of rows of dy (horizontal lines)
+  // dim 1: reduce to single col (sum across rows)
+  cv.reduce(dy, projYMat, 1, cv.REDUCE_SUM, cv.CV_32F);
 
-  for (let y = 0; y < warpSize; y++) {
-    let sum = 0;
-    for (let x = 0; x < warpSize; x++) {
-      // Use vertical edges (dy) for horizontal projection (detecting horizontal lines)
-      sum += verticalEdges[y * warpSize + x];
-    }
-    projectionY[y] = sum;
-  }
+  // 5. Calculate Scores (Standard Deviation)
+  const meanX = new cv.Mat();
+  const stdDevX = new cv.Mat();
+  cv.meanStdDev(projXMat, meanX, stdDevX);
+  const verticalScore = stdDevX.doubleAt(0, 0); // Score from vertical lines (dx)
 
-  for (let x = 0; x < warpSize; x++) {
-    let sum = 0;
-    for (let y = 0; y < warpSize; y++) {
-      // Use horizontal edges (dx) for vertical projection (detecting vertical lines)
-      sum += horizontalEdges[y * warpSize + x];
-    }
-    projectionX[x] = sum;
-  }
+  const meanY = new cv.Mat();
+  const stdDevY = new cv.Mat();
+  cv.meanStdDev(projYMat, meanY, stdDevY);
+  const horizontalScore = stdDevY.doubleAt(0, 0); // Score from horizontal lines (dy)
 
-  // 5. Calculate Scores
-  const stdDev = (arr: Float32Array) => {
-    if (arr.length === 0) return 0;
-    let sum = 0;
-    for (let i = 0; i < arr.length; i++) sum += arr[i];
-    const mean = sum / arr.length;
-    let sqDiffSum = 0;
-    for (let i = 0; i < arr.length; i++) sqDiffSum += (arr[i] - mean) ** 2;
-    return Math.sqrt(sqDiffSum / arr.length);
-  };
+  // Prepare return data
+  // Convert Mats to Float32Arrays for return
+  // Projections
+  const projectionX = Float32Array.from(projXMat.data32F);
+  const projectionY = Float32Array.from(projYMat.data32F);
+
+  // Edge Images (convert to float for consistency with interface)
+  const dx32F = new cv.Mat();
+  const dy32F = new cv.Mat();
+  dx.convertTo(dx32F, cv.CV_32F);
+  dy.convertTo(dy32F, cv.CV_32F);
+  
+  const horizontalEdges = Float32Array.from(dx32F.data32F);
+  const verticalEdges = Float32Array.from(dy32F.data32F);
 
   // Cleanup
-  srcPoints.delete();
-  dstPoints.delete();
-  H.delete();
-  srcMat.delete();
-  warpedMat.delete();
+  srcPoints.delete(); dstPoints.delete(); H.delete();
+  srcMat.delete(); warpedMat.delete();
+  dx.delete(); dy.delete();
+  roiLeft.delete(); roiRight.delete(); dxRoi.delete();
+  roiTop.delete(); roiBottom.delete(); dyRoi.delete();
+  projXMat.delete(); projYMat.delete();
+  meanX.delete(); stdDevX.delete();
+  meanY.delete(); stdDevY.delete();
+  dx32F.delete(); dy32F.delete();
 
   return {
     horizontalProjection: projectionX,
     verticalProjection: projectionY,
-    horizontalScore: stdDev(projectionY),
-    verticalScore: stdDev(projectionX),
+    horizontalScore: horizontalScore,
+    verticalScore: verticalScore,
     edgeImages: {
       horizontal: horizontalEdges,
       vertical: verticalEdges,
@@ -196,8 +211,8 @@ export const findFourthCorner = async (
     
     for (let dy = -range; dy <= range; dy += step) {
       for (let dx = -range; dx <= range; dx += step) {
-        // Yield every 50 iterations to keep UI responsive
-        if (++iterations % 50 === 0) {
+        // Yield every 200 iterations to keep UI responsive (optimized)
+        if (++iterations % 200 === 0) {
           await yieldToMain();
         }
 
