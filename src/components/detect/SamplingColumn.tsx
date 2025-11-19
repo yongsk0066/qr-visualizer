@@ -128,7 +128,7 @@ export function SamplingColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('6단계: 모듈 샘플링', 'Step 6: Module Sampling')}</h2>
+      <h2 className="font-medium mb-3">{t('7단계: 모듈 샘플링', 'Step 7: Module Sampling')}</h2>
 
       {sampling ? (
         <div className="space-y-4">

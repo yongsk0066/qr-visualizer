@@ -81,6 +81,30 @@ export interface FinderDetectionResult {
   visualizationCanvas: HTMLCanvasElement;
   confidence: number; // 0-1 범위의 검출 신뢰도
   isRefinement?: boolean; // 정제 단계 여부
+  executionTime?: number; // 실행 시간 (ms)
+}
+
+export interface CornerRefinementResult {
+  refinedPatterns: FinderPattern[];
+  p4: Point;
+  edgeProjections: {
+    horizontal: Float32Array;
+    vertical: Float32Array;
+  };
+  edgeImages: {
+    horizontal: Float32Array;
+    vertical: Float32Array;
+    width: number;
+    height: number;
+  };
+  visualizationData: {
+    p1: Point;
+    p2: Point;
+    p3: Point;
+    initialP4: Point;
+    refinedP4: Point;
+    searchHistory: { p4: Point; score: number }[];
+  };
 }
 
 // Pipeline result types
@@ -89,6 +113,7 @@ export interface DetectPipelineResult {
   grayscale: GrayscaleResult | null;
   binarization: BinarizationResult | null;
   finderDetection: FinderDetectionResult | null;
+  cornerRefinement: CornerRefinementResult | null;
   homography: HomographyResult | null;
   sampling: TriStateQR | null;
   homographyImage: ImageData | null;

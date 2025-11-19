@@ -1,8 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router'
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router'
 import './index.css'
 import App from './App.tsx'
+import { QRJourney } from './components/QRJourney.tsx'
 
 const router = createBrowserRouter([
   // 루트 경로는 한국어로 리다이렉트
@@ -13,7 +14,17 @@ const router = createBrowserRouter([
   // 언어별 라우트
   {
     path: '/:lang',
-    element: <App />
+    element: <Outlet />,
+    children: [
+      {
+        index: true,
+        element: <App />
+      },
+      {
+        path: 'journey',
+        element: <QRJourney />
+      }
+    ]
   }
 ], {
   basename: '/'

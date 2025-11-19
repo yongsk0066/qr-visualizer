@@ -2,6 +2,7 @@ import { pipe } from '@mobily/ts-belt';
 import type { DetectPipelineResult } from '../types';
 import { runBinarization } from './binarization/binarization';
 import { runFinderDetection } from './finder-detection/finderDetection';
+import { runCornerRefinement } from './cornerRefinement';
 import { runHomography, applyHomography } from './homography/homography';
 import { createGrayscaleResult, processImage } from './image-processing/imageProcessor';
 import { runSampling } from './sampling/sampling';
@@ -41,15 +42,64 @@ export const runDetectPipeline = async ({
         })
       : null;
 
-    // Step 5: Homography 변환
-    const homography = finderDetection && syncResult.imageProcessing && binarization
-      ? runHomography(
-          finderDetection, 
-          syncResult.imageProcessing.width, 
-          syncResult.imageProcessing.height,
-          binarization.binary
+    // Step 5: Corner Refinement (New Step)
+    const cornerRefinement = finderDetection && binarization
+      ? runCornerRefinement(
+          finderDetection,
+          binarization.binary,
+          binarization.width,
+          binarization.height
         )
       : null;
+
+    // Step 6: Homography 변환
+    // cornerRefinement가 있으면 그것을 사용하고, 없으면 기존 finderDetection 사용
+    // Step 6: Homography (Perspective Transform)
+    // Use refined patterns if available, otherwise use original finder patterns
+    // IMPORTANT: We now pass the refined corners (P1, P2, P3, P4) explicitly to runHomography
+    const homography = finderDetection && syncResult.imageProcessing && binarization
+      ? runHomography(
+          {
+            patterns: cornerRefinement ? cornerRefinement.refinedPatterns : finderDetection.patterns,
+            candidates: finderDetection.candidates || [],
+            visualizationCanvas: finderDetection.visualizationCanvas,
+            confidence: finderDetection.confidence || 0,
+            executionTime: finderDetection.executionTime || 0
+          },
+          syncResult.imageProcessing.width,
+          syncResult.imageProcessing.height,
+          binarization.binary,
+          true,
+          cornerRefinement ? {
+            p1: cornerRefinement.visualizationData.p1,
+            p2: cornerRefinement.visualizationData.p2,
+            p3: cornerRefinement.visualizationData.p3,
+            p4: cornerRefinement.visualizationData.refinedP4
+          } : undefined
+        )
+      : null;
+        
+    // Override homography corners with refined P4 if available
+    if (homography && cornerRefinement) {
+      // P4 (Bottom-Right) is the 3rd corner in the array (index 2) or 4th?
+      // Homography result corners are [TL, TR, BR, BL] usually?
+      // Let's check homography.ts: corners = [TL, TR, BR, BL]
+      // Wait, homography.ts returns corners: [TL, TR, BR, BL]
+      // But wait, runHomography calculates corners based on its own logic.
+      // We should probably pass the refined corners TO runHomography or update the result.
+      // Since we reverted runHomography, it calculates P4 using simple math.
+      // So we should update the homography result with our refined P4.
+      
+      // But wait, the homography MATRIX needs to be recalculated with the refined P4!
+      // The reverted runHomography doesn't accept P4 input.
+      // So we need to modify runHomography to accept optional corners OR recalculate matrix here.
+      // Or we can create a new function `calculateHomographyFromCorners`.
+      
+      // For now, let's just update the result corners and RE-CALCULATE the matrix using OpenCV here if possible,
+      // OR modify runHomography to accept "forced" corners.
+      
+      // Let's modify runHomography to accept optional 'knownCorners'
+    }
 
     // Step 6: Sampling (homography 적용된 이미지에서 모듈 샘플링)
     let sampling = null;
@@ -81,6 +131,7 @@ export const runDetectPipeline = async ({
       ...syncResult,
       binarization,
       finderDetection,
+      cornerRefinement,
       homography,
       sampling,
       homographyImage,
@@ -92,6 +143,7 @@ export const runDetectPipeline = async ({
       grayscale: null,
       binarization: null,
       finderDetection: null,
+      cornerRefinement: null,
       homography: null,
       sampling: null,
       homographyImage: null,

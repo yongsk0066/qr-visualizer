@@ -1,8 +1,14 @@
-import type { FinderDetectionResult, HomographyResult } from '../../types';
+import type { FinderDetectionResult, HomographyResult, Point } from '../../types';
 import { countTimingPatternModules } from '../finder-detection/timingPatternCounter';
 import { calculateLineIntersection } from '../../../shared/utils/geometry';
 
 
+
+
+/**
+ * Homography 변환을 계산하여 QR 코드를 정면에서 본 것처럼 변환
+ * 3개의 Finder Pattern을 기준으로 원근 변환 행렬 계산
+ */
 /**
  * Homography 변환을 계산하여 QR 코드를 정면에서 본 것처럼 변환
  * 3개의 Finder Pattern을 기준으로 원근 변환 행렬 계산
@@ -12,7 +18,8 @@ export const runHomography = (
   imageWidth: number,
   imageHeight: number,
   binarizedImage?: Uint8Array,
-  usePadding: boolean = true
+  usePadding: boolean = true,
+  refinedCorners?: { p1: Point; p2: Point; p3: Point; p4: Point }
 ): HomographyResult | null => {
   const cv = window.cv;
 
@@ -97,6 +104,16 @@ export const runHomography = (
 
     // Finder Pattern corners를 직접 사용한 정확한 변환
     const calculateQRCornersWithCV = () => {
+      // If refined corners are provided (from Corner Refinement step), use them directly!
+      if (refinedCorners) {
+        return {
+          tlCorner: refinedCorners.p1,
+          trCorner: refinedCorners.p2,
+          blCorner: refinedCorners.p3,
+          brCorner: refinedCorners.p4,
+        };
+      }
+
       const moduleSize = avgFinderSize / 7;
 
       // 모든 4개 모서리를 교점으로 계산
@@ -161,12 +178,17 @@ export const runHomography = (
         );
         if (blIntersection) blCorner = blIntersection;
 
-        // BR Corner: Top-right의 오른쪽 변과 Bottom-left의 아래쪽 변의 연장선 교점
-        const brIntersection = calculateLineIntersection(
-          { p1: trRightEdge[0], p2: trRightEdge[1] },
-          { p1: blBottomEdge[0], p2: blBottomEdge[1] }
-        );
-        if (brIntersection) brCorner = brIntersection;
+        // BR Corner (Initial Estimate): Intersection of lines parallel to sides
+        // P4 is intersection of line through P3 parallel to P1-P2 and line through P2 parallel to P1-P3
+        // Vector P1->P2
+        const v12 = { x: trCorner.x - tlCorner.x, y: trCorner.y - tlCorner.y };
+        
+        // P4 = P3 + v12 (Parallelogram approximation)
+        brCorner = {
+          x: blCorner.x + v12.x,
+          y: blCorner.y + v12.y
+        };
+        
       } else {
         // corners 정보가 없으면 기본값 사용
         const offset = moduleSize * 3.5; // Finder Pattern 중심에서 외곽까지는 3.5 모듈

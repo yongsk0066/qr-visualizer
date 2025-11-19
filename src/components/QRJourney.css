@@ -1,0 +1,144 @@
+/* QR Journey Page - Complete Style Reset & Custom Styles */
+
+/* Scoped reset - only applies within .journey-container */
+.journey-container {
+  /* Reset all elements within journey container */
+  & *,
+  & *::before,
+  & *::after {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    box-sizing: border-box;
+  }
+
+  /* Reset display for HTML5 elements */
+  & article, & aside, & details, & figcaption, & figure,
+  & footer, & header, & hgroup, & menu, & nav, & section {
+    display: block;
+  }
+
+  /* Reset lists */
+  & ol, & ul {
+    list-style: none;
+  }
+
+  /* Reset quotes */
+  & blockquote, & q {
+    quotes: none;
+  }
+
+  & blockquote::before, & blockquote::after,
+  & q::before, & q::after {
+    content: '';
+    content: none;
+  }
+
+  /* Reset tables */
+  & table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+}
+
+/* 16-Column Grid System */
+.journey-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Background columns - always visible */
+.journey-columns-bg {
+  --columns: 16;
+  --column-gap: 20px;
+  --border-left: #D0E2FF;
+  --border-right: #D2D2D2;
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: var(--column-gap);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Individual background column */
+.journey-columns-bg > div {
+  border-left: 1px solid var(--border-left);
+  border-right: 1px solid var(--border-right);
+  height: 100%;
+}
+
+/* Content grid - overlays on background */
+.journey-grid {
+  --columns: 16;
+  --column-gap: 20px;
+  
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: var(--column-gap);
+  z-index: 1;
+}
+
+/* Column span utilities - no borders */
+.col-span-1 { grid-column: span 1; }
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+.col-span-4 { grid-column: span 4; }
+.col-span-5 { grid-column: span 5; }
+.col-span-6 { grid-column: span 6; }
+.col-span-7 { grid-column: span 7; }
+.col-span-8 { grid-column: span 8; }
+.col-span-9 { grid-column: span 9; }
+.col-span-10 { grid-column: span 10; }
+.col-span-11 { grid-column: span 11; }
+.col-span-12 { grid-column: span 12; }
+.col-span-13 { grid-column: span 13; }
+.col-span-14 { grid-column: span 14; }
+.col-span-15 { grid-column: span 15; }
+.col-span-16 { grid-column: span 16; }
+
+/* Column start utilities */
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+.col-start-13 { grid-column-start: 13; }
+.col-start-14 { grid-column-start: 14; }
+.col-start-15 { grid-column-start: 15; }
+.col-start-16 { grid-column-start: 16; }
+
+
+/* Typography resets for journey page */
+.journey-container {
+  & h1 { font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+  & h2 { font-size: 2rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.875rem; }
+  & h3 { font-size: 1.5rem; font-weight: 600; line-height: 1.4; margin-bottom: 0.75rem; }
+  & h4 { font-size: 1.25rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.625rem; }
+  & h5 { font-size: 1.125rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.5rem; }
+  & h6 { font-size: 1rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.5rem; }
+  
+  & p { margin-bottom: 1rem; }
+  & a { color: #0066cc; text-decoration: none; }
+  & a:hover { text-decoration: underline; }
+  & strong { font-weight: 600; }
+  & em { font-style: italic; }
+  & code { font-family: 'SF Mono', Monaco, 'Courier New', monospace; background: #f5f5f5; padding: 0.125rem 0.25rem; border-radius: 3px; }
+}

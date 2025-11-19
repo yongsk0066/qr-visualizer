@@ -252,7 +252,7 @@ export function RefinedHomographyColumn({
 
   return (
     <div className="step-column">
-      <h2 className="font-medium mb-3">{t('5단계: 원근 변환', 'Step 5: Perspective Transformation')}</h2>
+      <h2 className="font-medium mb-3">{t('6단계: 원근 변환', 'Step 6: Perspective Transformation')}</h2>
 
       {isProcessing ? (
         <div className="text-gray-500 text-sm">{t('변환 중...', 'Processing...')}</div>
