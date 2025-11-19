@@ -156,7 +156,23 @@ export const calculateEdgeProjections = (
 /**
  * Find the optimal 4th corner (P4) by maximizing edge projection standard deviation
  */
-export const findFourthCorner = (
+/**
+ * Helper to yield control to the main thread
+ * Uses scheduler.yield() if available (Chrome/Edge), falls back to setTimeout
+ */
+const yieldToMain = async () => {
+  if ('scheduler' in window && 'yield' in (window as any).scheduler) {
+    await (window as any).scheduler.yield();
+  } else {
+    await new Promise(resolve => setTimeout(resolve, 0));
+  }
+};
+
+/**
+ * Find the optimal 4th corner (P4) by maximizing edge projection standard deviation
+ * Async version to prevent UI freezing
+ */
+export const findFourthCorner = async (
   imageData: Uint8Array,
   width: number,
   height: number,
@@ -165,7 +181,7 @@ export const findFourthCorner = (
   p3: Point, // Bottom-Left
   initialP4: Point, // Initial estimate
   moduleSize: number
-): { bestP4: Point; history: { p4: Point; score: number }[] } => {
+): Promise<{ bestP4: Point; history: { p4: Point; score: number }[] }> => {
   let bestP4 = { ...initialP4 };
   let bestScore = -1;
   const history: { p4: Point; score: number }[] = [];
@@ -174,11 +190,17 @@ export const findFourthCorner = (
   // Increased range to handle larger distortions
   const searchRange = moduleSize * 10;
 
-  const search = (step: number, range: number) => {
+  const search = async (step: number, range: number) => {
     let improved = false;
+    let iterations = 0;
     
     for (let dy = -range; dy <= range; dy += step) {
       for (let dx = -range; dx <= range; dx += step) {
+        // Yield every 50 iterations to keep UI responsive
+        if (++iterations % 50 === 0) {
+          await yieldToMain();
+        }
+
         const testP4 = {
           x: initialP4.x + dx,
           y: initialP4.y + dy
@@ -208,11 +230,11 @@ export const findFourthCorner = (
   };
 
   // Coarse search
-  search(Math.max(4, Math.floor(moduleSize)), searchRange);
+  await search(Math.max(4, Math.floor(moduleSize)), searchRange);
   
   // Fine search around best P4
   initialP4 = bestP4; // Update center
-  search(1, moduleSize * 2); // Smaller range for fine search
+  await search(1, moduleSize * 2); // Smaller range for fine search
 
   return { bestP4, history };
 };

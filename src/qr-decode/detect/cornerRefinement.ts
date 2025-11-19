@@ -21,12 +21,12 @@ export interface CornerRefinementResult {
  * Step 5: Corner Refinement & P4 Detection
  * Refines P1, P2, P3 and finds P4 using Edge Projection Analysis
  */
-export const runCornerRefinement = (
+export const runCornerRefinement = async (
   finderDetection: FinderDetectionResult,
   binarization: Uint8Array,
   width: number,
   height: number
-): CornerRefinementResult | null => {
+): Promise<CornerRefinementResult | null> => {
   if (!finderDetection || finderDetection.patterns.length !== 3) return null;
 
   // 1. Sort patterns (TL, TR, BL)
@@ -101,7 +101,7 @@ export const runCornerRefinement = (
   };
 
   // 6. Find P4 using Edge Projection
-  const { bestP4: refinedP4, history } = findFourthCorner(
+  const { bestP4: refinedP4, history } = await findFourthCorner(
     edgeImage,
     width,
     height,

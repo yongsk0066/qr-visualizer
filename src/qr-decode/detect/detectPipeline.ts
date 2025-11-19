@@ -42,13 +42,14 @@ export const runDetectPipeline = async ({
         })
       : null;
 
-    // Step 5: Corner Refinement (New Step)
-    const cornerRefinement = finderDetection && binarization
-      ? runCornerRefinement(
+    // Step 5: Corner Refinement (P4 Detection)
+    // Only run if we have 3 finder patterns
+    const cornerRefinement = finderDetection && finderDetection.patterns.length === 3 && binarization
+      ? await runCornerRefinement(
           finderDetection,
           binarization.binary,
-          binarization.width,
-          binarization.height
+          syncResult.imageProcessing.width,
+          syncResult.imageProcessing.height
         )
       : null;
 
