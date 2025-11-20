@@ -1,21 +1,5 @@
-import type { FinderDetectionResult, Point } from '../types';
+import type { FinderDetectionResult, Point, CornerRefinementResult } from '../types';
 import { calculateEdgeProjections, findFourthCorner } from './homography/edgeProjection';
-
-export interface CornerRefinementResult {
-  refinedPatterns: FinderDetectionResult['patterns'];
-  p4: Point;
-  edgeProjections: {
-    horizontal: Float32Array;
-    vertical: Float32Array;
-  };
-  visualizationData: {
-    p1: Point;
-    p2: Point;
-    p3: Point;
-    initialP4: Point;
-    refinedP4: Point;
-  };
-}
 
 /**
  * Step 5: Corner Refinement & P4 Detection
