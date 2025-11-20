@@ -176,7 +176,9 @@ export const calculateEdgeProjections = (
  * Uses scheduler.yield() if available (Chrome/Edge), falls back to setTimeout
  */
 const yieldToMain = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ('scheduler' in window && 'yield' in (window as any).scheduler) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (window as any).scheduler.yield();
   } else {
     await new Promise(resolve => setTimeout(resolve, 0));

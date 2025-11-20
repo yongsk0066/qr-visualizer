@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { t } from '@/config/language';
 import { runSampling } from '../../qr-decode/detect/sampling/sampling';
 import type { HomographyResult, TriStateQR } from '../../qr-decode/types';
@@ -18,24 +18,21 @@ export function SamplingColumn({
 }: SamplingColumnProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showGrid, setShowGrid] = useState(true);
-  const [localSampling, setLocalSampling] = useState<TriStateQR | null>(null);
-
-  // homography가 변경되면 sampling 다시 실행
-  useEffect(() => {
+  // homography가 변경되면 sampling 다시 실행 (Memoized)
+  const localSampling = useMemo(() => {
     if (!homography || !homographyImage) {
-      setLocalSampling(null);
-      return;
+      return null;
     }
-
     console.log('Re-running sampling with homography version:', homography.version);
-    const newSampling = runSampling(homographyImage, homography);
-    setLocalSampling(newSampling);
-    
-    // 콜백 호출
-    if (newSampling && onSamplingComplete) {
-      onSamplingComplete(newSampling);
+    return runSampling(homographyImage, homography);
+  }, [homography, homographyImage]);
+
+  // 콜백 호출을 위한 Effect
+  useEffect(() => {
+    if (localSampling && onSamplingComplete) {
+      onSamplingComplete(localSampling);
     }
-  }, [homography, homographyImage, onSamplingComplete]);
+  }, [localSampling, onSamplingComplete]);
 
   // 실제 사용할 sampling (local이 있으면 local, 없으면 prop)
   const sampling = localSampling || propSampling;
