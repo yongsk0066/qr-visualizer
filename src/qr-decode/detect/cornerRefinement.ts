@@ -1,4 +1,4 @@
-import type { FinderDetectionResult, Point, CornerRefinementResult } from '../types';
+import type { FinderDetectionResult, CornerRefinementResult } from '../types';
 import { calculateEdgeProjections, findFourthCorner } from './homography/edgeProjection';
 
 /**
