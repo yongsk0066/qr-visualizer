@@ -12,6 +12,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const [videoResolution, setVideoResolution] = useState({ width: 0, height: 0 });
   const lastCaptureTime = useRef(0);
   const [isCapturing, setIsCapturing] = useState(false);
 
@@ -59,9 +60,20 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           
+          const handleCanPlay = () => {
+            if (videoRef.current) {
+              setVideoResolution({
+                width: videoRef.current.videoWidth,
+                height: videoRef.current.videoHeight
+              });
+            }
+          };
+
           videoRef.current.onloadedmetadata = () => {
             videoRef.current?.play();
           };
+          
+          videoRef.current.oncanplay = handleCanPlay; // Assign handleCanPlay to oncanplay event
           
           videoRef.current.onplaying = () => {
             // 카메라가 준비되면 아무것도 하지 않음 (수동/실시간 모드로 제어)
@@ -153,7 +165,7 @@ export function CameraInput({ isActive, onImageCapture, onStop }: CameraInputPro
           <div>
             <div className="text-gray-600">{t('해상도', 'Resolution')}</div>
             <div className="font-mono font-semibold">
-              {videoRef.current?.videoWidth || t('로딩', 'Loading')} × {videoRef.current?.videoHeight || t('로딩', 'Loading')}
+              {videoResolution.width || t('로딩', 'Loading')} × {videoResolution.height || t('로딩', 'Loading')}
             </div>
           </div>
           <div>

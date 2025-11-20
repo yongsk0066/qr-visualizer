@@ -33,6 +33,7 @@ export const calculateEdgeProjections = (
   p3: Point,
   p4: Point
 ): EdgeProjectionResult => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cv = (window as any).cv;
   if (!cv) {
     console.error("OpenCV not loaded");
