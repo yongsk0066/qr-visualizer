@@ -35,7 +35,7 @@ describe('Edge Projection', () => {
     expect(result.verticalScore).toBeGreaterThan(0);
   });
 
-  it('should find the correct 4th corner', () => {
+  it('should find the correct 4th corner', async () => {
     const p1 = { x: 20, y: 20 };
     const p2 = { x: 80, y: 20 };
     const p3 = { x: 20, y: 80 };
@@ -45,7 +45,7 @@ describe('Edge Projection', () => {
     const expectedP4 = { x: 80, y: 80 };
     const moduleSize = 2;
 
-    const foundP4 = findFourthCorner(
+    const { bestP4: foundP4 } = await findFourthCorner(
       imageData,
       width,
       height,
